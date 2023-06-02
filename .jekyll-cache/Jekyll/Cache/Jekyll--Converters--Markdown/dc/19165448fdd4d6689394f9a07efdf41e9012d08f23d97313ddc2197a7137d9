@@ -1,0 +1,48 @@
+I"U<style>
+.time {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+</style>
+
+<p class="time">30 May 2020 | Reading time: ~6 min</p>
+
+<h1 align="center">HackTheBox - Blunder [Easy] </h1>
+
+<p class="time" style="font-size: 75%;">
+
+#HackTheBox
+
+#Easy
+
+#B2R
+
+#Linux
+
+#Bludit
+
+#custom-wordlist
+
+#brute-force
+
+#CVE-2019-16113
+
+#RCE
+
+#lateral-movement
+
+#password-guessing
+
+#hardcoded-credentials
+
+#sudo-privesc
+
+#CVE-2019-14287
+
+</p>
+
+<p><img src="/assets/images/Screenshots/Blunder/blunder.png" alt="iconTable" /></p>
+:ET

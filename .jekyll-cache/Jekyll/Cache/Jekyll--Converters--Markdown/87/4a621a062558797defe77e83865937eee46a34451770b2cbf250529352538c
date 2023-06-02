@@ -1,0 +1,38 @@
+I" <style>
+.time {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+</style>
+
+<p class="time">22 May 2021 | Reading time: ~10 min</p>
+
+<h1 align="center">HackTheBox - Delivery [Easy] </h1>
+
+<p class="time" style="font-size: 75%;">
+
+#HackTheBox
+
+#Linux
+
+#Easy
+
+#insecure-credentials
+
+#password-reuse
+
+#hashcat-custom-rules
+
+#john-custom-rules
+
+#B2R
+
+#writeup
+
+</p>
+
+<p><img src="/assets/images/Screenshots/Delivery/box-summary.jpg" alt="box-summary.jpg" /></p>
+:ET

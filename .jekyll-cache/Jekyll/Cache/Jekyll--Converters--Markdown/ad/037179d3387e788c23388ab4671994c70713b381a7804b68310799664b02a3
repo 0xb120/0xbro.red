@@ -1,0 +1,93 @@
+I"<style>
+#img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  height: 50%;
+}
+
+#p {
+    letter-spacing: 16px;
+    margin-bottom: 0;
+    font-size: 1.25rem;
+}
+</style>
+
+<p><img itemprop="image" id="img" class="img-rounded about_perfil" src="/assets/images/me3.jpeg" alt="My profile" /></p>
+<p align="center" id="p">&lt; 0xbro &gt;</p>
+
+<h2 class="no_toc text-delta" id="table-of-contents">Table of contents</h2>
+
+<ol id="markdown-toc">
+  <li><a href="#whoami" id="markdown-toc-whoami">Whoami</a></li>
+  <li><a href="#about-the-blog" id="markdown-toc-about-the-blog">About the blog</a></li>
+  <li><a href="#courses-i-have-taken" id="markdown-toc-courses-i-have-taken">Courses I have taken</a></li>
+  <li><a href="#certifications-and-badges" id="markdown-toc-certifications-and-badges">Certifications and badges</a></li>
+  <li><a href="#contact" id="markdown-toc-contact">Contact</a></li>
+  <li><a href="#follow-me" id="markdown-toc-follow-me">Follow me</a></li>
+</ol>
+<hr />
+
+<h2 id="whoami">Whoami</h2>
+
+<p>I am <strong>Mattia Brollo</strong>, aka <strong>0xbro</strong>, a <em>penetration tester, content creator &amp; wannabe ethical hacker</em>.<br />
+I like anything that has to do with <strong>logic</strong>, <strong>research</strong> and <strong>discovery of new things</strong>. I am a <strong>CTF player</strong> with <strong><a href="https://bullsoc.com/">BullSoc</a></strong> team, one of the organizers of <strong><a href="https://www.meetup.com/it-IT/meethack/">Meethack</a></strong> (an <strong>Italian hackerspace</strong> located in Turin), and a <strong>writer and moderator</strong> on <strong><a href="Inforge.net">Inforge.net</a></strong>. 
+<br /><br />
+Generally speaking, the four traits that best identify me are: <strong>learner</strong>, <strong>intellection</strong>, <strong>achiever</strong>, and <strong>analytical</strong>.<br /></p>
+
+<h2 id="about-the-blog">About the blog</h2>
+
+<p>Besides hacking, I also like to document and <strong>share the knowledge</strong> learned during my activities, so that I can also help others as well.
+Within the blog you can find <strong>writeups</strong> for the various machines and challenges I owned, my <strong>CTFs and penetration testing notes</strong>, links to my <strong>YouTube videos</strong>,
+and other references to articles or posts that I have found useful and interesting to explore further.</p>
+
+<h2 id="courses-i-have-taken">Courses I have taken</h2>
+<ul>
+  <li><strong><a href="https://portswigger.net/web-security/dashboard">Web Security Academy</a></strong>, <em>PortSwigger</em></li>
+  <li><strong><a href="https://hackademy.agarri.fr/">Mastering Burpsuite Pro</a></strong>, <em>Agarri</em></li>
+  <li><strong><a href="https://www.offsec.com/courses/pen-200/">PEN-200</a></strong>, <em>OffSec</em></li>
+  <li><strong><a href="https://courses.tib3rius.com/p/windows-privilege-escalation-for-oscp-beyond">Windows Privilege Escalation for OSCP &amp; Beyond!</a></strong>, <em>Tib3rius</em></li>
+  <li><strong><a href="https://academy.tcm-sec.com/p/windows-privilege-escalation-for-beginners">Windows Privilege Escalation for Beginners</a></strong>, <em>TCM Security</em></li>
+  <li><strong>Mobile Application Penetration Testing</strong> internal training, <em>Accenture</em></li>
+  <li><strong>Network Penetration Testing</strong> internal training, <em>Accenture</em></li>
+  <li><strong><a href="https://ine.com/learning/paths/penetration-testing-student">Penetration Testing Student</a></strong>, <em>eLearnSecurity</em></li>
+</ul>
+
+<details close="">
+  <summary>
+    Books I have read
+  </summary>
+  <blockquote>
+    <p><em>Yeah… I know… some of them are very lame</em></p>
+  </blockquote>
+
+  <ul>
+    <li><strong><a href="https://www.google.it/books/edition/Penetration_Testing/T_LlAwAAQBAJ?hl=en&amp;gbpv=1&amp;dq=penetration%20testing%20a%20hands-on%20introduction%20to%20hacking&amp;pg=PP1&amp;printsec=frontcover">Penetration Testing: A Hands-On Introduction to Hacking</a></strong>, <em>Weidman, Georgia. No Starch Press, 2014.</em></li>
+    <li><strong><a href="https://www.google.it/books/edition/Mobile_Application_Penetration_Testing/Y0XiCwAAQBAJ?hl=en&amp;gbpv=1&amp;pg=PP1&amp;printsec=frontcover">Mobile Application Penetration Testing</a></strong>, <em>Velu, Vijay Kumar. Packt Publishing, 2016.</em></li>
+    <li><strong><a href="https://www.google.it/books/edition/Mobile_Application_Penetration_Testing/Y0XiCwAAQBAJ?hl=en&amp;gbpv=1&amp;pg=PP1&amp;printsec=frontcover">Metasploit Bootcamp</a></strong>, <em>Jaswal, Nipun. Packt Publishing, 2017.</em></li>
+    <li><strong><a href="https://www.google.it/books/edition/Hacklog_Volume_2_Web_Hacking/4kNyDwAAQBAJ?hl=en&amp;gbpv=1&amp;dq=hacklog%20vol2&amp;pg=PR1&amp;printsec=frontcover">Hacklog, Volume 2: Web Hacking</a></strong>, <em>Novelli, Stefano. Independently Published, 2018.</em></li>
+    <li><strong><a href="https://www.google.it/books/edition/Hacker_7_0/PJhQMwEACAAJ?hl=en&amp;kptab=overview">Hacker 7.0</a></strong>, <em>McClure, Stuart., Kurtz, George., Scambray, Joel. Apogeo, 2013.</em></li>
+    <li><strong><a href="https://www.google.it/books/edition/Hacking_The_Art_of_Exploitation_2nd_Edit/0FW3DMNhl1EC?hl=en&amp;gbpv=1&amp;dq=hacking%20the%20art%20of%20exploitation&amp;pg=PP1&amp;printsec=frontcover">Hacking: The Art of Exploitation</a></strong>, <em>Erickson, Jon. No Starch Press, 2008.</em></li>
+    <li><strong><a href="https://www.google.it/books/edition/Learning_Pentesting_for_Android_Devices/wNcrAwAAQBAJ?hl=en&amp;gbpv=1&amp;dq=Learning%20Pentesting%20for%20Android%20Devices&amp;pg=PP1&amp;printsec=frontcover">Learning Pentesting for Android Devices</a></strong>, <em>Gupta, Aditya. Packt Publishing, 2014.</em></li>
+  </ul>
+</details>
+
+<h2 id="certifications-and-badges">Certifications and badges</h2>
+<div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="4d593371-2011-42f2-a299-f75cf614d881" data-share-badge-host="https://www.credly.com"></div>
+<script type="text/javascript" async="" src="//cdn.credly.com/assets/utilities/embed.js"></script>
+
+<h2 id="contact">Contact</h2>
+<p><strong>Email</strong>: <a href="mailto:0xbro@proton.me">0xbro@proton.me</a></p>
+
+<h2 id="follow-me">Follow me</h2>
+
+<p><a href="https://twitter.com/0xbro1" class="twitter-follow-button" data-show-count="false">Follow @0xbro</a><script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><br />
+<span class="fs-3"><a href="https://www.youtube.com/@0xbro" class="btn bg-red-200 text-grey-lt-000">YouTube</a></span><br />
+<span class="fs-3"><a href="https://www.linkedin.com/in/mattia-brollo-b4129614b" class="btn bg-blue-000 text-grey-lt-000">Linkedin</a></span><br />
+<span class="fs-3"><a rel="me" href="https://infosec.exchange/@0xbro" class="btn bg-blue-200 text-grey-lt-000">Mastodon</a></span><br />
+<span class="fs-3"><a href="https://app.hackthebox.eu/profile/88083" class="btn bg-green-200 text-grey-lt-000">HackTheBox</a></span></p>
+
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="0xbro" data-description="Support me on Buy me a coffee!" data-message="I'm creating cyber security contents like CTF writeups, videos and articles. Do you find my work interesting? You can now offer me a cup of coffee!" data-color="#BD5FFF" data-position="left" data-x_margin="18" data-y_margin="18"></script>
+
+:ET

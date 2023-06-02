@@ -1,0 +1,49 @@
+I"<style>
+.time {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+</style>
+
+<p class="time">04 Jan 2020 | Reading time: ~6 min</p>
+
+<h1 align="center">HackTheBox - OpenAdmin [Easy] </h1>
+
+<p class="time" style="font-size: 75%;">
+
+#HackTheBox
+
+#Easy
+
+#Linux
+
+#code-review
+
+#lateral-movement
+
+#port-forwarding
+
+#ssh-keys-cracking
+
+#GTFObins
+
+#OpenNetAdmin
+
+#nano-privesc
+
+#command-injection
+
+#RCE
+
+#password-reuse
+
+#hardcoded-credentials
+
+#B2R
+
+</p>
+
+:ET
