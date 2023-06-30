@@ -1,0 +1,29 @@
+<style>
+.time {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+</style>
+{% if page.date %}
+{% if page.reading_time %}
+<p class="time">{{ page.date | date_to_string }} | Reading time: ~{{ page.reading_time }}</p>
+{% else %}
+<p class="time">{{ page.date | date_to_string }}</p>
+{% endif %}
+{% endif %}
+
+{% if page.subtitle %}
+<h1 align="center">{{page.title}}</h1><h2 align="center">{{page.subtitle}}</h2>
+{% else %}
+<h1 align="center">{{page.title}}</h1>
+{% endif %}
+{% if page.tags %}
+<p class="time" style="font-size: 75%;">
+{% for tag in page.tags %}
+#{{ tag }}
+{% endfor %}
+</p>
+{% endif %}
