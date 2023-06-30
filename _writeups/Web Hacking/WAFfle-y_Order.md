@@ -8,7 +8,7 @@ nav_order: 20230412
 difficulty: medium
 challenge_title: "WAFfle-y Order"
 platform: 
-  - hackthebox
+  - HackTheBox
 reading_time: 15 min
 screenshots: /assets/images/Screenshots/WAFfle-y_Order/
 tags:

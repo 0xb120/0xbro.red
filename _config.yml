@@ -19,18 +19,19 @@
 # in the templates via {{ site.myvariable }}.
 
 title: "0xbro"
-description: "0xbro personal site and blog about cyber security, CTFs, penetration testing and much more!"
+description: "0xbro personal site and blog related to everything that surrounds ethical hacking, penetration testing, AppSec, CTFs, and other various cybersecurity stuff."
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://charming-cuchufli-c1e963.netlify.app" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.github.io'
+url: "http://0xbro.red" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.github.io'
 #url: "" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.github.io'
 logo: "/assets/images/0xbro_minimal1.png"
 
 # User settings
 username: 0xbro
-email: 0xbro@proton.me
+email: contact@0xbro.red
 user_title: 0xbro
-twitter_username: 0xbro1
-instagram_username: 0xbro
+twitter_username: sec_0xbro
+mastodon_username: '@0xbro@infosec.exchange'
+#instagram_username: foo
 github_username:  '0xb120'
 gitlab_username:  0xbro
 telegram_username: sec_0xbro
@@ -43,6 +44,7 @@ theme: just-the-docs
 plugins:
   - jekyll-feed
   - jekyll-redirect-from
+  - jekyll-sitemap
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -52,17 +54,17 @@ plugins:
 # Excluded items can be processed by explicitly listing the directories or
 # their entries' file path in the `include:` list.
 #
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
 
 # Enable or disable the site search
 # Supports true (default) or false
@@ -114,10 +116,10 @@ enable_copy_code_button: true
 
 #nav_external_links:
 #  - title: My notes
-#    url: https://github.com/MaOutis/cheatsheets_and_ctf-notes/blob/main/Dev%2C%20ICT%20%26%20Cybersec/Dev%2C%20ICT%20%26%20Cybersec.md
+#    url: https://github.com/0xb120/cheatsheets_and_ctf-notes/blob/main/Dev%2C%20ICT%20%26%20Cybersec/Dev%2C%20ICT%20%26%20Cybersec.md
 #    hide_icon: false # set to true to hide the external link icon - defaults to false
 #  - title: Tools cheatsheets
-#    url: https://github.com/MaOutis/cheatsheets_and_ctf-notes/tree/main/Dev%2C%20ICT%20%26%20Cybersec/Tools
+#    url: https://github.com/0xb120/cheatsheets_and_ctf-notes/tree/main/Dev%2C%20ICT%20%26%20Cybersec/Tools
 #    hide_icon: false # set to true to hide the external link icon - defaults to false
 
 # Footer content
@@ -153,7 +155,20 @@ just_the_docs:
       name: Cheatsheets and notes
       nav_exclude: false
       search_exclude: false
-  
+
+# Collections included for feeds
+feed:
+  tags: true
+  posts_limit: 50
+  collections:
+    writeups:
+      path: "/feed/articles.xml"
+    disclosures:
+      path: "/feed/disclosures.xml"
+    cheatsheets:
+      path: "/feed/cheatsheets.xml"
+    posts:
+      path: ""
 
 ## Callouts configs
 callouts_level: quiet # or loud

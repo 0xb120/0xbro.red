@@ -1,6 +1,7 @@
 ---
 layout: default
 title:  "Web Hacking"
+date: 2021-04-30
 has_children: true
 child_nav_order: reversed
 nav_order: 5

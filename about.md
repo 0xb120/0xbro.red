@@ -4,7 +4,6 @@ title: About me
 permalink: /about/
 nav_order: 2
 ---
-
 <style>
 #img {
   display: block;
@@ -71,11 +70,17 @@ and other references to articles or posts that I have found useful and interesti
 **Email**: [{{site.email}}](mailto:{{site.email}})
 
 ## Follow me
+<section style="display: block; margin-left: auto; margin-right: auto; text-align: left; text-decoration: none;">
+<a href="https://www.youtube.com/{{site.youtube_id}}"><svg class="icon-youtube-color" width="30" height="30"><use xlink:href="#icon-youtube-color"></use></svg></a>
+<a href="https://twitter.com/{{site.twitter_username}}"><svg class="icon-twitter-color" width="30" height="30"><use xlink:href="#icon-twitter-color"></use></svg></a>
+<a href="https://www.linkedin.com/in/{{site.linkedin_public_url}}"><svg class="icon-linkedin-color" width="30" height="30"><use xlink:href="#icon-linkedin-color"></use></svg></a>
+<a rel="me" href="https://infosec.exchange/@0xbro"><svg class="icon-mastodon-color" width="30" height="30"><use xlink:href="#icon-mastodon-color"></use></svg></a>
+<a href="https://github.com/{{site.github_username}}"><svg class="icon-github-color" width="30" height="30"><use xlink:href="#icon-github-color"></use></svg></a>
+<a href="https://app.hackthebox.eu/profile/88083"><svg class="icon-htb-color" width="30" height="30"><use xlink:href="#icon-htb-color"></use></svg></a>
+</section>
 
-<a href="https://twitter.com/0xbro1" class="twitter-follow-button" data-show-count="false">Follow @0xbro</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script><br>
-<span class="fs-3">[YouTube](https://www.youtube.com/{{site.youtube_id}}){: .btn .bg-red-200 .text-grey-lt-000}</span><br>
-<span class="fs-3">[Linkedin](https://www.linkedin.com/in/{{site.linkedin_public_url}}){: .btn .bg-blue-000 .text-grey-lt-000 }</span><br>
-<span class="fs-3"><a rel="me" href="https://infosec.exchange/@0xbro" class="btn bg-blue-200 text-grey-lt-000">Mastodon</a></span><br>
-<span class="fs-3">[HackTheBox](https://app.hackthebox.eu/profile/88083){: .btn .bg-green-200 .text-grey-lt-000}
+### RSS feed
+<a href="{{site.url}}/feed/articles.xml"><svg class="icon-rss-color" width="21" height="12"><use xlink:href="#icon-rss-color"></use></svg>Articles</a><br>
+<a href="{{site.url}}/feed/disclosures.xml"><svg class="icon-rss-color" width="21" height="12"><use xlink:href="#icon-rss-color"></use></svg>Disclosures</a>
 
 {% include support_btn.html %}

@@ -12,7 +12,6 @@ reading_time: 5 min
 screenshots: /assets/images/Screenshots/???-name-???/
 ???-tags-???
 
-image: /assets/images/Screenshots/???-name-???/thumbnail.png
 twitter_text: HackTheBox &quot;???-name-???&quot; wirteup is now available!
 description:
 ---
