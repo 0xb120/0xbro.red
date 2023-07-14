@@ -21,7 +21,7 @@
 title: "0xbro"
 description: "0xbro personal site and blog related to everything that surrounds ethical hacking, penetration testing, AppSec, CTFs, and other various cybersecurity stuff."
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://0xbro.red" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.github.io'
+url: "https://0xbro.red" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.github.io'
 #url: "" # for test: remove string 'http://victorvoid.github.io' to '' but in production: 'https://yourusername.github.io'
 logo: "/assets/images/0xbro_minimal1.png"
 
