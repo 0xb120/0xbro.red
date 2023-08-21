@@ -45,7 +45,7 @@ description: A summary/assay for the article
 ---
 
 {% include TOC.md %}
-{{page.screenshots | downcase}}
+
 # Introduction
 
 It is well known that Google Play does not verify applications uploaded to the store, making it quite common to run into apps that are supposed to ensure user security and privacy, but actually do anything but that. Some of these applications even have to be purchased or require the user to pay for the full version.
