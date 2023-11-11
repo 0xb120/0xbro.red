@@ -3,7 +3,7 @@ layout: post
 title: XXXXXX
 has_children: no
 parent: HackTheBox
-date: pubblication_date
+date: 20201212
 nav_order: -20200620 (machine Release date)
 difficulty: Easy
 reading_time: 5 min
