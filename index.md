@@ -23,7 +23,11 @@ If you want to know more about me or want to get in touch, please visit the <a h
   {% assign filtered_disclosures = site.disclosures | where: "has_children", false | where: "parent", "Disclosed vulnerabilities" | sort: "date" | reverse %}
   {% for art in filtered_disclosures limit:5%}
     <li>
+    {% if art.subtitle %}
       <a href="{{ art.url }}">{{art.title}} - {{ art.subtitle }}</a>
+    {% else %}
+      <a href="{{ art.url }}">{{art.title}}</a>
+    {% endif %}
     </li>
   {% endfor %}
 </ul>
