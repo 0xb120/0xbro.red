@@ -8,10 +8,18 @@
 }
 </style>
 {% if page.date %}
+{% if page.last_update %}
+{% if page.reading_time %}
+<p class="time">Published: {{ page.date | date_to_string }} | Last update: {{ page.last_update | date_to_string }} | Reading time: ~{{ page.reading_time }}</p>
+{% else %}
+<p class="time">Published: {{ page.date | date_to_string }} | Last update: {{ page.last_update | date_to_string }} </p>
+{% endif %}
+{% else %}
 {% if page.reading_time %}
 <p class="time">{{ page.date | date_to_string }} | Reading time: ~{{ page.reading_time }}</p>
 {% else %}
 <p class="time">{{ page.date | date_to_string }}</p>
+{% endif %}
 {% endif %}
 {% endif %}
 

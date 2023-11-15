@@ -4,6 +4,7 @@ title: "(CVE-2023-XXXXX) Static Code Injections in OpenCart versions 4.0.0.0 to 
 has_children: no
 parent: "Disclosed vulnerabilities"
 date: 2023-04-30
+last_update: 2023-11-15
 nav_order: 2023-04-30
 reading_time: 10 min
 permalink: /test/

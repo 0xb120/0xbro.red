@@ -5,6 +5,7 @@ subtitle: "The (optional) subtitle"
 has_children: no
 parent: "Disclosed vulnerabilities"
 date: 2023-04-30
+last_update: 2023-11-15
 nav_order: 2023-04-30
 reading_time: 10 min
 screenshots: /assets/images/Screenshots/AndroidLab/
