@@ -6,6 +6,7 @@ nav_order: 4
 ---
 # Achievements
 ## 2023
+11/2023 - Assigned **[CVE-2023-47444](https://www.cve.org/CVERecord?id=CVE-2023-47444)**: _[Static Code Injections in OpenCart](http://127.0.0.1:4000/disclosures/disclosed-vulnerabilities/opencart-CVE-2023-47444/)_<br>
 05/2023 - Completed **Web Security Academy** (PortSwigger) course<br>
 02/2023 - Reached **1000 subscribers** on [YouTube](https://www.youtube.com/channel/UCPhsvJnTmjEbzxcmyiKVmHQ)<br>
 01/2023 - Become a **member** of **[BullSoc](https://bullsoc.com/)**<br>
