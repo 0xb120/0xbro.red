@@ -12,8 +12,6 @@ has_toc: false
 **Videos and articles** about **general InfoSec** and **Cyber Security**.
 I hope you will find them useful. In case of advice, feel free to contact me.
 
-{% include HTB_Card.html %}
-
 {% assign filtered_posts = site.writeups | where: "parent", "InfoSec Education" | sort: "date" | reverse %}
 {% for writeup in filtered_posts %}
 - [{{ writeup.title }}]({{ writeup.url }})<br>

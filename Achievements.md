@@ -30,7 +30,7 @@ nav_order: 4
 
 
 ## 2020
-12/2020 - Promoted to **Penetration Tester** # **Accenture**<br>
+12/2020 - Promoted to **Penetration Tester** @ **Accenture**<br>
 10/2020 - Attented **Accenture internal training** - Mobile Application Penetration Testing<br>
 09/2020 - Become **Moderator** on [Inforge.net](https://www.inforge.net/)<br>
 05/2020 - Attented **Accenture internal training** - Network Penetration Testing<br>
