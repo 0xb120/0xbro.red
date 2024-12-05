@@ -601,7 +601,7 @@ In addition to the permission problems on standard and custom objects, the expos
 
 
 
-# Tools
+# Tools and Labs
 
 To facilitate analysis and enumeration, there are a few tools (with their limitations and shortcomings) that can help speed up and automate the work:
 - [nuclei](https://github.com/projectdiscovery/nuclei) and salesforce templates [^nuclei-template][^nuclei-template2]
@@ -609,6 +609,9 @@ To facilitate analysis and enumeration, there are a few tools (with their limita
 - [lightning-burp](https://github.com/salesforce/lightning-burp)
 
 > *I have not found other useful tools, but please [let me know]({{site.url}}/about/#contact) if I have missed something!*
+
+If you need a lab to practice with, have a look at the following links:
+- [paas-cloud-goat](https://github.com/Coalfire-Research/paas-cloud-goat), Coalfire-Research; github.com
 
 
 [^nuclei-template]: [salesforce-aura.yaml](https://github.com/projectdiscovery/nuclei-templates/blob/main/http/misconfiguration/salesforce-aura.yaml), github.com
