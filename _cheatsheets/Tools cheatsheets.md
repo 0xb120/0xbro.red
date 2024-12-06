@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Tool cheatsheets 🡵
+title: Tools cheatsheets 🡵
 has_children: no
 nav_order: 2
 tags: tool-cheatsheets
