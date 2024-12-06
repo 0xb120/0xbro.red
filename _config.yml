@@ -236,3 +236,9 @@ callouts:
     color: grey-dk
   quote:
     color: grey-lt
+
+
+mermaid:
+  # Version of mermaid library
+  # Pick an available version from https://cdn.jsdelivr.net/npm/mermaid/
+  version: "11.4.1"
