@@ -35,4 +35,3 @@ If you want to know more about me or want to get in touch, please visit the <a h
 
 
 
-{% include support_btn.html %}

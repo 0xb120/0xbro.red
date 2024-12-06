@@ -83,4 +83,3 @@ and other references to articles or posts that I have found useful and interesti
 <a href="{{site.url}}/feed/articles.xml"><svg class="icon-rss-color" width="21" height="12"><use xlink:href="#icon-rss-color"></use></svg>Articles</a><br>
 <a href="{{site.url}}/feed/disclosures.xml"><svg class="icon-rss-color" width="21" height="12"><use xlink:href="#icon-rss-color"></use></svg>Disclosures</a>
 
-{% include support_btn.html %}
