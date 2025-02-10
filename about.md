@@ -27,7 +27,7 @@ nav_order: 2
 ## Whoami
 
 I am **Mattia Brollo**, aka **0xbro**, a *penetration tester, content creator & wannabe ethical hacker*.<br>
-I like anything that has to do with **logic**, **research** and **discovery of new things**. I am a **CTF player** with **[BullSoc](https://bullsoc.com/)** team, one of the organizers of **[Meethack](https://meethack.it/)** (an **Italian hackerspace** located in Turin), and a **writer and moderator** on **[Inforge.net](Inforge.net)**. 
+I like anything that has to do with **logic**, **research** and **discovery of new things**. I am a **CTF player** with **[BullSoc](https://bullsoc.com/)** team, one of the organizers of **[Meethack](https://meethack.it/)** (an **Italian hackerspace** located in Turin), and a **writer and ex-moderator** on **[Inforge.net](https://inforge.net)**. 
 <br><br>
 Generally speaking, the four traits that best identify me are: **learner**, **intellection**, **achiever**, and **analytical**.<br>
 

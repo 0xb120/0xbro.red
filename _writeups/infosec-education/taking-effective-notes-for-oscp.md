@@ -32,6 +32,10 @@ In this video, I will show you how I take practical notes using Obsidian and Not
 <iframe width="736" height="491" src="https://www.youtube.com/embed/YomvQSKmAIE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## References
+
+{: .note }
+Feb 2025, 10th: I'm working on creating a new video and new templates, as many things have changed since I recorded this video.
+
 Download the templates mentioned inside the video from the following links: 
 - [Notion template](https://0xbro.notion.site/d25f47351476412f94dc38201be0c72e?v=e1bd4fbb05ea465ea558d1be825ac9d4)
 - [Obsidian template](https://drive.google.com/file/d/1Fo_h5jLO3QDpzaOsfxx6TvgbGeaHYl1G/view?usp=sharing)

@@ -236,7 +236,7 @@ If you can master these key concepts getting certified will be a breeze.
 
 ##### Tools
 - [Linux Local Enumeration Script](https://github.com/Arr0way/linux-local-enumeration-script): performs basic linux local enumeration, a first step in the local privilege escalation process.
-- [LinPEAS](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS): a script that search for possible paths to escalate privileges on Linux/Unix* hosts. The checks are explained on [book.hacktricks.xyz](book.hacktricks.xyz)
+- [LinPEAS](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS): a script that search for possible paths to escalate privileges on Linux/Unix* hosts. The checks are explained on [book.hacktricks.xyz](https://book.hacktricks.xyz)
 - [linux-smart-enumeration](https://github.com/diego-treitos/linux-smart-enumeration): Linux enumeration tool for pentesting and CTFs with verbosity levels 
 - [unix-privesc-check](https://github.com/pentestmonkey/unix-privesc-check): Shell script to check for simple privilege escalation vectors on Unix systems
 - [LinEnum](https://github.com/rebootuser/LinEnum):  Scripted Local Linux Enumeration & Privilege Escalation Checks 
@@ -273,7 +273,7 @@ If you can master these key concepts getting certified will be a breeze.
 ##### Tools
 - [Seatbelt](https://github.com/GhostPack/Seatbelt): a C# project that performs a number of security oriented host-survey "safety checks" relevant from both offensive and defensive security perspectives.
 - [WindowsEnum](https://github.com/absolomb/WindowsEnum):  A Powershell Privilege Escalation Enumeration Script.
-- [winPEAS](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS): WinPEAS is a script that search for possible paths to escalate privileges on Windows hosts. The checks are explained on [book.hacktricks.xyz](book.hacktricks.xyz)
+- [winPEAS](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS): WinPEAS is a script that search for possible paths to escalate privileges on Windows hosts. The checks are explained on [book.hacktricks.xyz](https://book.hacktricks.xyz)
 - [PowerUp](https://www.powershellempire.com/?page_id=378): a PowerShell tool to assist with local privilege escalation on Windows systems. It contains several methods to identify and abuse vulnerable services, as well as DLL hijacking opportunities, vulnerable registry settings, and escalation opportunities.
 - [windows-privesc-check](https://github.com/pentestmonkey/windows-privesc-check): Standalone Executable to Check for Simple Privilege Escalation Vectors on Windows Systems
 - [Watson](https://github.com/rasta-mouse/Watson): Enumerate missing KBs and suggest exploits for useful Privilege Escalation vulnerabilities
