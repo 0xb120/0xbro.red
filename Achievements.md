@@ -5,6 +5,9 @@ permalink: /achievements/
 nav_order: 4
 ---
 # Achievements
+## 2025
+03/2025 - Hired as **Senior Penetration Tester** @ **[SicuraNext](https://sicuranext.com/)**
+
 ## 2024
 06/2024 - Promoted to **Senior Penetration Tester & Team Lead** @ **Accenture**<br>
 02/2024 - Reached **2000 subscribers** on [YouTube](https://www.youtube.com/channel/UCPhsvJnTmjEbzxcmyiKVmHQ)<br>

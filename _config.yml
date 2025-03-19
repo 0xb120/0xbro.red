@@ -72,10 +72,10 @@ search_enabled: true
 search:
   # Split pages into sections that can be searched individually
   # Supports 1 - 6, default: 2
-  heading_level: 1
+  heading_level: 5
   # Maximum amount of previews per search result
   # Default: 3
-  previews: 5
+  previews: 3
   # Maximum amount of words to display before a matched word in the preview
   # Default: 5
   preview_words_before: 5
@@ -92,6 +92,8 @@ search:
   # Enable or disable the search button that appears in the bottom right corner of every page
   # Supports true or false (default)
   button: true
+  # Focus the search input by pressing `ctrl + focus_shortcut_key` (or `cmd + focus_shortcut_key` on macOS)
+  focus_shortcut_key: 'k'
 
 # Aux links for the upper right navigation
 aux_links:
@@ -125,6 +127,8 @@ enable_copy_code_button: true
 # Footer content
 back_to_top: true
 back_to_top_text: "↩ Back to top"
+last_edit_timestamp: true # show or hide edit time - page must have `last_modified_date` defined in the frontmatter
+last_edit_time_format: "%b %e %Y at %I:%M %p" # uses ruby's time format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
 
 # Define Jekyll collections
 collections:
