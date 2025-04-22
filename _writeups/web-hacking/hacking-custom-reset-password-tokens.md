@@ -4,15 +4,15 @@ title: "Defeating custom password reset tokens"
 subtitle: "When weak tokens and flawed implementations meet the sandwich and single-packet attacks"
 has_children: no
 parent: "Web Hacking"
-date: 2025-01-23
-nav_order: 20250123
+date: 2025-04-22
+nav_order: 20250422
 reading_time: 11 min
 screenshots: /assets/images/Screenshots/custom-password-reset-tokens/
 tags: custom-tokens single-packet-attack last-byte-sync sandwich-attack
 
 image: /assets/images/Screenshots/custom-password-reset-tokens/thumbnail.png
-twitter_text: 
-description: 
+twitter_text: In my latest blog post, I break down two distinct methods I used to achieve account takeover by targeting a vulnerable forgot password feature. Learn about guessing anti-tampering tokens using disclosed information and exploiting time-based vulnerabilities with a sandwich attack.
+description: This blog post presents a detailed analysis of two successful account takeover scenarios resulting from vulnerabilities in a forgot password implementation. I explore techniques involving anti-tampering token prediction and time-based/sandwich attacks.
 
 ---
 
@@ -31,9 +31,9 @@ description:
 # Introduction
 As mentioned in the abstract this blog post shows two different techniques I used to attack and defeat a weak forgot password implementation. 
 
-The first technique exploits the fact that the client-side application signed a parameter used as a checksum to validate the content of requests. Thanks to certain information disclosed by the server, it was possible to arbitrarily calculate each checksum, thus making it possible to exploit a weak forgotten password function and reset the password of any user.
+The first technique exploits the fact that the client-side application **signed a parameter used as a checksum** to validate the *content* of requests. Thanks to certain *information disclosed* by the server, it was possible to **arbitrarily calculate each checksum**, thus making it possible to **exploit a weak forgot password function** and **reset the password of any user**.
 
-The second technique instead exploits the weakness of the application's generated password reset tokens. These tokens are custom-generated and are easily reconstructed. Since every user can register and create an account on this application, it was possible to use the single-packet attack [^single-packet-attack] technique together with the sandwich attack [^sandwich-attack] to generate three tokens at the same time and through a bit of analysis and brute-force, obtain the specific token for the victim account.
+The second technique instead exploits the *weakness* of the application's generated password *reset tokens*. These tokens are **custom-generated** and are **easily reconstructed**. Since every user can register and create an account on this application, it was possible to use the *single-packet attack* [^single-packet-attack] technique together with the *sandwich attack* [^sandwich-attack] to **generate three tokens at the same** time and through a bit of analysis and brute-force, **obtain the specific token for the victim account**.
 
 [^single-packet-attack]: [The single-packet attack](https://portswigger.net/research/the-single-packet-attack-making-remote-race-conditions-local), portswigger.net
 
