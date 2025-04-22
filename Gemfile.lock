@@ -78,6 +78,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bundler (~> 2.5.0)
   jekyll (~> 4.2.0)
   jekyll-feed
   jekyll-redirect-from
@@ -92,4 +93,4 @@ RUBY VERSION
    ruby 3.1.2p20
 
 BUNDLED WITH
-   2.6.8
+   2.5.23
