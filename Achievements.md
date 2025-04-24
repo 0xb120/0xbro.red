@@ -6,6 +6,7 @@ nav_order: 4
 ---
 # Achievements
 ## 2025
+04/2025 - Assigned **[CVE-2025-3861](https://www.cve.org/CVERecord?id=CVE-2025-3861)**: *[Incorrect Authorization to Authenticated (Contributor+) Multiple Media Actions in Prevent Direct Access Wordpress Plugin](https://0xbro.red/disclosures/disclosed-vulnerabilities/wp-prevent-direct-access-CVE-2025-3861/)*<br>
 03/2025 - Hired as **Senior Penetration Tester** @ **[SicuraNext](https://sicuranext.com/)**
 
 ## 2024
@@ -13,7 +14,7 @@ nav_order: 4
 02/2024 - Reached **2000 subscribers** on [YouTube](https://www.youtube.com/channel/UCPhsvJnTmjEbzxcmyiKVmHQ)<br>
 
 ## 2023
-11/2023 - Assigned **[CVE-2023-47444](https://www.cve.org/CVERecord?id=CVE-2023-47444)**: _[Static Code Injections in OpenCart](https://0xbro.red/disclosures/disclosed-vulnerabilities/opencart-CVE-2023-47444/)_<br>
+11/2023 - Assigned **[CVE-2023-47444](https://www.cve.org/CVERecord?id=CVE-2023-47444)**: *[Static Code Injections in OpenCart](https://0xbro.red/disclosures/disclosed-vulnerabilities/opencart-CVE-2023-47444/)*<br>
 05/2023 - Completed **Web Security Academy** (PortSwigger) course<br>
 02/2023 - Reached **1000 subscribers** on [YouTube](https://www.youtube.com/channel/UCPhsvJnTmjEbzxcmyiKVmHQ)<br>
 01/2023 - Become a **member** of **[BullSoc](https://bullsoc.com/)**<br>
