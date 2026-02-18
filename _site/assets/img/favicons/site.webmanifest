@@ -1,0 +1,25 @@
+
+
+{
+  "name": "0xbro",
+  "short_name": "0xbro",
+  "description": "I am Mattia Brollo, aka 0xbro, a penetration tester, vulnerability researcher, content creator & wannabe ethical hacker. Within the blog you can find all my writeups about vulnerability research, CTFs tricks, exploits, templates, hints and penetration testing notes.",
+  "icons": [
+    {
+      "src": "/assets/img/favicons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/favicons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/index.html",
+  "theme_color": "#2a1e6b",
+  "background_color": "#ffffff",
+  "display": "fullscreen"
+}
+

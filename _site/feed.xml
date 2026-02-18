@@ -1,0 +1,149 @@
+
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://localhost:4000/</id>
+  <title>0xbro</title>
+  <subtitle>I am Mattia Brollo, aka 0xbro, a penetration tester, vulnerability researcher, content creator &amp; wannabe ethical hacker. Within the blog you can find all my writeups about vulnerability research, CTFs tricks, exploits, templates, hints and penetration testing notes.</subtitle>
+  <updated>2026-02-18T22:06:18+01:00</updated>
+  <author>
+    <name>0xbro</name>
+    <uri>http://localhost:4000/</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="http://localhost:4000/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="en"
+    href="http://localhost:4000/"/>
+  <generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator>
+  <rights> © 2026 0xbro </rights>
+  <icon>/assets/img/favicons/favicon.ico</icon>
+  <logo>/assets/img/favicons/favicon-96x96.png</logo>
+
+
+  
+  <entry>
+    <title>How I keep updated in the infosec industry</title>
+    <link href="http://localhost:4000/posts/how-i-keep-updated/" rel="alternate" type="text/html" title="How I keep updated in the infosec industry" />
+    <published>2026-02-02T00:00:00+01:00</published>
+  
+    <updated>2026-02-02T00:00:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/how-i-keep-updated/</id>
+    <content type="text/html" src="http://localhost:4000/posts/how-i-keep-updated/" />
+    <author>
+      <name>0xbro</name>
+    </author>
+
+  
+    
+    <category term="Articles &amp; Writeups" />
+    
+    <category term="InfoSec Education" />
+    
+  
+
+  <summary>Introduction  Happy 2026, two months late and with a new design for my blog! 🥳  It had been quite a while since I last posted anything on my blog, and recently I have been trying to find a functional system to best consume and process online information.  So here we are, writing a blog post that will allow me to clarify my ideas (hopefullyspoiler, it did!) and at the same time give you some ins...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Vtenext 25.02 vulnerability research</title>
+    <link href="http://localhost:4000/posts/vtenext-25-02-a-three-way-path-to-rce/" rel="alternate" type="text/html" title="Vtenext 25.02 vulnerability research" />
+    <published>2025-08-12T00:00:00+02:00</published>
+  
+    <updated>2025-08-12T00:00:00+02:00</updated>
+  
+    <id>http://localhost:4000/posts/vtenext-25-02-a-three-way-path-to-rce/</id>
+    <content type="text/html" src="http://localhost:4000/posts/vtenext-25-02-a-three-way-path-to-rce/" />
+    <author>
+      <name>0xbro</name>
+    </author>
+
+  
+    
+    <category term="Disclosed Vulnerabilities" />
+    
+  
+
+  <summary>Multiple vulnerabilities in vtenext 25.02.1 and prior versions allow unauthenticated attackers to bypass authentication through three separate vectors, ultimately leading to remote code execution on the underlying server.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Incorrect Authorization to Authenticated (Contributor+) Multiple Media Actions in Prevent Direct Access Wordpress Plugin (CVE-2025-3861)</title>
+    <link href="http://localhost:4000/posts/wp-prevent-direct-access-CVE-2025-3861/" rel="alternate" type="text/html" title="Incorrect Authorization to Authenticated (Contributor+) Multiple Media Actions in Prevent Direct Access Wordpress Plugin (CVE-2025-3861)" />
+    <published>2025-04-24T00:00:00+02:00</published>
+  
+    <updated>2025-04-24T00:00:00+02:00</updated>
+  
+    <id>http://localhost:4000/posts/wp-prevent-direct-access-CVE-2025-3861/</id>
+    <content type="text/html" src="http://localhost:4000/posts/wp-prevent-direct-access-CVE-2025-3861/" />
+    <author>
+      <name>0xbro</name>
+    </author>
+
+  
+    
+    <category term="Disclosed Vulnerabilities" />
+    
+  
+
+  <summary>The Prevent Direct Access – Protect WordPress Files plugin for WordPress is vulnerable to unauthorized access and modification of data| due to a misconfigured capability check on the 'pda_lite_custom_permission_check' function in versions 2.8.6 to 2.8.8.2. This makes it possible for authenticated attackers, with Contributor-level access and above, to access and change the protection status of media.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Effective Notes for OSCP, CTFs and Pentests with Obsidian (2025)</title>
+    <link href="http://localhost:4000/posts/effective-notes-with-obsidian/" rel="alternate" type="text/html" title="Effective Notes for OSCP, CTFs and Pentests with Obsidian (2025)" />
+    <published>2025-03-15T00:00:00+01:00</published>
+  
+    <updated>2025-03-15T00:00:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/effective-notes-with-obsidian/</id>
+    <content type="text/html" src="http://localhost:4000/posts/effective-notes-with-obsidian/" />
+    <author>
+      <name>0xbro</name>
+    </author>
+
+  
+    
+    <category term="Articles &amp; Writeups" />
+    
+    <category term="InfoSec Education" />
+    
+  
+
+  <summary>Having well-organized notes is crucial for penetration testing, OSCP preparation and exams, CTFs, etc. They help you quickly identify previously exploited vulnerabilities and map the interconnections between machines within a network. In this video, I'll show you how I take effective notes using Obsidian's Canvas and Excalidraw, and how I structure them.</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Pentesting Salesforce Communities</title>
+    <link href="http://localhost:4000/posts/salesforce-hacking/" rel="alternate" type="text/html" title="Pentesting Salesforce Communities" />
+    <published>2024-12-02T00:00:00+01:00</published>
+  
+    <updated>2024-12-02T00:00:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/salesforce-hacking/</id>
+    <content type="text/html" src="http://localhost:4000/posts/salesforce-hacking/" />
+    <author>
+      <name>0xbro</name>
+    </author>
+
+  
+    
+    <category term="Articles &amp; Writeups" />
+    
+    <category term="Web Hacking" />
+    
+  
+
+  <summary>This blog post shows a recent penetration test I performed for some customers' Salesforce applications (also called Salesforce Communities), in which I exploited some common and other lesser-known flaws, which eventually led to an account takeover vulnerability. I will show some plugins and in-depth techniques to facilitate the enumeration of the target and the discovery of these flaws, and I will link to other excellent resources that I have found very useful for delving into the Salesforce attack surface and on which I have relied to conduct tests and write this article.</summary>
+
+  </entry>
+
+</feed>
+
+

